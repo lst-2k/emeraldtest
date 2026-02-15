@@ -146,7 +146,6 @@
     </div>
 
     <script>
-// Point to your confirmed live JSON
 const DATA_URL = 'data.json';
 
 const platformIcons = {
@@ -167,13 +166,21 @@ const getMedalSVG = (color) => `
 
 async function loadData() {
     try {
+        // Cache busting 't=' ensures you see updates immediately on GitHub
         const response = await fetch(DATA_URL + '?t=' + Date.now());
-        if (!response.ok) throw new Error("JSON file not found on server");
+        
+        if (!response.ok) {
+            throw new Error(`Could not find ${DATA_URL} (Status: ${response.status})`);
+        }
+        
         const data = await response.json();
         renderData(data);
     } catch (err) { 
         console.error("Load Error:", err);
-        document.getElementById('current-venue').innerText = "Error Loading Data";
+        document.getElementById('leaderboard-body').innerHTML = 
+            `<tr><td colspan="9" style="color:red; padding:20px; font-weight:bold;">
+                Error: ${err.message}. Check browser console (F12) for details.
+            </td></tr>`;
     }
 }
 
@@ -231,14 +238,12 @@ function renderData(data) {
     const hofDisplay = document.getElementById('hof-display');
     statsBody.innerHTML = "";
 
-    // Calculate best values for highlighting
     const bestF = Math.max(...data.stats.map(s => s.f || 0));
     const bestG = Math.max(...data.stats.map(s => s.g || 0));
     const bestS = Math.max(...data.stats.map(s => s.s || 0));
     const ntpVals = data.stats.map(s => s.n).filter(v => v > 0);
     const bestN = ntpVals.length > 0 ? Math.min(...ntpVals) : null;
 
-    // Sort stats by points
     const sortedStats = [...data.stats].sort((a, b) => b.pts - a.pts);
     const threshold = Math.ceil(sortedStats.length / 2);
 
@@ -260,11 +265,11 @@ function renderData(data) {
             </tr>`;
     });
 
-    // 4. HALL OF FAME CARDS
+    // 4. HALL OF FAME
     const hofStats = [...data.stats].sort((a, b) => {
-        const aV = parseFloat(a.earn.replace(/[^0-9.-]+/g,"")) || 0;
-        const bV = parseFloat(b.earn.replace(/[^0-9.-]+/g,"")) || 0;
-        return bV - aV;
+        const aVal = parseFloat(a.earn.replace(/[^0-9.-]+/g,"")) || 0;
+        const bVal = parseFloat(b.earn.replace(/[^0-9.-]+/g,"")) || 0;
+        return bVal - aVal;
     });
     const cardClasses = ['gold','silver','bronze'];
     const medalColors = ['#FFD700','#C0C0C0','#CD7F32'];
@@ -287,7 +292,7 @@ function renderData(data) {
         </tr>`).join('');
 }
 
-loadData();
+loadData();	
     </script>
 </body>
 </html>
