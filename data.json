@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-15T15:20:13.652Z",
+  "timestamp": "2026-02-15T15:29:39.559Z",
   "header": "New Emerald Tour Leaderboard",
   "date": "4 February 2026",
   "venue": "Season 1, Week 6 - Major @ The Old Oaks Club",
@@ -116,7 +116,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$497,429"
     },
     {
       "name": "Colly",
@@ -129,7 +130,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$355,429"
     },
     {
       "name": "Kalessin",
@@ -142,7 +144,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$275,429"
     },
     {
       "name": "Hammersman",
@@ -155,7 +158,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$235,429"
     },
     {
       "name": "3offthetee",
@@ -168,7 +172,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$219,429"
     },
     {
       "name": "Geordieboy",
@@ -181,7 +186,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$211,429"
     },
     {
       "name": "Polekatt",
@@ -194,7 +200,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$205,429"
     },
     {
       "name": "Mr Longpole",
@@ -207,7 +214,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Koof",
@@ -220,7 +228,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Tenbobnote",
@@ -233,7 +242,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Dubz",
@@ -246,7 +256,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Hopz",
@@ -259,7 +270,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "SimChars",
@@ -272,7 +284,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Arfabubble",
@@ -285,7 +298,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Bfctino",
@@ -298,7 +312,8 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     }
   ]
 }
