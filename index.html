@@ -146,7 +146,8 @@
     </div>
 
     <script>
-const DATA_URL = 'data.json';
+// Point to your confirmed live JSON
+const DATA_URL = './data.json';
 
 const platformIcons = {
     'ps': 'https://upload.wikimedia.org/wikipedia/commons/0/00/PlayStation_logo.svg',
@@ -157,82 +158,133 @@ const platformIcons = {
 
 const getMedalSVG = (color) => `
     <svg class="medal-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 2l2 6h6l2-6H7z" fill="#444" opacity="0.8"/>
+        <path d="M12 8L15 2H9l3 6z" fill="#222"/>
         <circle cx="12" cy="14" r="8" fill="${color}" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>
+        <circle cx="12" cy="14" r="6.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
         <path d="M12 10.5l1.2 2.4 2.6.4-1.9 1.8.5 2.6-2.4-1.2-2.4 1.2.5-2.6-1.9-1.8 2.6-.4z" fill="rgba(0,0,0,0.2)"/>
     </svg>`;
 
 async function loadData() {
     try {
         const response = await fetch(DATA_URL + '?t=' + Date.now());
+        if (!response.ok) throw new Error("JSON file not found on server");
         const data = await response.json();
-        renderLeaderboard(data);
-    } catch (err) { console.error("Error loading JSON:", err); }
+        renderData(data);
+    } catch (err) { 
+        console.error("Load Error:", err);
+        document.getElementById('current-venue').innerText = "Error Loading Data";
+    }
 }
 
-function renderLeaderboard(data) {
-    const par = data.meta.par || 72;
+function renderData(data) {
+    // 1. META DATA
+    const parVal = data.meta.par || 72;
     document.getElementById('current-venue').innerText = data.meta.venue;
-    document.getElementById('course-par').innerText = par;
+    document.getElementById('course-par').innerText = parVal;
     document.getElementById('total-prize-pool').innerText = `Total Prize Pool: ${data.meta.prizePool}`;
     document.getElementById('event-date').innerText = data.meta.date;
 
-    // Leaderboard
+    // 2. LEADERBOARD
     const lbBody = document.getElementById('leaderboard-body');
     lbBody.innerHTML = "";
-    
-    let processed = data.players.map(p => {
-        const active = p.rounds.filter(r => r > 0);
-        const total = active.reduce((a, b) => a + b, 0);
-        const toParVal = active.length > 0 ? total - (par * active.length) : 999;
-        const toParStr = toParVal === 999 ? "--" : (toParVal > 0 ? `+${toParVal}` : (toParVal === 0 ? "E" : toParVal));
-        const icon = platformIcons[p.platform] ? `<img src="${platformIcons[p.platform]}" class="platform-icon icon-${p.platform}">` : "";
-        return { ...p, total, toParStr, toParVal, icon };
-    }).sort((a, b) => a.toParVal - b.toParVal);
 
-    processed.forEach((p, i) => {
-        const color = p.toParStr === 'E' ? "green" : (p.toParStr.toString().includes('+') ? "black" : "red");
+    let players = data.players.map(p => {
+        const active = p.rounds.filter(s => s > 0);
+        const total = active.reduce((a, b) => a + b, 0);
+        let sort = 999, toPar = "--";
+        if (active.length > 0) {
+            sort = total - (parVal * active.length);
+            toPar = sort > 0 ? `+${sort}` : (sort === 0 ? "E" : sort);
+        }
+        
+        const iconUrl = platformIcons[p.platform] || "";
+        const iconClass = p.platform ? `icon-${p.platform}` : "";
+        const iconHtml = iconUrl ? `<img src="${iconUrl}" class="platform-icon ${iconClass}" crossorigin="anonymous">` : "";
+
+        return { ...p, total, toPar, sort, iconHtml };
+    }).sort((a, b) => a.sort - b.sort);
+
+    let currentRank = 0;
+    players.forEach((p, i) => {
+        const isTied = i > 0 && p.sort === players[i - 1].sort;
+        const nextIsTied = i < players.length - 1 && p.sort === players[i + 1].sort;
+        if (!isTied) currentRank = i + 1;
+        let displayRank = (isTied || nextIsTied) ? "T" + currentRank : currentRank;
+        
+        const pText = p.toPar.toString();
+        let color = (pText === 'E') ? "green" : (pText.includes('+') ? "black" : "red");
+
         lbBody.innerHTML += `
             <tr>
-                <td>${i+1}</td>
-                <td style="text-align:left; font-weight:bold;">${p.icon}${p.name}</td>
-                <td style="font-weight:bold; color:${color}">${p.toParStr}</td>
-                ${p.rounds.map(r => `<td>${r || '-'}</td>`).join('')}
-                <td><b>${p.total || '-'}</b></td>
+                <td>${displayRank}</td>
+                <td style="text-align:left; font-weight:bold;">${p.iconHtml}${p.name}</td>
+                <td style="font-weight:bold; color:${color}">${pText}</td>
+                <td>${p.rounds[0]||'-'}</td><td>${p.rounds[1]||'-'}</td><td>${p.rounds[2]||'-'}</td><td>${p.rounds[3]||'-'}</td>
+                <td><b>${p.total||'-'}</b></td>
                 <td>${p.prize}</td>
             </tr>`;
     });
 
-    // Stats
+    // 3. STATS & HALL OF FAME
     const statsBody = document.getElementById('stats-body');
+    const hofDisplay = document.getElementById('hof-display');
     statsBody.innerHTML = "";
-    const bestF = Math.max(...data.stats.map(s => s.f));
-    const bestG = Math.max(...data.stats.map(s => s.g));
-    const bestN = Math.min(...data.stats.map(s => s.n).filter(v => v > 0));
 
-    data.stats.sort((a,b) => b.pts - a.pts).forEach((s, i) => {
-        const highlight = (val, target) => (val === target) ? 'style="color:#d4af37; font-weight:bold;"' : '';
+    // Calculate best values for highlighting
+    const bestF = Math.max(...data.stats.map(s => s.f || 0));
+    const bestG = Math.max(...data.stats.map(s => s.g || 0));
+    const bestS = Math.max(...data.stats.map(s => s.s || 0));
+    const ntpVals = data.stats.map(s => s.n).filter(v => v > 0);
+    const bestN = ntpVals.length > 0 ? Math.min(...ntpVals) : null;
+
+    // Sort stats by points
+    const sortedStats = [...data.stats].sort((a, b) => b.pts - a.pts);
+    const threshold = Math.ceil(sortedStats.length / 2);
+
+    sortedStats.forEach((s, i) => {
+        const highlight = (val, target) => (val === target && val !== 0 && target !== null) ? 'style="color: #d4af37; font-weight:bold;"' : '';
+        const dividerStyle = (i === threshold - 1) ? 'border-bottom: 3px solid black !important;' : '';
+
         statsBody.innerHTML += `
-            <tr>
-                <td>${i+1}</td>
-                <td style="text-align:left; font-weight:bold;">${s.name}</td>
-                <td><b>${s.pts}</b></td>
-                <td style="color:#1b5e20; font-weight:bold;">${s.earn}</td>
-                <td>${s.ev}</td>
-                <td><span ${highlight(s.f, bestF)}>${s.f}</span></td>
-                <td><span ${highlight(s.g, bestG)}>${s.g}</span></td>
-                <td><span ${highlight(s.n, bestN)}>${s.n}ft</span></td>
+            <tr class="${i < threshold ? 'top-tier-bg' : ''}">
+                <td style="${dividerStyle}">${i+1}</td>
+                <td style="text-align:left; font-weight:bold; ${dividerStyle}">${s.name}</td>
+                <td style="${dividerStyle}; font-weight:bold;">${s.pts}</td>
+                <td style="color:#1b5e20; font-weight:bold; ${dividerStyle}">${s.earn}</td>
+                <td style="${dividerStyle}">${s.ev}</td>
+                <td style="${dividerStyle}"><span ${highlight(s.f, bestF)}>${s.f}%</span></td>
+                <td style="${dividerStyle}"><span ${highlight(s.g, bestG)}>${s.g}%</span></td>
+                <td style="${dividerStyle}"><span ${highlight(s.s, bestS)}>${s.s}%</span></td>
+                <td style="${dividerStyle}"><span ${highlight(s.n, bestN)}>${s.n}ft</span></td>
             </tr>`;
     });
 
-    // Hall of Fame
-    const hof = document.getElementById('hof-display');
-    const medalColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
-    hof.innerHTML = data.stats.slice(0, 3).map((s, i) => `
-        <div class="hof-card">
+    // 4. HALL OF FAME CARDS
+    const hofStats = [...data.stats].sort((a, b) => {
+        const aV = parseFloat(a.earn.replace(/[^0-9.-]+/g,"")) || 0;
+        const bV = parseFloat(b.earn.replace(/[^0-9.-]+/g,"")) || 0;
+        return bV - aV;
+    });
+    const cardClasses = ['gold','silver','bronze'];
+    const medalColors = ['#FFD700','#C0C0C0','#CD7F32'];
+    hofDisplay.innerHTML = hofStats.slice(0, 3).map((s, i) => `
+        <div class="hof-card ${cardClasses[i]}">
             ${getMedalSVG(medalColors[i])}
             <span class="hof-name">${s.name}</span>
             <span class="hof-earn">${s.earn}</span>
         </div>`).join('');
+
+    // 5. HISTORY
+    const histBody = document.getElementById('history-body');
+    histBody.innerHTML = data.history.map(h => `
+        <tr>
+            <td>${h.season}</td>
+            <td style="text-align:left; font-weight:bold;">${h.event}</td>
+            <td>${h.winner}</td>
+            <td>${h.score}</td>
+            <td style="color:#1b5e20;">${h.prize}</td>
+        </tr>`).join('');
 }
 
 loadData();
