@@ -215,40 +215,42 @@ function renderData(data) {
     } else {
         lbBody.innerHTML = `<tr><td colspan="9">Waiting for round data...</td></tr>`;
     }
+}
 
 loadData();
 
-    // 3. STATS & HALL OF FAME
-    const statsBody = document.getElementById('stats-body');
-    const hofDisplay = document.getElementById('hof-display');
-    statsBody.innerHTML = "";
+		// 3. STATS & HALL OF FAME
+		const statsBody = document.getElementById('stats-body');
+		const hofDisplay = document.getElementById('hof-display');
+		statsBody.innerHTML = "";
 
-    const bestF = Math.max(...data.stats.map(s => s.f || 0));
-    const bestG = Math.max(...data.stats.map(s => s.g || 0));
-    const bestS = Math.max(...data.stats.map(s => s.s || 0));
-    const ntpVals = data.stats.map(s => s.n).filter(v => v > 0);
-    const bestN = ntpVals.length > 0 ? Math.min(...ntpVals) : null;
+		const bestF = Math.max(...data.stats.map(s => s.f || 0));
+		const bestG = Math.max(...data.stats.map(s => s.g || 0));
+		const bestS = Math.max(...data.stats.map(s => s.s || 0));
+		const ntpVals = data.stats.map(s => s.n).filter(v => v > 0);
+		const bestN = ntpVals.length > 0 ? Math.min(...ntpVals) : null;
 
-    const sortedStats = [...data.stats].sort((a, b) => b.pts - a.pts);
-    const threshold = Math.ceil(sortedStats.length / 2);
+		const sortedStats = [...data.stats].sort((a, b) => b.pts - a.pts);
+		const threshold = Math.ceil(sortedStats.length / 2);
 
-    sortedStats.forEach((s, i) => {
-        const highlight = (val, target) => (val === target && val !== 0 && target !== null) ? 'style="color: #d4af37; font-weight:bold;"' : '';
-        const dividerStyle = (i === threshold - 1) ? 'border-bottom: 3px solid black !important;' : '';
+		sortedStats.forEach((s, i) => {
+			const highlight = (val, target) => (val === target && val !== 0 && target !== null) ? 'style="color: #d4af37; font-weight:bold;"' : '';
+			const dividerStyle = (i === threshold - 1) ? 'border-bottom: 3px solid black !important;' : '';
 
-        statsBody.innerHTML += `
-            <tr class="${i < threshold ? 'top-tier-bg' : ''}">
-                <td style="${dividerStyle}">${i+1}</td>
-                <td style="text-align:left; font-weight:bold; ${dividerStyle}">${s.name}</td>
-                <td style="${dividerStyle}; font-weight:bold;">${s.pts}</td>
-                <td style="color:#1b5e20; font-weight:bold; ${dividerStyle}">${s.earn}</td>
-                <td style="${dividerStyle}">${s.ev}</td>
-                <td style="${dividerStyle}"><span ${highlight(s.f, bestF)}>${s.f}%</span></td>
-                <td style="${dividerStyle}"><span ${highlight(s.g, bestG)}>${s.g}%</span></td>
-                <td style="${dividerStyle}"><span ${highlight(s.s, bestS)}>${s.s}%</span></td>
-                <td style="${dividerStyle}"><span ${highlight(s.n, bestN)}>${s.n}ft</span></td>
-            </tr>`;
-    });
+			statsBody.innerHTML += `
+				<tr class="${i < threshold ? 'top-tier-bg' : ''}">
+					<td style="${dividerStyle}">${i+1}</td>
+					<td style="text-align:left; font-weight:bold; ${dividerStyle}">${s.name}</td>
+					<td style="${dividerStyle}; font-weight:bold;">${s.pts}</td>
+					<td style="color:#1b5e20; font-weight:bold; ${dividerStyle}">${s.earn}</td>
+					<td style="${dividerStyle}">${s.ev}</td>
+					<td style="${dividerStyle}"><span ${highlight(s.f, bestF)}>${s.f}%</span></td>
+					<td style="${dividerStyle}"><span ${highlight(s.g, bestG)}>${s.g}%</span></td>
+					<td style="${dividerStyle}"><span ${highlight(s.s, bestS)}>${s.s}%</span></td>
+					<td style="${dividerStyle}"><span ${highlight(s.n, bestN)}>${s.n}ft</span></td>
+				</tr>`;
+		});
+	}
 
     // 4. HALL OF FAME
     const hofStats = [...data.stats].sort((a, b) => {
