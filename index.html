@@ -146,70 +146,132 @@
     </div>
 
     <script>
-	const DATA_URL = 'data.json';
+const DATA_URL = 'data.json';
 
-	async function loadData() {
-		try {
-			const response = await fetch(DATA_URL + '?t=' + Date.now());
-			if (!response.ok) throw new Error("File not found");
-			const data = await response.json();
-			renderData(data);
-		} catch (err) { 
-			console.error("Load Error:", err);
-			document.getElementById('current-venue').innerText = "Data Error";
-		}
-	}
+const platformIcons = {
+    'fa-playstation': 'https://upload.wikimedia.org/wikipedia/commons/0/00/PlayStation_logo.svg',
+    'fa-xbox': 'https://upload.wikimedia.org/wikipedia/commons/f/f9/Xbox_one_logo.svg',
+    'fa-steam': 'https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg',
+    'fa-windows': 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Windows_logo_-_2012.svg'
+};
 
-	function renderData(data) {
-		// 1. HEADER DATA (Matches your JSON keys: venue, date, coursePar, prizePool)
-		const parVal = parseInt(data.coursePar) || 72;
-		document.getElementById('current-venue').innerText = data.venue || "Tournament";
-		document.getElementById('course-par').innerText = parVal;
-		document.getElementById('event-date').innerText = data.date || "--";
-		
-		const prize = data.prizePool ? "£" + data.prizePool.toLocaleString() : "--";
-		document.getElementById('total-prize-pool').innerText = `Total Prize Pool: ${prize}`;
+const getMedalSVG = (color) => `
+    <svg class="medal-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="14" r="8" fill="${color}" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>
+        <path d="M12 10.5l1.2 2.4 2.6.4-1.9 1.8.5 2.6-2.4-1.2-2.4 1.2.5-2.6-1.9-1.8 2.6-.4z" fill="rgba(0,0,0,0.2)"/>
+    </svg>`;
 
-		// 2. SEASON STATS (Mapping your JSON objects like "Colly" to the table)
-		const statsBody = document.getElementById('stats-body');
-		statsBody.innerHTML = "";
-		
-		if (data.seasonEarnings && data.seasonPoints) {
-			const playerNames = Object.keys(data.seasonEarnings);
-			
-			let statsList = playerNames.map(name => {
-				return {
-					name: name,
-					pts: data.seasonPoints[name] || 0,
-					earn: data.seasonEarnings[name] || 0,
-					ev: data.eventCount || 0
-				};
-			}).sort((a, b) => b.pts - a.pts);
+async function loadData() {
+    try {
+        const response = await fetch(DATA_URL + '?t=' + Date.now());
+        if (!response.ok) throw new Error("JSON file not found");
+        const data = await response.json();
+        renderData(data);
+    } catch (err) { 
+        console.error("Load Error:", err);
+        document.getElementById('current-venue').innerText = "Data Loading Error";
+    }
+}
 
-			statsList.forEach((s, i) => {
-				statsBody.innerHTML += `
-					<tr>
-						<td>${i + 1}</td>
-						<td style="text-align:left; font-weight:bold;">${s.name}</td>
-						<td><b>${s.pts}</b></td>
-						<td style="color:#1b5e20; font-weight:bold;">£${s.earn.toLocaleString()}</td>
-						<td>${s.ev}</td>
-						<td>--</td><td>--</td><td>--</td><td>--</td>
-					</tr>`;
-			});
-		}
+function renderData(data) {
+    // 1. TOP BAR & VENUE INFO (Mapped to image_d711e6.png)
+    const parVal = parseInt(data.coursePar) || 72;
+    document.getElementById('current-venue').innerText = data.venue || "Tournament";
+    document.getElementById('course-par').innerText = parVal;
+    document.getElementById('event-date').innerText = data.date || "--";
+    const prize = data.prizePool ? "£" + data.prizePool.toLocaleString() : "--";
+    document.getElementById('total-prize-pool').innerText = `Total Prize Pool: ${prize}`;
 
-		// 3. LEADERBOARD (Waiting for 'players' array in your JSON)
-		const lbBody = document.getElementById('leaderboard-body');
-		lbBody.innerHTML = "";
-		if (data.players && Array.isArray(data.players)) {
-			// Round data logic goes here
-		} else {
-			lbBody.innerHTML = `<tr><td colspan="9" style="padding:20px;">Waiting for tournament data...</td></tr>`;
-		}
-	}
+    // 2. TOURNAMENT LEADERBOARD (Mapped to image_d7910c.png)
+    const lbBody = document.getElementById('leaderboard-body');
+    lbBody.innerHTML = "";
 
-	loadData();
+    if (data.players && Array.isArray(data.players)) {
+        let players = data.players.map(p => {
+            // Rounds are stored as strings "64", "72", etc. in your JSON
+            const rounds = [p.r1, p.r2, p.r3, p.r4].map(r => parseInt(r) || 0);
+            const active = rounds.filter(r => r > 0);
+            const total = active.reduce((a, b) => a + b, 0);
+            
+            let sort = 999, toPar = "--";
+            if (active.length > 0) {
+                sort = total - (parVal * active.length);
+                toPar = sort > 0 ? `+${sort}` : (sort === 0 ? "E" : sort);
+            }
+
+            const iconUrl = platformIcons[p.console] || "";
+            const iconHtml = iconUrl ? `<img src="${iconUrl}" class="platform-icon" crossorigin="anonymous">` : "";
+
+            return { ...p, rounds, total, toPar, sort, iconHtml };
+        }).sort((a, b) => a.sort - b.sort);
+
+        // Tied Rank Logic
+        let currentRank = 0;
+        players.forEach((p, i) => {
+            const isTied = i > 0 && p.sort === players[i - 1].sort;
+            const nextIsTied = i < players.length - 1 && p.sort === players[i + 1].sort;
+            if (!isTied) currentRank = i + 1;
+            const displayRank = (isTied || nextIsTied) ? "T" + currentRank : currentRank;
+            
+            const pText = p.toPar.toString();
+            let color = (pText === 'E') ? "green" : (pText.includes('+') ? "black" : "red");
+
+            lbBody.innerHTML += `
+                <tr>
+                    <td>${displayRank}</td>
+                    <td style="text-align:left; font-weight:bold;">${p.iconHtml}${p.name}</td>
+                    <td style="font-weight:bold; color:${color}">${pText}</td>
+                    <td>${p.rounds[0]||'-'}</td><td>${p.rounds[1]||'-'}</td><td>${p.rounds[2]||'-'}</td><td>${p.rounds[3]||'-'}</td>
+                    <td><b>${p.total||'-'}</b></td>
+                    <td>--</td>
+                </tr>`;
+        });
+    }
+
+    // 3. SEASON STATS (Mapped to image_d711e6.png objects)
+    const statsBody = document.getElementById('stats-body');
+    statsBody.innerHTML = "";
+    
+    if (data.seasonEarnings && data.seasonPoints) {
+        const playerNames = Object.keys(data.seasonEarnings);
+        
+        let statsList = playerNames.map(name => {
+            return {
+                name: name,
+                pts: data.seasonPoints[name] || 0,
+                earn: data.seasonEarnings[name] || 0,
+                ev: data.eventCount || 0
+            };
+        }).sort((a, b) => b.pts - a.pts);
+
+        statsList.forEach((s, i) => {
+            statsBody.innerHTML += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td style="text-align:left; font-weight:bold;">${s.name}</td>
+                    <td><b>${s.pts}</b></td>
+                    <td style="color:#1b5e20; font-weight:bold;">£${s.earn.toLocaleString()}</td>
+                    <td>${s.ev}</td>
+                    <td>--</td><td>--</td><td>--</td><td>--</td>
+                </tr>`;
+        });
+
+        // 4. HALL OF FAME (Top 3 Earners)
+        const hofDisplay = document.getElementById('hof-display');
+        const hofStats = [...statsList].sort((a, b) => b.earn - a.earn);
+        const cardClasses = ['gold', 'silver', 'bronze'];
+        const medalColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
+        
+        hofDisplay.innerHTML = hofStats.slice(0, 3).map((s, i) => `
+            <div class="hof-card ${cardClasses[i]}">
+                ${getMedalSVG(medalColors[i])}
+                <span class="hof-name">${s.name}</span>
+                <span class="hof-earn">£${s.earn.toLocaleString()}</span>
+            </div>`).join('');
+    }
+}
+
+loadData();
 	</script>
 </body>
 </html>
