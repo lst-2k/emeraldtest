@@ -174,87 +174,83 @@ async function loadData() {
 }
 
 function renderData(data) {
-    // 1. TOP BAR & VENUE INFO (Mapped to image_d711e6.png)
     const parVal = parseInt(data.coursePar) || 72;
-    document.getElementById('current-venue').innerText = data.venue || "Tournament";
+    document.getElementById('current-venue').innerText = data.venue;
     document.getElementById('course-par').innerText = parVal;
-    document.getElementById('event-date').innerText = data.date || "--";
-    const prize = data.prizePool ? "£" + data.prizePool.toLocaleString() : "--";
-    document.getElementById('total-prize-pool').innerText = `Total Prize Pool: ${prize}`;
+    document.getElementById('event-date').innerText = data.date;
 
-    // 2. TOURNAMENT LEADERBOARD (Mapped to image_d7910c.png)
+    // 1. TOURNAMENT LEADERBOARD (Prizes & Rounds)
     const lbBody = document.getElementById('leaderboard-body');
     lbBody.innerHTML = "";
 
-    if (data.players && Array.isArray(data.players)) {
+    if (data.players) {
         let players = data.players.map(p => {
-            // Rounds are stored as strings "64", "72", etc. in your JSON
             const rounds = [p.r1, p.r2, p.r3, p.r4].map(r => parseInt(r) || 0);
             const active = rounds.filter(r => r > 0);
             const total = active.reduce((a, b) => a + b, 0);
-            
             let sort = 999, toPar = "--";
             if (active.length > 0) {
                 sort = total - (parVal * active.length);
                 toPar = sort > 0 ? `+${sort}` : (sort === 0 ? "E" : sort);
             }
-
             const iconUrl = platformIcons[p.console] || "";
-            const iconHtml = iconUrl ? `<img src="${iconUrl}" class="platform-icon" crossorigin="anonymous">` : "";
+            const iconHtml = iconUrl ? `<img src="${iconUrl}" class="platform-icon">` : "";
 
             return { ...p, rounds, total, toPar, sort, iconHtml };
         }).sort((a, b) => a.sort - b.sort);
 
-        // Tied Rank Logic
-        let currentRank = 0;
         players.forEach((p, i) => {
-            const isTied = i > 0 && p.sort === players[i - 1].sort;
-            const nextIsTied = i < players.length - 1 && p.sort === players[i + 1].sort;
-            if (!isTied) currentRank = i + 1;
-            const displayRank = (isTied || nextIsTied) ? "T" + currentRank : currentRank;
-            
-            const pText = p.toPar.toString();
-            let color = (pText === 'E') ? "green" : (pText.includes('+') ? "black" : "red");
-
             lbBody.innerHTML += `
                 <tr>
-                    <td>${displayRank}</td>
+                    <td>${i + 1}</td>
                     <td style="text-align:left; font-weight:bold;">${p.iconHtml}${p.name}</td>
-                    <td style="font-weight:bold; color:${color}">${pText}</td>
+                    <td>${p.toPar}</td>
                     <td>${p.rounds[0]||'-'}</td><td>${p.rounds[1]||'-'}</td><td>${p.rounds[2]||'-'}</td><td>${p.rounds[3]||'-'}</td>
                     <td><b>${p.total||'-'}</b></td>
-                    <td>--</td>
+                    <td style="color:#1b5e20; font-weight:bold;">${p.prize || '--'}</td>
                 </tr>`;
         });
     }
 
-    // 3. SEASON STATS (Mapped to image_d711e6.png objects)
+    // 2. SEASON STATS (FIR, GIR, NTP, Scrambling)
     const statsBody = document.getElementById('stats-body');
     statsBody.innerHTML = "";
     
-    if (data.seasonEarnings && data.seasonPoints) {
-        const playerNames = Object.keys(data.seasonEarnings);
-        
-        let statsList = playerNames.map(name => {
-            return {
-                name: name,
-                pts: data.seasonPoints[name] || 0,
-                earn: data.seasonEarnings[name] || 0,
-                ev: data.eventCount || 0
-            };
-        }).sort((a, b) => b.pts - a.pts);
+    // We map stats from the 'players' array because that's where FIR/GIR/NTP live
+    if (data.players) {
+        data.players.forEach((p, i) => {
+            // Pull points from the seasonPoints object using player name
+            const sPoints = data.seasonPoints[p.name] || 0;
+            const sEarn = data.seasonEarnings[p.name] || 0;
 
-        statsList.forEach((s, i) => {
             statsBody.innerHTML += `
                 <tr>
                     <td>${i + 1}</td>
-                    <td style="text-align:left; font-weight:bold;">${s.name}</td>
-                    <td><b>${s.pts}</b></td>
-                    <td style="color:#1b5e20; font-weight:bold;">£${s.earn.toLocaleString()}</td>
-                    <td>${s.ev}</td>
-                    <td>--</td><td>--</td><td>--</td><td>--</td>
+                    <td style="text-align:left; font-weight:bold;">${p.name}</td>
+                    <td><b>${sPoints}</b></td>
+                    <td style="color:#1b5e20;">£${sEarn.toLocaleString()}</td>
+                    <td>${data.eventCount}</td>
+                    <td>${p.fir || '--'}%</td>
+                    <td>${p.gir || '--'}%</td>
+                    <td>${p.scrambling || '--'}%</td>
+                    <td>${p.ntp || '--'}ft</td>
                 </tr>`;
         });
+    }
+
+    // 3. SEASON HISTORY
+    const histBody = document.getElementById('history-body');
+    if (data.history) {
+        histBody.innerHTML = data.history.map(h => `
+            <tr>
+                <td>${h.season}</td>
+                <td style="text-align:left; font-weight:bold;">${h.event}</td>
+                <td>${h.winner}</td>
+                <td>${h.score}</td>
+                <td style="color:#1b5e20;">${h.prize}</td>
+            </tr>`).join('');
+    }
+}
 
         // 4. HALL OF FAME (Top 3 Earners)
         const hofDisplay = document.getElementById('hof-display');
