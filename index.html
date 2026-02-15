@@ -151,25 +151,19 @@ const DATA_URL = 'data.json';
 const platformIcons = {
     'fa-playstation': 'https://upload.wikimedia.org/wikipedia/commons/0/00/PlayStation_logo.svg',
     'fa-xbox': 'https://upload.wikimedia.org/wikipedia/commons/f/f9/Xbox_one_logo.svg',
-    'fa-steam': 'https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg',
-    'fa-windows': 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Windows_logo_-_2012.svg'
+    'fa-steam': 'https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg'
 };
-
-const getMedalSVG = (color) => `
-    <svg class="medal-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="14" r="8" fill="${color}" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>
-        <path d="M12 10.5l1.2 2.4 2.6.4-1.9 1.8.5 2.6-2.4-1.2-2.4 1.2.5-2.6-1.9-1.8 2.6-.4z" fill="rgba(0,0,0,0.2)"/>
-    </svg>`;
 
 async function loadData() {
     try {
         const response = await fetch(DATA_URL + '?t=' + Date.now());
-        if (!response.ok) throw new Error("JSON file not found");
+        if (!response.ok) throw new Error("File not found");
         const data = await response.json();
         renderData(data);
     } catch (err) { 
         console.error("Load Error:", err);
-        document.getElementById('current-venue').innerText = "Data Loading Error";
+        // Show the error on screen so you know exactly why it's stuck
+        document.getElementById('current-venue').innerText = "JSON Error: " + err.message;
     }
 }
 
@@ -178,11 +172,11 @@ function renderData(data) {
     document.getElementById('current-venue').innerText = data.venue;
     document.getElementById('course-par').innerText = parVal;
     document.getElementById('event-date').innerText = data.date;
+    document.getElementById('total-prize-pool').innerText = `Total Prize Pool: £${(data.prizePool || 0).toLocaleString()}`;
 
-    // 1. TOURNAMENT LEADERBOARD (Prizes & Rounds)
+    // 1. LEADERBOARD (Prizes included)
     const lbBody = document.getElementById('leaderboard-body');
     lbBody.innerHTML = "";
-
     if (data.players) {
         let players = data.players.map(p => {
             const rounds = [p.r1, p.r2, p.r3, p.r4].map(r => parseInt(r) || 0);
@@ -193,17 +187,16 @@ function renderData(data) {
                 sort = total - (parVal * active.length);
                 toPar = sort > 0 ? `+${sort}` : (sort === 0 ? "E" : sort);
             }
-            const iconUrl = platformIcons[p.console] || "";
-            const iconHtml = iconUrl ? `<img src="${iconUrl}" class="platform-icon">` : "";
-
-            return { ...p, rounds, total, toPar, sort, iconHtml };
+            return { ...p, rounds, total, toPar, sort };
         }).sort((a, b) => a.sort - b.sort);
 
         players.forEach((p, i) => {
+            const iconUrl = platformIcons[p.console] || "";
+            const iconHtml = iconUrl ? `<img src="${iconUrl}" class="platform-icon">` : "";
             lbBody.innerHTML += `
                 <tr>
                     <td>${i + 1}</td>
-                    <td style="text-align:left; font-weight:bold;">${p.iconHtml}${p.name}</td>
+                    <td style="text-align:left; font-weight:bold;">${iconHtml}${p.name}</td>
                     <td>${p.toPar}</td>
                     <td>${p.rounds[0]||'-'}</td><td>${p.rounds[1]||'-'}</td><td>${p.rounds[2]||'-'}</td><td>${p.rounds[3]||'-'}</td>
                     <td><b>${p.total||'-'}</b></td>
@@ -212,23 +205,20 @@ function renderData(data) {
         });
     }
 
-    // 2. SEASON STATS (FIR, GIR, NTP, Scrambling)
+    // 2. SEASON STATS (Bonus Stats: FIR, GIR, NTP, Scrambling)
     const statsBody = document.getElementById('stats-body');
     statsBody.innerHTML = "";
-    
-    // We map stats from the 'players' array because that's where FIR/GIR/NTP live
     if (data.players) {
-        data.players.forEach((p, i) => {
-            // Pull points from the seasonPoints object using player name
-            const sPoints = data.seasonPoints[p.name] || 0;
-            const sEarn = data.seasonEarnings[p.name] || 0;
-
+        // Sort players by points from the seasonPoints object
+        const sortedStats = [...data.players].sort((a, b) => (data.seasonPoints[b.name] || 0) - (data.seasonPoints[a.name] || 0));
+        
+        sortedStats.forEach((p, i) => {
             statsBody.innerHTML += `
                 <tr>
                     <td>${i + 1}</td>
                     <td style="text-align:left; font-weight:bold;">${p.name}</td>
-                    <td><b>${sPoints}</b></td>
-                    <td style="color:#1b5e20;">£${sEarn.toLocaleString()}</td>
+                    <td><b>${data.seasonPoints[p.name] || 0}</b></td>
+                    <td style="color:#1b5e20;">£${(data.seasonEarnings[p.name] || 0).toLocaleString()}</td>
                     <td>${data.eventCount}</td>
                     <td>${p.fir || '--'}%</td>
                     <td>${p.gir || '--'}%</td>
@@ -251,6 +241,7 @@ function renderData(data) {
             </tr>`).join('');
     }
 }
+loadData();
 
         // 4. HALL OF FAME (Top 3 Earners)
         const hofDisplay = document.getElementById('hof-display');
