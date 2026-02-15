@@ -155,81 +155,69 @@ const platformIcons = {
     'steam': 'https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg'
 };
 
-const getMedalSVG = (color) => `
-    <svg class="medal-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M7 2l2 6h6l2-6H7z" fill="#444" opacity="0.8"/>
-        <path d="M12 8L15 2H9l3 6z" fill="#222"/>
-        <circle cx="12" cy="14" r="8" fill="${color}" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>
-        <circle cx="12" cy="14" r="6.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
-        <path d="M12 10.5l1.2 2.4 2.6.4-1.9 1.8.5 2.6-2.4-1.2-2.4 1.2.5-2.6-1.9-1.8 2.6-.4z" fill="rgba(0,0,0,0.2)"/>
-    </svg>`;
-
 async function loadData() {
     try {
-        // Replace with your actual data.json URL
-        const response = await fetch('data.json?t=' + Date.now());
+        const response = await fetch(DATA_URL + '?t=' + Date.now());
+        if (!response.ok) throw new Error("File not found");
         const data = await response.json();
         renderData(data);
     } catch (err) { 
-        console.error("Fetch Error:", err);
-        document.getElementById('current-venue').innerText = "Error Loading Data";
+        console.error("Load Error:", err);
+        document.getElementById('current-venue').innerText = "Data Error";
     }
 }
 
 function renderData(data) {
-    // 1. MAPPING TOP-LEVEL DATA FROM YOUR JSON
-    const parVal = parseInt(data.coursePar) || 72; // Uses 'coursePar' from your image
+    // 1. TOP STATS (Using keys from your image: venue, date, coursePar, prizePool)
+    const parVal = parseInt(data.coursePar) || 72;
     document.getElementById('current-venue').innerText = data.venue || "Tournament";
     document.getElementById('course-par').innerText = parVal;
-    document.getElementById('total-prize-pool').innerText = `Total Prize Pool: £${data.prizePool.toLocaleString()}`;
     document.getElementById('event-date').innerText = data.date || "--";
-
-    // 2. LEADERBOARD (Assuming data.players exists in your JSON)
-    const lbBody = document.getElementById('leaderboard-body');
-    lbBody.innerHTML = "";
     
-    if (data.players) {
-        let players = data.players.map(p => {
-            const active = p.rounds.filter(s => s > 0);
-            const total = active.reduce((a, b) => a + b, 0);
-            let sort = 999, toPar = "--";
-            if(active.length > 0) {
-                sort = total - (parVal * active.length);
-                toPar = sort > 0 ? `+${sort}` : (sort === 0 ? "E" : sort);
-            }
-            return { ...p, total, toPar, sort };
-        }).sort((a,b) => a.sort - b.sort);
+    // Formatting large prize numbers like 1000000 to £1,000,000
+    const prize = data.prizePool ? "£" + data.prizePool.toLocaleString() : "--";
+    document.getElementById('total-prize-pool').innerText = `Total Prize Pool: ${prize}`;
 
-        // ... Tied Rank Logic goes here ...
-    }
-
-    // 3. SEASON STATS (Mapping from data.seasonEarnings and data.seasonPoints)
+    // 2. SEASON STATS (Using keys: seasonEarnings, seasonPoints)
     const statsBody = document.getElementById('stats-body');
     statsBody.innerHTML = "";
     
-    // Convert your JSON objects into an array for the table
-    const playerNames = Object.keys(data.seasonEarnings);
-    let stats = playerNames.map(name => {
-        return {
-            name: name,
-            pts: data.seasonPoints[name] || 0,
-            earn: "£" + data.seasonEarnings[name].toLocaleString(),
-            earnVal: data.seasonEarnings[name] || 0,
-            // Add other stats (FIR/GIR) here if they are in your JSON
-            ev: data.eventCount || 0
-        };
-    }).sort((a, b) => b.pts - a.pts);
+    if (data.seasonEarnings && data.seasonPoints) {
+        const players = Object.keys(data.seasonEarnings);
+        
+        let statsList = players.map(name => {
+            return {
+                name: name,
+                pts: data.seasonPoints[name] || 0,
+                earn: data.seasonEarnings[name] || 0,
+                ev: data.eventCount || 0
+            };
+        }).sort((a, b) => b.pts - a.pts);
 
-    stats.forEach((s, i) => {
-        statsBody.innerHTML += `<tr>
-            <td>${i+1}</td>
-            <td style="text-align:left; font-weight:bold;">${s.name}</td>
-            <td>${s.pts}</td>
-            <td style="color:#1b5e20; font-weight:bold;">${s.earn}</td>
-            <td>${s.ev}</td>
-            <td colspan="4">--</td> </tr>`;
-    });
+        statsList.forEach((s, i) => {
+            statsBody.innerHTML += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td style="text-align:left; font-weight:bold;">${s.name}</td>
+                    <td><b>${s.pts}</b></td>
+                    <td style="color:#1b5e20; font-weight:bold;">£${s.earn.toLocaleString()}</td>
+                    <td>${s.ev}</td>
+                    <td>--</td><td>--</td><td>--</td><td>--</td>
+                </tr>`;
+        });
+    }
+
+    // 3. LEADERBOARD (Assuming a 'players' array exists in your JSON)
+    const lbBody = document.getElementById('leaderboard-body');
+    lbBody.innerHTML = "";
+    if (data.players) {
+        // ... (Your existing player mapping logic would go here) ...
+    } else {
+        lbBody.innerHTML = `<tr><td colspan="9">Waiting for round data...</td></tr>`;
+    }
 }
+
+loadData();
 
     // 3. STATS & HALL OF FAME
     const statsBody = document.getElementById('stats-body');
