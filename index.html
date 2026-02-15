@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emerald Tour Leaderboard</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+
+        /* --- STICKY BRANDING SECTION --- */
+        .sticky-top-wrap {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .main-header { 
+            background-color: #1b5e20; 
+            color: white; 
+            text-align: center; 
+            padding: 15px; 
+            font-weight: bold; 
+            font-size: 24px; 
+            border-bottom: 4px solid #fbc02d; 
+            text-transform: uppercase; 
+        }
+        .info-bar { 
+            background-color: #333; 
+            color: #ffeb3b; 
+            padding: 10px 20px; 
+            display: flex; 
+            justify-content: center; 
+            gap: 40px; 
+            align-items: center; 
+            font-size: 14px; 
+            font-weight: bold; 
+        }
+        .venue-section { 
+            text-align: center; 
+            padding: 15px 0; 
+            background: white; 
+            border-bottom: 1px solid #ddd; 
+        }
+        .venue-section h2 { color: #1b5e20; margin: 0; font-size: 24px; text-transform: uppercase; }
+        .venue-section p { font-weight: bold; margin: 5px 0 0 0; font-size: 16px; color: #333; }
+
+        /* --- CONTENT AREA --- */
+        .content-padding { padding: 20px; }
+        .section-title { text-align:center; color:#1b5e20; text-transform: uppercase; margin-top: 30px; margin-bottom: 15px; }
+
+        /* --- HALL OF FAME CARDS --- */
+        .hof-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+        .hof-card {
+            border-radius: 12px;
+            padding: 25px 15px;
+            width: 190px;
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+        .hof-card.gold { background: linear-gradient(145deg, #d4af37, #b8860b); color: #000; border: 2px solid #ffd700; }
+        .hof-card.silver { background: linear-gradient(145deg, #c0c0c0, #8e8e8e); color: #000; border: 2px solid #e8e8e8; }
+        .hof-card.bronze { background: linear-gradient(145deg, #cd7f32, #8b4513); color: #fff; border: 2px solid #ffa07a; }
+        
+        .medal-svg { width: 70px; height: 70px; margin-bottom: 10px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+        .hof-name { font-size: 20px; font-weight: bold; display: block; margin: 10px 0 5px 0; }
+        .hof-earn { font-weight: bold; font-size: 18px; }
+
+        /* --- TABLES --- */
+        .table-container { 
+            width: 100%; 
+            overflow-x: auto; 
+            background-color: white; 
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        th { background-color: #1b5e20; color: white; padding: 12px; text-transform: uppercase; font-size: 12px; border-bottom: 2px solid #fbc02d; }
+        td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; }
+        
+        /* ICONS */
+        .platform-icon { width: 22px; height: 22px; vertical-align: middle; margin-right: 10px; object-fit: contain; }
+        .icon-xbox { filter: invert(30%) sepia(85%) saturate(1200%) hue-rotate(85deg) brightness(90%) contrast(105%); }
+        .icon-ps { filter: invert(13%) sepia(95%) saturate(5451%) hue-rotate(219deg) brightness(91%) contrast(106%); }
+        .icon-pc { filter: invert(46%) sepia(85%) saturate(1514%) hue-rotate(174deg) brightness(101%) contrast(102%); }
+        .icon-steam { filter: none; } /* Steam is already dark/neutral */
+        
+        .top-tier-bg td { background: linear-gradient(to bottom, #f1f8e9, #ffffff) !important; }
+    </style>
+</head>
+<body>
+
+    <div class="sticky-top-wrap">
+        <div class="main-header">NEW EMERALD TOUR LEADERBOARD</div>
+        <div class="info-bar">
+            <div>DATE: <span id="event-date" style="color: white;">--</span></div>
+            <div>PAR: <span id="course-par" style="color: white;">--</span></div>
+        </div>
+        <div class="venue-section">
+            <h2 id="current-venue">Loading...</h2>
+            <p id="total-prize-pool">Total Prize Pool: --</p>
+        </div>
+    </div>
+
+    <div class="content-padding">
+        
+        <h3 class="section-title">Tournament Leaderboard</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>POS</th><th style="text-align:left;">PLAYER</th><th>TO PAR</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th><th>TOTAL</th><th>PRIZES</th></tr>
+                </thead>
+                <tbody id="leaderboard-body"></tbody>
+            </table>
+        </div>
+
+        <h3 class="section-title">Season Stats</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Rank</th><th style="text-align:left;">Player</th><th>Points</th><th>Earnings</th><th>Events</th><th>FIR %</th><th>GIR %</th><th>Scram</th><th>NTP</th></tr>
+                </thead>
+                <tbody id="stats-body"></tbody>
+            </table>
+        </div>
+
+        <h3 class="section-title">Tournament History</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Season</th><th style="text-align:left;">Event/Venue</th><th>Winner</th><th>Score</th><th>Prize</th></tr>
+                </thead>
+                <tbody id="history-body"></tbody>
+            </table>
+        </div>
+
+        <h3 class="section-title">Earnings Hall of Fame</h3>
+        <div id="hof-display" class="hof-container"></div>
+    </div>
+
+    <script>
+const DATA_URL = 'data.json';
+
+const platformIcons = {
+    'ps': 'https://upload.wikimedia.org/wikipedia/commons/0/00/PlayStation_logo.svg',
+    'xbox': 'https://upload.wikimedia.org/wikipedia/commons/f/f9/Xbox_one_logo.svg',
+    'pc': 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Windows_logo_-_2012.svg',
+    'steam': 'https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg'
+};
+
+const getMedalSVG = (color) => `
+    <svg class="medal-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="14" r="8" fill="${color}" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>
+        <path d="M12 10.5l1.2 2.4 2.6.4-1.9 1.8.5 2.6-2.4-1.2-2.4 1.2.5-2.6-1.9-1.8 2.6-.4z" fill="rgba(0,0,0,0.2)"/>
+    </svg>`;
+
+async function loadData() {
+    try {
+        const response = await fetch(DATA_URL + '?t=' + Date.now());
+        const data = await response.json();
+        renderLeaderboard(data);
+    } catch (err) { console.error("Error loading JSON:", err); }
+}
+
+function renderLeaderboard(data) {
+    const par = data.meta.par || 72;
+    document.getElementById('current-venue').innerText = data.meta.venue;
+    document.getElementById('course-par').innerText = par;
+    document.getElementById('total-prize-pool').innerText = `Total Prize Pool: ${data.meta.prizePool}`;
+    document.getElementById('event-date').innerText = data.meta.date;
+
+    // Leaderboard
+    const lbBody = document.getElementById('leaderboard-body');
+    lbBody.innerHTML = "";
+    
+    let processed = data.players.map(p => {
+        const active = p.rounds.filter(r => r > 0);
+        const total = active.reduce((a, b) => a + b, 0);
+        const toParVal = active.length > 0 ? total - (par * active.length) : 999;
+        const toParStr = toParVal === 999 ? "--" : (toParVal > 0 ? `+${toParVal}` : (toParVal === 0 ? "E" : toParVal));
+        const icon = platformIcons[p.platform] ? `<img src="${platformIcons[p.platform]}" class="platform-icon icon-${p.platform}">` : "";
+        return { ...p, total, toParStr, toParVal, icon };
+    }).sort((a, b) => a.toParVal - b.toParVal);
+
+    processed.forEach((p, i) => {
+        const color = p.toParStr === 'E' ? "green" : (p.toParStr.toString().includes('+') ? "black" : "red");
+        lbBody.innerHTML += `
+            <tr>
+                <td>${i+1}</td>
+                <td style="text-align:left; font-weight:bold;">${p.icon}${p.name}</td>
+                <td style="font-weight:bold; color:${color}">${p.toParStr}</td>
+                ${p.rounds.map(r => `<td>${r || '-'}</td>`).join('')}
+                <td><b>${p.total || '-'}</b></td>
+                <td>${p.prize}</td>
+            </tr>`;
+    });
+
+    // Stats
+    const statsBody = document.getElementById('stats-body');
+    statsBody.innerHTML = "";
+    const bestF = Math.max(...data.stats.map(s => s.f));
+    const bestG = Math.max(...data.stats.map(s => s.g));
+    const bestN = Math.min(...data.stats.map(s => s.n).filter(v => v > 0));
+
+    data.stats.sort((a,b) => b.pts - a.pts).forEach((s, i) => {
+        const highlight = (val, target) => (val === target) ? 'style="color:#d4af37; font-weight:bold;"' : '';
+        statsBody.innerHTML += `
+            <tr>
+                <td>${i+1}</td>
+                <td style="text-align:left; font-weight:bold;">${s.name}</td>
+                <td><b>${s.pts}</b></td>
+                <td style="color:#1b5e20; font-weight:bold;">${s.earn}</td>
+                <td>${s.ev}</td>
+                <td><span ${highlight(s.f, bestF)}>${s.f}</span></td>
+                <td><span ${highlight(s.g, bestG)}>${s.g}</span></td>
+                <td><span ${highlight(s.n, bestN)}>${s.n}ft</span></td>
+            </tr>`;
+    });
+
+    // Hall of Fame
+    const hof = document.getElementById('hof-display');
+    const medalColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
+    hof.innerHTML = data.stats.slice(0, 3).map((s, i) => `
+        <div class="hof-card">
+            ${getMedalSVG(medalColors[i])}
+            <span class="hof-name">${s.name}</span>
+            <span class="hof-earn">${s.earn}</span>
+        </div>`).join('');
+}
+
+loadData();
+    </script>
+</body>
+</html>
