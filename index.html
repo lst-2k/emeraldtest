@@ -163,29 +163,28 @@ async function loadData() {
         renderData(data);
     } catch (err) { 
         console.error("Load Error:", err);
-        document.getElementById('current-venue').innerText = "Data Error";
+        document.getElementById('current-venue').innerText = "Data Error - Check Console";
     }
 }
 
 function renderData(data) {
-    // 1. TOP STATS (Using keys from your image: venue, date, coursePar, prizePool)
+    // 1. TOP STATS (Using keys from your JSON: venue, date, coursePar, prizePool)
     const parVal = parseInt(data.coursePar) || 72;
-    document.getElementById('current-venue').innerText = data.venue || "Tournament";
+    document.getElementById('current-venue').innerText = data.venue || "Tournament Loading...";
     document.getElementById('course-par').innerText = parVal;
     document.getElementById('event-date').innerText = data.date || "--";
     
-    // Formatting large prize numbers like 1000000 to £1,000,000
     const prize = data.prizePool ? "£" + data.prizePool.toLocaleString() : "--";
     document.getElementById('total-prize-pool').innerText = `Total Prize Pool: ${prize}`;
 
-    // 2. SEASON STATS (Using keys: seasonEarnings, seasonPoints)
+    // 2. SEASON STATS (Mapping from seasonEarnings and seasonPoints)
     const statsBody = document.getElementById('stats-body');
     statsBody.innerHTML = "";
     
     if (data.seasonEarnings && data.seasonPoints) {
-        const players = Object.keys(data.seasonEarnings);
+        const playerNames = Object.keys(data.seasonEarnings);
         
-        let statsList = players.map(name => {
+        let statsList = playerNames.map(name => {
             return {
                 name: name,
                 pts: data.seasonPoints[name] || 0,
@@ -207,11 +206,11 @@ function renderData(data) {
         });
     }
 
-    // 3. LEADERBOARD (Assuming a 'players' array exists in your JSON)
+    // 3. LEADERBOARD (Checks for a 'players' array)
     const lbBody = document.getElementById('leaderboard-body');
     lbBody.innerHTML = "";
-    if (data.players) {
-        // ... (Your existing player mapping logic would go here) ...
+    if (data.players && Array.isArray(data.players)) {
+        // ... Player mapping logic goes here if players are in the JSON ...
     } else {
         lbBody.innerHTML = `<tr><td colspan="9">Waiting for round data...</td></tr>`;
     }
