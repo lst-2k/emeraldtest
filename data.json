@@ -117,6 +117,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     },
     {
       "name": "Colly",
@@ -130,6 +131,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     },
     {
       "name": "Kalessin",
@@ -143,6 +145,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     },
     {
       "name": "Hammersman",
@@ -156,6 +159,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     },
     {
       "name": "3offthetee",
@@ -169,6 +173,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     },
     {
       "name": "Geordieboy",
@@ -182,6 +187,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     },
     {
       "name": "Polekatt",
@@ -195,6 +201,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     },
     {
       "name": "Mr Longpole",
@@ -208,6 +215,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     },
     {
       "name": "Koof",
@@ -221,6 +229,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     },
     {
       "name": "Tenbobnote",
@@ -234,6 +243,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     },
     {
       "name": "Dubz",
@@ -247,6 +257,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     },
     {
       "name": "Hopz",
@@ -260,6 +271,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     },
     {
       "name": "SimChars",
@@ -273,6 +285,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     },
     {
       "name": "Arfabubble",
@@ -286,6 +299,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     },
     {
       "name": "Bfctino",
@@ -299,6 +313,7 @@
       "gir": "",
       "scrambling": "",
       "ntp": ""
+      "prize": ""
     }
   ]
 }
