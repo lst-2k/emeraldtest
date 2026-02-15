@@ -146,70 +146,70 @@
     </div>
 
     <script>
-const DATA_URL = 'data.json';
+	const DATA_URL = 'data.json';
 
-async function loadData() {
-    try {
-        const response = await fetch(DATA_URL + '?t=' + Date.now());
-        if (!response.ok) throw new Error("JSON file not found");
-        const data = await response.json();
-        renderData(data);
-    } catch (err) { 
-        console.error("Load Error:", err);
-        document.getElementById('current-venue').innerText = "Data Error";
-    }
-}
+	async function loadData() {
+		try {
+			const response = await fetch(DATA_URL + '?t=' + Date.now());
+			if (!response.ok) throw new Error("File not found");
+			const data = await response.json();
+			renderData(data);
+		} catch (err) { 
+			console.error("Load Error:", err);
+			document.getElementById('current-venue').innerText = "Data Error";
+		}
+	}
 
-function renderData(data) {
-    // 1. HEADER DATA (Mapped to your JSON screenshot)
-    const parVal = parseInt(data.coursePar) || 72;
-    document.getElementById('current-venue').innerText = data.venue || "Tournament";
-    document.getElementById('course-par').innerText = parVal;
-    document.getElementById('event-date').innerText = data.date || "--";
-    
-    const prize = data.prizePool ? "£" + data.prizePool.toLocaleString() : "--";
-    document.getElementById('total-prize-pool').innerText = `Total Prize Pool: ${prize}`;
+	function renderData(data) {
+		// 1. HEADER DATA (Matches your JSON keys: venue, date, coursePar, prizePool)
+		const parVal = parseInt(data.coursePar) || 72;
+		document.getElementById('current-venue').innerText = data.venue || "Tournament";
+		document.getElementById('course-par').innerText = parVal;
+		document.getElementById('event-date').innerText = data.date || "--";
+		
+		const prize = data.prizePool ? "£" + data.prizePool.toLocaleString() : "--";
+		document.getElementById('total-prize-pool').innerText = `Total Prize Pool: ${prize}`;
 
-    // 2. SEASON STATS (Mapping Objects to Table Rows)
-    const statsBody = document.getElementById('stats-body');
-    statsBody.innerHTML = "";
-    
-    if (data.seasonEarnings && data.seasonPoints) {
-        const playerNames = Object.keys(data.seasonEarnings);
-        
-        let statsList = playerNames.map(name => {
-            return {
-                name: name,
-                pts: data.seasonPoints[name] || 0,
-                earn: data.seasonEarnings[name] || 0,
-                ev: data.eventCount || 0
-            };
-        }).sort((a, b) => b.pts - a.pts);
+		// 2. SEASON STATS (Mapping your JSON objects like "Colly" to the table)
+		const statsBody = document.getElementById('stats-body');
+		statsBody.innerHTML = "";
+		
+		if (data.seasonEarnings && data.seasonPoints) {
+			const playerNames = Object.keys(data.seasonEarnings);
+			
+			let statsList = playerNames.map(name => {
+				return {
+					name: name,
+					pts: data.seasonPoints[name] || 0,
+					earn: data.seasonEarnings[name] || 0,
+					ev: data.eventCount || 0
+				};
+			}).sort((a, b) => b.pts - a.pts);
 
-        statsList.forEach((s, i) => {
-            statsBody.innerHTML += `
-                <tr>
-                    <td>${i + 1}</td>
-                    <td style="text-align:left; font-weight:bold;">${s.name}</td>
-                    <td><b>${s.pts}</b></td>
-                    <td style="color:#1b5e20; font-weight:bold;">£${s.earn.toLocaleString()}</td>
-                    <td>${s.ev}</td>
-                    <td>--</td><td>--</td><td>--</td><td>--</td>
-                </tr>`;
-        });
-    }
+			statsList.forEach((s, i) => {
+				statsBody.innerHTML += `
+					<tr>
+						<td>${i + 1}</td>
+						<td style="text-align:left; font-weight:bold;">${s.name}</td>
+						<td><b>${s.pts}</b></td>
+						<td style="color:#1b5e20; font-weight:bold;">£${s.earn.toLocaleString()}</td>
+						<td>${s.ev}</td>
+						<td>--</td><td>--</td><td>--</td><td>--</td>
+					</tr>`;
+			});
+		}
 
-    // 3. LEADERBOARD (Placeholders)
-    const lbBody = document.getElementById('leaderboard-body');
-    lbBody.innerHTML = "";
-    if (data.players && Array.isArray(data.players)) {
-        // Player mapping logic would go here if added to JSON
-    } else {
-        lbBody.innerHTML = `<tr><td colspan="9">Waiting for round data...</td></tr>`;
-    }
-}
+		// 3. LEADERBOARD (Waiting for 'players' array in your JSON)
+		const lbBody = document.getElementById('leaderboard-body');
+		lbBody.innerHTML = "";
+		if (data.players && Array.isArray(data.players)) {
+			// Round data logic goes here
+		} else {
+			lbBody.innerHTML = `<tr><td colspan="9" style="padding:20px;">Waiting for tournament data...</td></tr>`;
+		}
+	}
 
-loadData();	
-    </script>
+	loadData();
+	</script>
 </body>
 </html>
