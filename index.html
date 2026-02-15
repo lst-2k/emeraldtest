@@ -207,10 +207,11 @@ function renderData(data) {
         });
     }
 
-    // 3. SEASON STATS (Updated with FIR, GIR, NTP, Scrambling)
+    // 3. SEASON STATS (Bonus Stats: GIR, FIR, NTP, Scrambling)
     const statsBody = document.getElementById('stats-body');
     statsBody.innerHTML = "";
     if (data.players && data.seasonPoints && data.seasonEarnings) {
+        // Sort by total Season Points
         const sortedStats = [...data.players].sort((a, b) => 
             (data.seasonPoints[b.name] || 0) - (data.seasonPoints[a.name] || 0)
         );
@@ -228,26 +229,26 @@ function renderData(data) {
                     <td>${p.fir || '--'}%</td>
                     <td>${p.gir || '--'}%</td>
                     <td>${p.scrambling || '--'}%</td>
-                    <td>${p.ntp || '--'}ft</td>
+                    <td>${p.ntp ? p.ntp + 'ft' : '--'}</td>
                 </tr>`;
         });
     }
 
-    // 4. SEASON HISTORY (Mapped to eventHistory)
+    // 4. EVENT HISTORY (Mapped to your eventHistory labels)
     const histBody = document.getElementById('history-body');
     if (data.eventHistory && Array.isArray(data.eventHistory)) {
         histBody.innerHTML = data.eventHistory.map(h => `
             <tr>
-                <td>${h.season || '--'}</td>
-                <td style="text-align:left; font-weight:bold;">${h.event || '--'}</td>
+                <td>S1 W${h.event || '-'}</td>
+                <td style="text-align:left; font-weight:bold;">${h.venue || '--'}</td>
                 <td>${h.winner || '--'}</td>
-                <td>${h.score || '--'}</td>
+                <td>${h.pool || '--'}</td>
                 <td style="color:#1b5e20;">${h.prize || '--'}</td>
             </tr>`).join('');
     }
 }
 
-loadData();	
+loadData();
 	</script>
 </body>
 </html>
