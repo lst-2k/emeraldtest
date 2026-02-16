@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-16T22:05:42.172Z",
+  "timestamp": "2026-02-16T22:15:39.506Z",
   "header": "New Emerald Tour Leaderboard",
   "date": "4 February 2026",
   "venue": "Season 1, Week 6 - Major @ The Old Oaks Club",
@@ -115,7 +115,7 @@
       "r4": "64",
       "fir": "",
       "gir": "",
-      "scrambling": "",
+      "scrambling": "55.00",
       "ntp": "",
       "prize": "$537,429"
     },
@@ -127,8 +127,8 @@
       "r2": "71",
       "r3": "78",
       "r4": "63",
-      "fir": "",
-      "gir": "",
+      "fir": "69.54",
+      "gir": "77.78",
       "scrambling": "",
       "ntp": "",
       "prize": "$435,429"
@@ -142,9 +142,9 @@
       "r3": "72",
       "r4": "70",
       "fir": "",
-      "gir": "",
+      "gir": "77.78",
       "scrambling": "",
-      "ntp": "",
+      "ntp": "24.50",
       "prize": "$355,429"
     },
     {
