@@ -10,17 +10,8 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; margin: 0; padding: 10px; }
         .leaderboard-container { max-width: 1450px; margin: 0 auto; background-color: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         
-        .header { 
-            background: #124d12; 
-            padding: 0; 
-            text-align: center; 
-            border-bottom: 4px solid #FFD700; 
-            height: 220px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .header img { width: 100%; height: 100%; object-fit: contain; background-color: #124d12; }
+        .header { background: #124d12; padding: 0; text-align: center; border-bottom: 4px solid #FFD700; height: 220px; display: flex; align-items: center; justify-content: center; }
+        .header img { width: 100%; height: 100%; object-fit: contain; }
         
         .venue-bar { background: #444; color: white; padding: 12px; text-align: center; font-weight: bold; font-size: 16px; border-bottom: 1px solid #000; }
 
@@ -31,9 +22,9 @@
         
         /* To Par Colors */
         .to-par { font-weight: bold; text-align: center; font-size: 15px; }
-        .to-par.under { color: #8B0000; }   /* Red */
-        .to-par.even   { color: #1AA260; }  /* Green */
-        .to-par.over   { color: #000000; }  /* Black */
+        .to-par.under { color: #8B0000; } 
+        .to-par.even   { color: #1AA260; }
+        .to-par.over   { color: #000000; }
 
         .middle-logo-divider { text-align: center; padding: 30px 20px; background-color: #fff; display: flex; justify-content: center; }
         .middle-logo-divider img { max-width: 100%; max-height: 150px; width: auto; object-fit: contain; }
@@ -44,8 +35,14 @@
         .col-bonus { width: 75px; text-align: center; background-color: #fcfcfc; color: #666; font-size: 12px; border-left: 1px solid #eee; }
         
         .section-title { background: #228B22; color: white; padding: 10px 15px; font-size: 16px; font-weight: bold; border-left: 8px solid #FFD700; }
+        .player-name { font-weight: bold; }
+        .standings-right { text-align: right; padding-right: 25px; }
         .hidden { display: none; }
         
+        /* Cutoff logic */
+        .top-tier { background: linear-gradient(to right, #eef7ee, #ffffff) !important; }
+        .cutoff-row td { border-bottom: 4px solid #228B22 !important; }
+
         .hof-container { padding: 30px 10px; background: #1a1a1a; color: white; }
         .hof-header { text-align: center; font-size: 22px; color: #FFD700; margin-bottom: 20px; border-bottom: 2px solid #FFD700; padding-bottom: 10px; }
         .hof-cards { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
@@ -56,7 +53,7 @@
 
 <div class="leaderboard-container">
     <div class="header"><img src="logo.png" alt="Logo"></div>
-    <div id="venue-display" class="venue-bar">Loading...</div>
+    <div id="venue-display" class="venue-bar">Tournament Loading...</div>
 
     <div class="table-responsive">
         <table>
@@ -90,9 +87,9 @@
                 <tr>
                     <th class="col-pos">POS</th>
                     <th style="text-align:left">PLAYER</th>
-                    <th style="text-align:right; padding-right:25px;">POINTS</th>
-                    <th style="text-align:right; padding-right:25px;">EARNINGS</th>
-                    <th style="text-align:right; padding-right:25px;">EVENTS</th>
+                    <th class="standings-right">POINTS</th>
+                    <th class="standings-right">EARNINGS</th>
+                    <th class="standings-right">EVENTS</th>
                 </tr>
             </thead>
             <tbody id="standings-body"></tbody>
@@ -113,16 +110,13 @@
             const response = await fetch(DATA_URL);
             const data = await response.json();
             renderAll(data);
-        } catch (err) {
-            console.error("Data error", err);
-        }
+        } catch (err) { console.error("Error loading data:", err); }
     }
 
-    // Helper functions for "To Par" logic
     function calculateToParValue(p, par) {
         let total = 0, played = 0;
         [p.r1, p.r2, p.r3, p.r4].forEach(r => {
-            const val = parseInt(r);
+            let val = parseInt(r);
             if (!isNaN(val) && val > 0) { total += val; played++; }
         });
         return played > 0 ? total - (par * played) : null;
@@ -146,11 +140,16 @@
         return s.length > 0 ? s.reduce((a, b) => parseInt(a) + parseInt(b), 0) : 999;
     }
 
+    function getConsoleColor(console) {
+        if (console === 'fa-playstation') return '#003791';
+        if (console === 'fa-xbox') return '#107C10';
+        return '#555';
+    }
+
     function renderAll(tourData) {
         document.getElementById('venue-display').textContent = tourData.venue;
         const par = parseInt(tourData.coursePar) || 72;
 
-        // Auto-detect if R3/R4 should show
         const hasR3 = tourData.players.some(p => p.r3 > 0);
         const hasR4 = tourData.players.some(p => p.r4 > 0);
         const showExtended = tourData.showR3R4 || hasR3 || hasR4;
@@ -160,6 +159,7 @@
             document.getElementById('th-r4').classList.remove('hidden');
         }
 
+        // 1. LEADERBOARD
         const lbBody = document.getElementById('leaderboard-body');
         lbBody.innerHTML = '';
         const sortedLB = [...tourData.players].sort((a,b) => calculateTotal(a) - calculateTotal(b));
@@ -169,7 +169,13 @@
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="col-pos">${idx + 1}</td>
-                <td class="player-name">${p.name}</td>
+                <td class="player-name">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <i class="fa-brands ${p.console || 'fa-gamepad'}" style="color:${getConsoleColor(p.console)}"></i>
+                        <span class="fi fi-${(p.country || 'un').toLowerCase()}"></span>
+                        ${p.name}
+                    </div>
+                </td>
                 <td class="to-par ${getToParClass(toParVal)}">${formatToPar(toParVal)}</td>
                 <td class="col-stat">${p.r1 || '-'}</td>
                 <td class="col-stat">${p.r2 || '-'}</td>
@@ -185,14 +191,62 @@
             lbBody.appendChild(tr);
         });
 
-        // Standings and HOF rendering follows here...
-        // (Shortened for space, but ensure they remain in your script)
-    }
+        // 2. SEASON STANDINGS
+        const stBody = document.getElementById('standings-body');
+        stBody.innerHTML = '';
+        
+        // Map data from the separate JSON objects
+        const standings = Object.keys(tourData.seasonPoints || {}).map(name => {
+            const pInfo = tourData.players.find(pl => pl.name === name) || {};
+            return {
+                name,
+                points: tourData.seasonPoints[name] || 0,
+                earnings: tourData.seasonEarnings[name] || 0,
+                events: tourData.seasonEvents[name] || 0,
+                console: pInfo.console || 'fa-gamepad',
+                country: pInfo.country || 'un'
+            };
+        }).sort((a, b) => b.points - a.points);
 
-    function getConsoleColor(c) {
-        if (c === 'fa-playstation') return '#003791';
-        if (c === 'fa-xbox') return '#107C10';
-        return '#555';
+        const cutoffIdx = Math.ceil(standings.length / 2) - 1;
+
+        standings.forEach((p, idx) => {
+            const tr = document.createElement('tr');
+            if (idx <= cutoffIdx) tr.classList.add('top-tier');
+            if (idx === cutoffIdx) tr.classList.add('cutoff-row');
+            
+            tr.innerHTML = `
+                <td class="col-pos">${idx + 1}</td>
+                <td class="player-name">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <i class="fa-brands ${p.console}" style="color:${getConsoleColor(p.console)}"></i>
+                        <span class="fi fi-${p.country.toLowerCase()}"></span>
+                        ${p.name}
+                    </div>
+                </td>
+                <td class="standings-right">${p.points.toLocaleString()}</td>
+                <td class="standings-right" style="font-weight:bold;">$${p.earnings.toLocaleString()}</td>
+                <td class="standings-right">${p.events}</td>
+            `;
+            stBody.appendChild(tr);
+        });
+
+        // 3. HALL OF FAME
+        const hofDisplay = document.getElementById('hof-display');
+        hofDisplay.innerHTML = '';
+        const sortedHOF = [...standings].sort((a,b) => b.earnings - a.earnings).slice(0,3);
+        const medals = ['🥇', '🥈', '🥉'];
+        
+        sortedHOF.forEach((p, i) => {
+            const card = document.createElement('div');
+            card.className = 'hof-card';
+            card.innerHTML = `
+                <div style="font-size:24px;">${medals[i]}</div>
+                <div style="font-size:14px; font-weight:bold; margin:5px 0;">${p.name}</div>
+                <div style="font-size:12px; color:#FFD700">$${p.earnings.toLocaleString()}</div>
+            `;
+            hofDisplay.appendChild(card);
+        });
     }
 
     window.onload = loadTourData;
