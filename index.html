@@ -10,7 +10,7 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; margin: 0; padding: 10px; }
         .leaderboard-container { max-width: 1450px; margin: 0 auto; background-color: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         
-        /* Header & Info Bar */
+        /* Header & Info */
 		.header { background: linear-gradient(135deg, #124d12 0%, #228B22 50%, #1a5e1a 100%); color: white; padding: 25px 20px; text-align: center; font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; border-bottom: 4px solid #FFD700; position: relative; display: flex; align-items: center; justify-content: center; }
 		.header img { height: 40px; margin: 0 15px; }
         .info-bar { display: flex; flex-wrap: wrap; justify-content: space-around; background: #333; color: #ddd; padding: 12px; font-size: 13px; text-transform: uppercase; }
@@ -18,34 +18,31 @@
         .venue { background: #444; color: #FFFFF7; padding: 12px; text-align: center; font-size: 18px; font-weight: bold; }
         .venue.major { background: linear-gradient(90deg, #8B6914 0%, #FFD700 50%, #8B6914 100%) !important; color: #000 !important; }
 
-        /* --- SCROLLABLE TABLE LOGIC --- */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto; /* Enables horizontal scroll */
-            -webkit-overflow-scrolling: touch;
-            border-bottom: 1px solid #ddd;
-        }
-
-        table { width: 100%; border-collapse: collapse; min-width: 900px; /* Forces scroll on small screens */ }
-        th { background-color: #e6e6e6; padding: 12px; text-align: left; font-size: 13px; border-bottom: 2px solid #ddd; white-space: nowrap; }
-        td { padding: 10px 12px; border-bottom: 1px solid #ddd; font-size: 15px; white-space: nowrap; }
+        /* Responsive Table Containers */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-bottom: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
         
-        /* Fixed Column Widths */
-        .pos { font-weight: bold; width: 50px; text-align: center; }
-        .to-par { font-weight: bold; text-align: center; width: 60px; font-size: 17px; }
+        /* Unified Text Sizes */
+        th { background-color: #e6e6e6; padding: 10px 12px; text-align: left; font-size: 12px; border-bottom: 2px solid #ddd; text-transform: uppercase; color: #444; }
+        td { padding: 8px 12px; border-bottom: 1px solid #ddd; font-size: 14px; white-space: nowrap; }
+        
+        /* Specific Column Styles */
+        .pos { font-weight: bold; width: 45px; text-align: center; color: #228B22; }
+        .to-par { font-weight: bold; text-align: center; width: 60px; font-size: 15px; }
         .under { color: #8B0000; } .even { color: #1AA260; }
-        .round-score, .total, .prize, .stat-col { text-align: center; width: 65px; }
-        .prize { font-weight: bold; color: #000; width: 100px; }
-        .stat-col { background-color: #fcfcfc; color: #666; font-size: 13px; border-left: 1px solid #eee; }
+        .round-score, .total, .stat-col { text-align: center; width: 60px; }
+        .prize { font-weight: bold; color: #000; width: 90px; text-align: center; }
+        .stat-col { background-color: #fcfcfc; color: #666; font-size: 12px; border-left: 1px solid #eee; }
         
-        /* Sections */
-        .section-title { background: #228B22; color: white; padding: 15px; font-size: 20px; font-weight: bold; border-left: 10px solid #FFD700; }
+        /* Section Titles */
+        .section-title { background: #228B22; color: white; padding: 12px 15px; font-size: 18px; font-weight: bold; border-left: 8px solid #FFD700; }
         
         /* Hall of Fame */
         .hof-container { padding: 30px 10px; background: #1a1a1a; color: white; }
-        .hof-header { text-align: center; font-size: 28px; color: #FFD700; margin-bottom: 25px; border-bottom: 2px solid #FFD700; padding-bottom: 10px; }
-        .hof-cards { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
-        .hof-card { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 8px; padding: 20px; width: 260px; text-align: center; }
+        .hof-header { text-align: center; font-size: 24px; color: #FFD700; margin-bottom: 25px; border-bottom: 2px solid #FFD700; padding-bottom: 10px; text-transform: uppercase; }
+        .hof-cards { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .hof-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 6px; padding: 15px; width: 240px; text-align: center; }
+        .hof-stat { font-size: 13px; margin-top: 5px; }
         .hof-stat span { color: #FFD700; font-weight: bold; }
         .hidden { display: none; }
     </style>
@@ -54,9 +51,9 @@
 
 <div class="leaderboard-container">
     <div class="header">	
-        <img src="2k25 logo.png" alt="Logo">
+        <img src="2k25 logo.png">
         <span id="header-text">Emerald Tour</span>
-        <img src="FedEx-Cup-logo.png" alt="Cup">
+        <img src="FedEx-Cup-logo.png">
     </div>
 
     <div class="info-bar">
@@ -78,7 +75,7 @@
                     <th class="round-score">R2</th>
                     <th class="round-score" id="th-r3">R3</th>
                     <th class="round-score" id="th-r4">R4</th>
-                    <th class="total">TOTAL</th>
+                    <th class="total">TOT</th>
                     <th class="prize">PRIZE</th>
                     <th class="stat-col">FiR%</th>
                     <th class="stat-col">GiR%</th>
@@ -96,7 +93,8 @@
         <table>
             <thead>
                 <tr>
-                    <th style="padding-left:15px">PLAYER</th>
+                    <th class="pos">POS</th>
+                    <th>PLAYER</th>
                     <th class="total">POINTS</th>
                     <th class="total">EARNINGS</th>
                     <th class="total">EVENTS</th>
@@ -121,8 +119,8 @@
             const tourData = await response.json();
             renderAll(tourData);
         } catch (err) {
-            console.error("Error loading tour data:", err);
-            document.getElementById('venue-display').textContent = "Error: data.json not found.";
+            console.error("Error:", err);
+            document.getElementById('venue-display').textContent = "Data feed not found.";
         }
     }
 
@@ -141,6 +139,7 @@
             document.getElementById('th-r4').classList.add('hidden');
         }
 
+        // 1. Leaderboard
         const lbBody = document.getElementById('leaderboard-body');
         const sortedLB = [...tourData.players].sort((a,b) => calculateRawTotal(a) - calculateRawTotal(b));
         
@@ -170,35 +169,41 @@
             lbBody.appendChild(tr);
         });
 
+        // 2. Standings (With Rank)
         const stBody = document.getElementById('standings-body');
-        const players = Object.keys(tourData.seasonPoints || {});
-        players.sort((a,b) => (tourData.seasonPoints[b] || 0) - (tourData.seasonPoints[a] || 0));
+        const standingsList = Object.keys(tourData.seasonPoints || {}).map(name => ({
+            name,
+            points: tourData.seasonPoints[name] || 0,
+            earnings: tourData.seasonEarnings[name] || 0,
+            events: tourData.seasonEvents[name] || 0
+        })).sort((a, b) => b.points - a.points);
 
-        players.forEach(name => {
+        standingsList.forEach((p, idx) => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td style="padding-left:15px"><strong>${name}</strong></td>
-                <td class="total">${(tourData.seasonPoints[name] || 0).toLocaleString()}</td>
-                <td class="total" style="font-weight:bold">$${(tourData.seasonEarnings[name] || 0).toLocaleString()}</td>
-                <td class="total">${tourData.seasonEvents[name] || 0}</td>
+                <td class="pos">${idx + 1}</td>
+                <td><strong>${p.name}</strong></td>
+                <td class="total">${p.points.toLocaleString()}</td>
+                <td class="total" style="font-weight:bold">$${p.earnings.toLocaleString()}</td>
+                <td class="total">${p.events}</td>
             `;
             stBody.appendChild(tr);
         });
 
+        // 3. HOF
         const hofDisplay = document.getElementById('hof-display');
-        const sortedHOF = Object.entries(tourData.seasonEarnings || {})
-            .sort(([,a],[,b]) => b-a).slice(0,3);
-        
+        const sortedHOF = [...standingsList].sort((a,b) => b.earnings - a.earnings).slice(0,3);
         const medals = ['🥇', '🥈', '🥉'];
-        sortedHOF.forEach(([name, cash], i) => {
-            const wins = tourData.eventHistory?.filter(e => e.winner === name).length || 0;
+        
+        sortedHOF.forEach((p, i) => {
+            const wins = tourData.eventHistory?.filter(e => e.winner === p.name).length || 0;
             const card = document.createElement('div');
             card.className = 'hof-card';
             card.innerHTML = `
-                <div style="font-size:40px;">${medals[i]}</div>
-                <div style="font-size:20px; font-weight:bold; margin:10px 0;">${name}</div>
-                <div class="hof-stat">Earnings: <span>$${cash.toLocaleString()}</span></div>
-                <div class="hof-stat">Wins: <span>${wins}</span></div>
+                <div style="font-size:30px;">${medals[i]}</div>
+                <div style="font-size:16px; font-weight:bold; margin:8px 0;">${p.name}</div>
+                <div class="hof-stat">Career Cash: <span>$${p.earnings.toLocaleString()}</span></div>
+                <div class="hof-stat">Tour Wins: <span>${wins}</span></div>
             `;
             hofDisplay.appendChild(card);
         });
