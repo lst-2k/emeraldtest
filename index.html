@@ -10,36 +10,35 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; margin: 0; padding: 10px; }
         .leaderboard-container { max-width: 1450px; margin: 0 auto; background-color: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         
-        /* Headers */
-		.header { background: linear-gradient(135deg, #124d12 0%, #228B22 50%, #1a5e1a 100%); color: white; padding: 25px 20px; text-align: center; font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; border-bottom: 4px solid #FFD700; position: relative; display: flex; align-items: center; justify-content: center; }
-		.header img { height: 35px; margin: 0 15px; }
+        /* Header - Logo Centered */
+		.header { background: linear-gradient(135deg, #124d12 0%, #228B22 50%, #1a5e1a 100%); padding: 20px; text-align: center; border-bottom: 4px solid #FFD700; }
+		.header img { height: 120px; width: auto; }
         
         /* Table Layout */
         .table-responsive { width: 100%; overflow-x: auto; border-bottom: 1px solid #ddd; }
-        table { width: 100%; border-collapse: collapse; table-layout: auto; }
-        
-        /* Global Table Text Scaling */
-        th { background-color: #e6e6e6; padding: 8px 10px; text-align: left; font-size: 11px; border-bottom: 2px solid #ddd; text-transform: uppercase; color: #444; }
-        td { padding: 6px 10px; border-bottom: 1px solid #ddd; font-size: 13px; white-space: nowrap; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background-color: #e6e6e6; padding: 10px 12px; font-size: 11px; border-bottom: 2px solid #ddd; text-transform: uppercase; color: #444; }
+        td { padding: 8px 12px; border-bottom: 1px solid #ddd; font-size: 13px; white-space: nowrap; }
         
         /* Console Colors */
         .fa-playstation { color: #003791; width: 16px; }
         .fa-xbox { color: #107C10; width: 16px; }
         .fa-steam, .fa-windows { color: #00adee; width: 16px; }
 
-        /* Specific Column Widths for Standings */
-        .col-pos { width: 40px; text-align: center; font-weight: bold; color: #228B22; }
-        .col-player { min-width: 200px; }
-        .col-stat { width: 80px; text-align: center; }
-        .col-money { width: 100px; text-align: center; font-weight: bold; }
-
-        /* Leaderboard Specifics */
+        /* Column Controls */
+        .col-pos { width: 45px; text-align: center; font-weight: bold; color: #228B22; }
+        .col-stat { width: 75px; text-align: center; }
+        .col-money { width: 110px; text-align: center; font-weight: bold; }
+        
+        /* NEW: Standings Right-Alignment */
+        .standings-right { text-align: right; padding-right: 25px; }
+        
         .to-par { font-weight: bold; text-align: center; width: 50px; }
         .under { color: #8B0000; } .even { color: #1AA260; }
-        .stat-col { background-color: #fcfcfc; color: #777; font-size: 11px; border-left: 1px solid #eee; text-align: center; width: 55px; }
         
-        /* Top 50% Gradient */
+        /* Highlights & Divider */
         .top-tier { background: linear-gradient(to right, #eef7ee, #ffffff) !important; }
+        .cutoff-row td { border-bottom: 3px solid #228B22 !important; }
 
         .section-title { background: #228B22; color: white; padding: 10px 15px; font-size: 16px; font-weight: bold; border-left: 8px solid #FFD700; }
         
@@ -55,19 +54,17 @@
 
 <div class="leaderboard-container">
     <div class="header">	
-        <img src="2k25 logo.png">
-        <span id="header-text">Emerald Tour</span>
-        <img src="FedEx-Cup-logo.png">
+        <img src="logo.jpg" alt="Emerald Tour Logo">
     </div>
 
-    <div id="venue-display" class="venue" style="background:#444; color:white; padding:8px; text-align:center; font-weight:bold; font-size: 14px;">Loading...</div>
+    <div id="venue-display" class="venue" style="background:#444; color:white; padding:10px; text-align:center; font-weight:bold; font-size: 14px;">Tournament Results</div>
 
     <div class="table-responsive">
         <table>
             <thead>
                 <tr>
                     <th class="col-pos">POS</th>
-                    <th class="col-player">PLAYER</th>
+                    <th style="text-align:left">PLAYER</th>
                     <th class="to-par">PAR</th>
                     <th class="col-stat">R1</th>
                     <th class="col-stat">R2</th>
@@ -75,10 +72,6 @@
                     <th id="th-r4" class="col-stat">R4</th>
                     <th class="col-stat">TOT</th>
                     <th class="col-money">PRIZE</th>
-                    <th class="stat-col">FiR%</th>
-                    <th class="stat-col">GiR%</th>
-                    <th class="stat-col">SCRAM</th>
-                    <th class="stat-col">NTP</th>
                 </tr>
             </thead>
             <tbody id="leaderboard-body"></tbody>
@@ -88,14 +81,14 @@
     <div class="section-title">Season Standings</div>
 
     <div class="table-responsive">
-        <table id="standings-table">
+        <table>
             <thead>
                 <tr>
                     <th class="col-pos">POS</th>
-                    <th class="col-player">PLAYER</th>
-                    <th class="col-stat">POINTS</th>
-                    <th class="col-money">EARNINGS</th>
-                    <th class="col-stat">EVENTS</th>
+                    <th style="text-align:left">PLAYER</th>
+                    <th class="standings-right">POINTS</th>
+                    <th class="standings-right">EARNINGS</th>
+                    <th class="standings-right">EVENTS</th>
                 </tr>
             </thead>
             <tbody id="standings-body"></tbody>
@@ -116,14 +109,13 @@
             const response = await fetch(DATA_URL);
             const data = await response.json();
             renderAll(data);
-        } catch (err) { console.error("Data missing:", err); }
+        } catch (err) { console.error(err); }
     }
 
     function renderAll(tourData) {
-        document.getElementById('header-text').textContent = tourData.header;
         document.getElementById('venue-display').textContent = tourData.venue;
 
-        // 1. Leaderboard
+        // 1. Leaderboard Rendering
         const lbBody = document.getElementById('leaderboard-body');
         const sortedLB = [...tourData.players].sort((a,b) => calculateTotal(a) - calculateTotal(b));
         
@@ -135,7 +127,7 @@
                     <div style="display:flex; align-items:center; gap:6px;">
                         <i class="fa-brands ${p.console || 'fa-gamepad'}"></i>
                         <span class="fi fi-${(p.country || 'un').toLowerCase()}"></span>
-                        <span style="font-weight:600;">${p.name}</span>
+                        <span style="font-weight:bold;">${p.name}</span>
                     </div>
                 </td>
                 <td class="to-par ${getToParClass(p, tourData)}">${calculateToPar(p, tourData)}</td>
@@ -145,34 +137,30 @@
                 <td class="${tourData.showR3R4 ? '' : 'hidden'} col-stat">${p.r4 || '-'}</td>
                 <td class="col-stat"><strong>${calculateTotal(p) === 999 ? '-' : calculateTotal(p)}</strong></td>
                 <td class="col-money">${p.prize || '$0'}</td>
-                <td class="stat-col">${p.fir || '-'}</td>
-                <td class="stat-col">${p.gir || '-'}</td>
-                <td class="stat-col">${p.scrambling || '-'}</td>
-                <td class="stat-col">${p.ntp || '-'}</td>
             `;
             lbBody.appendChild(tr);
         });
 
-        // 2. Standings (Mapping Icons and Flags from player list)
+        // 2. Standings Rendering
         const stBody = document.getElementById('standings-body');
         const standings = Object.keys(tourData.seasonPoints || {}).map(name => {
-            // Find the player in the current roster to get their flag/console
-            const playerInfo = tourData.players.find(p => p.name === name) || {};
+            const pInfo = tourData.players.find(pl => pl.name === name) || {};
             return {
                 name,
                 points: tourData.seasonPoints[name] || 0,
                 earnings: tourData.seasonEarnings[name] || 0,
                 events: tourData.seasonEvents[name] || 0,
-                console: playerInfo.console || 'fa-gamepad',
-                country: playerInfo.country || 'un'
+                console: pInfo.console || 'fa-gamepad',
+                country: pInfo.country || 'un'
             };
         }).sort((a, b) => b.points - a.points);
 
-        const topCutoff = Math.ceil(standings.length / 2);
+        const topCutoffIndex = Math.ceil(standings.length / 2) - 1;
 
         standings.forEach((p, idx) => {
             const tr = document.createElement('tr');
-            if (idx < topCutoff) tr.classList.add('top-tier');
+            if (idx <= topCutoffIndex) tr.classList.add('top-tier');
+            if (idx === topCutoffIndex) tr.classList.add('cutoff-row');
             
             tr.innerHTML = `
                 <td class="col-pos">${idx + 1}</td>
@@ -180,17 +168,17 @@
                     <div style="display:flex; align-items:center; gap:6px;">
                         <i class="fa-brands ${p.console}"></i>
                         <span class="fi fi-${p.country.toLowerCase()}"></span>
-                        <span style="font-size: 13px;">${p.name}</span>
+                        <span style="font-weight:bold;">${p.name}</span>
                     </div>
                 </td>
-                <td class="col-stat">${p.points.toLocaleString()}</td>
-                <td class="col-money">$${p.earnings.toLocaleString()}</td>
-                <td class="col-stat">${p.events}</td>
+                <td class="standings-right">${p.points.toLocaleString()}</td>
+                <td class="standings-right" style="font-weight:bold">$${p.earnings.toLocaleString()}</td>
+                <td class="standings-right">${p.events}</td>
             `;
             stBody.appendChild(tr);
         });
 
-        // 3. Hall of Fame
+        // 3. HOF Rendering
         const hofDisplay = document.getElementById('hof-display');
         const sortedHOF = [...standings].sort((a,b) => b.earnings - a.earnings).slice(0,3);
         const medals = ['🥇', '🥈', '🥉'];
@@ -208,7 +196,6 @@
         });
     }
 
-    // Calculation Helpers
     function calculateTotal(p) {
         let s = [p.r1, p.r2, p.r3, p.r4].filter(v => v && v > 0);
         return s.length > 0 ? s.reduce((a, b) => parseInt(a) + parseInt(b), 0) : 999;
