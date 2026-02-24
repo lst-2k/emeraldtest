@@ -7,53 +7,50 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.2/css/flag-icons.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* Keeping your original styling, removing only interactive/admin elements */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
-        .leaderboard-container { max-width: 1300px; margin: 0 auto; background-color: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .leaderboard-container { max-width: 1400px; margin: 0 auto; background-color: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
 		.header { background: linear-gradient(135deg, #124d12 0%, #228B22 50%, #1a5e1a 100%); color: white; padding: 25px 80px; text-align: center; font-size: 28px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; border-bottom: 4px solid #FFD700; position: relative; display: flex; align-items: center; justify-content: center; }
 		.header img { position: absolute; top: 50%; transform: translateY(-50%); height: 50px; }
 		.logo-left { left: 40px; } .logo-right { right: 50px; }
         .info-bar { display: flex; justify-content: space-around; background: #333; color: #ddd; padding: 12px; font-size: 14px; text-transform: uppercase; }
         .info-item span { color: white; margin-left: 8px; font-weight: bold; }
-        .prize-pool { color: #FFD700 !important; }
         .venue { background: #444; color: #FFFFF7; padding: 12px; text-align: center; font-size: 18px; font-weight: bold; }
         .venue.major { background: linear-gradient(90deg, #8B6914 0%, #FFD700 50%, #8B6914 100%) !important; color: #000 !important; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background-color: #e6e6e6; padding: 12px; text-align: left; font-size: 14px; border-bottom: 2px solid #ddd; }
-        td { padding: 10px 12px; border-bottom: 1px solid #ddd; font-size: 16px; }
-        .to-par { font-weight: bold; text-align: center; width: 60px; font-size: 18px; }
-        .under { color: #8B0000; } .even { color: #1AA260; }
-        .pos { font-weight: bold; width: 60px; text-align: center; }
-        .player-content { display: flex; align-items: center; gap: 10px; }
-        .total, .prize, .round-score { text-align: center; }
-        .season-earnings, .season-points { font-weight: bold; text-align: center; }
-        .bonus-winner { background-color: #B3D9D9 !important; font-weight: bold; }
-        .season-top50 { background: linear-gradient(to bottom, #e8f5e9 0%, #c8e6c9 100%) !important; }
         
-        /* Hall of Fame Styles */
+        table { width: 100%; border-collapse: collapse; }
+        th { background-color: #e6e6e6; padding: 12px; text-align: left; font-size: 13px; border-bottom: 2px solid #ddd; text-transform: uppercase; }
+        td { padding: 10px 12px; border-bottom: 1px solid #ddd; font-size: 15px; }
+        
+        .pos { font-weight: bold; width: 50px; text-align: center; }
+        .to-par { font-weight: bold; text-align: center; width: 60px; font-size: 17px; }
+        .under { color: #8B0000; } .even { color: #1AA260; }
+        .round-score, .total, .prize, .stat-col { text-align: center; width: 70px; }
+        .prize { font-weight: bold; color: #000; width: 100px; }
+        .stat-col { background-color: #f9f9f9; color: #555; font-size: 14px; }
+        .bonus-winner { background-color: #B3D9D9 !important; font-weight: bold; color: #000; }
+        
+        .section-title { background: #228B22; color: white; padding: 15px; font-size: 20px; font-weight: bold; margin-top: 30px; }
         .hof-container { margin-top: 40px; padding: 30px; background: #1a1a1a; border-radius: 12px; color: white; }
         .hof-header { text-align: center; font-size: 28px; color: #FFD700; margin-bottom: 25px; border-bottom: 2px solid #FFD700; padding-bottom: 10px; }
         .hof-cards { display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap; }
-        .hof-card { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 8px; padding: 20px; width: 250px; text-align: center; }
-        .hof-stat span { color: #FFD700; }
-        
+        .hof-card { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 8px; padding: 20px; width: 260px; text-align: center; }
+        .hof-stat span { color: #FFD700; font-weight: bold; }
         .hidden { display: none; }
-        .section-title { background: #228B22; color: white; padding: 15px; font-size: 20px; font-weight: bold; margin-top: 30px; }
     </style>
 </head>
 <body>
 
 <div class="leaderboard-container">
     <div class="header">	
-        <img src="2k25 logo.png" class="logo-left" alt="">
+        <img src="2k25 logo.png" class="logo-left">
         <span id="header-text">Emerald Tour Leaderboard</span>
-        <img src="FedEx-Cup-logo.png" class="logo-right" alt="">
+        <img src="FedEx-Cup-logo.png" class="logo-right">
     </div>
 
     <div class="info-bar">
         <div class="info-item">Date: <span id="date-field">-</span></div>
         <div class="info-item">Course Par: <span id="course-par">-</span></div>
-        <div class="info-item prize-pool">Prize Pool: <span id="prize-pool">-</span></div>
+        <div class="info-item">Prize Pool: <span id="prize-pool">-</span></div>
     </div>
 
     <div id="venue-display" class="venue">Tournament Loading...</div>
@@ -70,26 +67,26 @@
                 <th class="round-score" id="th-r4">R4</th>
                 <th class="total">TOTAL</th>
                 <th class="prize">PRIZE</th>
+                <th class="stat-col">FiR%</th>
+                <th class="stat-col">GiR%</th>
+                <th class="stat-col">SCRAM</th>
+                <th class="stat-col">NTP</th>
             </tr>
         </thead>
         <tbody id="leaderboard-body"></tbody>
     </table>
 
     <div class="section-title">Season Standings</div>
-    <table id="bonus-table">
+    <table>
         <thead>
             <tr>
                 <th style="padding-left:15px">PLAYER</th>
                 <th class="total">POINTS</th>
                 <th class="total">EARNINGS</th>
                 <th class="total">EVENTS</th>
-                <th class="total">FiR %</th>
-                <th class="total">GiR %</th>
-                <th class="total">SCRAMBLE</th>
-                <th class="total">NTP</th>
             </tr>
         </thead>
-        <tbody id="bonus-body"></tbody>
+        <tbody id="standings-body"></tbody>
     </table>
 
     <div class="hof-container">
@@ -99,8 +96,9 @@
 </div>
 
 <script>
-    // TO UPDATE THE SITE: 
-    // Paste your exported JSON data into this 'tourData' variable
+    /* To update: Paste your JSON export from the Admin tool 
+       into the variable below. 
+    */
     const tourData = {
         "header": "Emerald Tour Leaderboard",
         "date": "February 2026",
@@ -108,7 +106,7 @@
         "coursePar": "72",
         "prizePool": 500000,
         "showR3R4": true,
-        "players": [], // Your exported players list
+        "players": [], // <--- PASTE PLAYERS HERE
         "seasonEarnings": {},
         "seasonPoints": {},
         "seasonEvents": {},
@@ -118,52 +116,66 @@
     function init() {
         if (!tourData) return;
 
-        // Set Headers
         document.getElementById('header-text').textContent = tourData.header;
         document.getElementById('date-field').textContent = tourData.date;
         document.getElementById('course-par').textContent = tourData.coursePar;
-        document.getElementById('prize-pool').textContent = '$' + tourData.prizePool?.toLocaleString();
+        document.getElementById('prize-pool').textContent = '$' + (tourData.prizePool || 0).toLocaleString();
         
         const venueEl = document.getElementById('venue-display');
         venueEl.textContent = tourData.venue;
-        if(tourData.venue.toLowerCase().includes('major')) venueEl.classList.add('major');
+        if(tourData.venue?.toLowerCase().includes('major')) venueEl.classList.add('major');
 
-        // Toggle Rounds
         if(!tourData.showR3R4) {
             document.getElementById('th-r3').classList.add('hidden');
             document.getElementById('th-r4').classList.add('hidden');
         }
 
         renderLeaderboard();
-        renderSeasonStats();
+        renderStandings();
         renderHOF();
     }
 
     function renderLeaderboard() {
         const body = document.getElementById('leaderboard-body');
-        // Logic to calculate totals and sort by score...
-        tourData.players.forEach((p, idx) => {
+        body.innerHTML = '';
+
+        // Sort players by score for the display
+        const sorted = [...tourData.players].sort((a,b) => {
+            const scoreA = calculateRawTotal(a);
+            const scoreB = calculateRawTotal(b);
+            return scoreA - scoreB;
+        });
+
+        sorted.forEach((p, idx) => {
             const tr = document.createElement('tr');
-            // Simplified row generation for members
             tr.innerHTML = `
                 <td class="pos">${idx + 1}</td>
                 <td>
-                    <div class="player-content">
-                        <i class="fa-brands ${p.console}"></i>
-                        <span class="fi fi-${p.country.toLowerCase()}"></span>
-                        <span>${p.name}</span>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <i class="fa-brands ${p.console || 'fa-gamepad'}"></i>
+                        <span class="fi fi-${(p.country || 'un').toLowerCase()}"></span>
+                        <strong>${p.name}</strong>
                     </div>
                 </td>
-                <td class="to-par">${calculateToPar(p)}</td>
+                <td class="to-par ${getToParClass(p)}">${calculateToPar(p)}</td>
                 <td class="round-score">${p.r1 || '-'}</td>
                 <td class="round-score">${p.r2 || '-'}</td>
                 <td class="round-score ${tourData.showR3R4 ? '' : 'hidden'}">${p.r3 || '-'}</td>
                 <td class="round-score ${tourData.showR3R4 ? '' : 'hidden'}">${p.r4 || '-'}</td>
-                <td class="total"><strong>${calculateTotal(p)}</strong></td>
+                <td class="total"><strong>${calculateRawTotal(p) || '-'}</strong></td>
                 <td class="prize">${p.prize || '$0'}</td>
+                <td class="stat-col">${p.fir || '-'}</td>
+                <td class="stat-col">${p.gir || '-'}</td>
+                <td class="stat-col">${p.scrambling || '-'}</td>
+                <td class="stat-col">${p.ntp || '-'}</td>
             `;
             body.appendChild(tr);
         });
+    }
+
+    function calculateRawTotal(p) {
+        let scores = [p.r1, p.r2, p.r3, p.r4].filter(s => s && s > 0);
+        return scores.length > 0 ? scores.reduce((a, b) => parseInt(a) + parseInt(b), 0) : 999;
     }
 
     function calculateToPar(p) {
@@ -174,22 +186,27 @@
         return rel === 0 ? 'E' : (rel > 0 ? `+${rel}` : rel);
     }
 
-    function calculateTotal(p) {
+    function getToParClass(p) {
         let scores = [p.r1, p.r2, p.r3, p.r4].filter(s => s && s > 0);
-        return scores.length > 0 ? scores.reduce((a, b) => parseInt(a) + parseInt(b), 0) : '-';
+        if (scores.length === 0) return '';
+        let total = scores.reduce((a, b) => parseInt(a) + parseInt(b), 0);
+        let rel = total - (parseInt(tourData.coursePar) * scores.length);
+        return rel < 0 ? 'under' : (rel === 0 ? 'even' : '');
     }
 
-    function renderSeasonStats() {
-        const body = document.getElementById('bonus-body');
-        // Logic to sort by season points and render
-        Object.keys(tourData.seasonPoints).forEach(name => {
+    function renderStandings() {
+        const body = document.getElementById('standings-body');
+        const players = Object.keys(tourData.seasonPoints || {});
+        
+        players.sort((a,b) => tourData.seasonPoints[b] - tourData.seasonPoints[a]);
+
+        players.forEach(name => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td style="padding-left:15px"><strong>${name}</strong></td>
-                <td class="season-points">${tourData.seasonPoints[name].toLocaleString()}</td>
-                <td class="season-earnings">$${tourData.seasonEarnings[name]?.toLocaleString()}</td>
+                <td class="total">${(tourData.seasonPoints[name] || 0).toLocaleString()}</td>
+                <td class="total" style="font-weight:bold">$${(tourData.seasonEarnings[name] || 0).toLocaleString()}</td>
                 <td class="total">${tourData.seasonEvents[name] || 0}</td>
-                <td class="total">-</td><td class="total">-</td><td class="total">-</td><td class="total">-</td>
             `;
             body.appendChild(tr);
         });
@@ -197,17 +214,19 @@
 
     function renderHOF() {
         const display = document.getElementById('hof-display');
-        const sorted = Object.entries(tourData.seasonEarnings)
+        const sorted = Object.entries(tourData.seasonEarnings || {})
             .sort(([,a],[,b]) => b-a).slice(0,3);
         
         const medals = ['🥇', '🥈', '🥉'];
         sorted.forEach(([name, cash], i) => {
+            const wins = tourData.eventHistory?.filter(e => e.winner === name).length || 0;
             const card = document.createElement('div');
             card.className = 'hof-card';
             card.innerHTML = `
                 <div style="font-size:40px;">${medals[i]}</div>
                 <div style="font-size:20px; font-weight:bold; margin:10px 0;">${name}</div>
                 <div class="hof-stat">Career: <span>$${cash.toLocaleString()}</span></div>
+                <div class="hof-stat">Wins: <span>${wins}</span></div>
             `;
             display.appendChild(card);
         });
