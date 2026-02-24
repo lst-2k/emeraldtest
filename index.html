@@ -36,6 +36,12 @@
         table { width: 100%; border-collapse: collapse; }
         th { background-color: #e6e6e6; padding: 10px 12px; font-size: 11px; border-bottom: 2px solid #ddd; text-transform: uppercase; color: #444; }
         td { padding: 8px 12px; border-bottom: 1px solid #ddd; font-size: 13px; white-space: nowrap; }
+		
+		/* To Par Color Coding */
+			.to-par { font-weight: bold; text-align: center; font-size: 15px; }
+			.to-par.under { color: #8B0000; }   /* Red for under par */
+			.to-par.even   { color: #1AA260; }  /* Green for even */
+			.to-par.over   { color: #000000; }  /* Black for over par */
         
         /* Middle Logo Divider */
         .middle-logo-divider {
@@ -86,21 +92,21 @@
     <div class="table-responsive">
         <table>
             <thead>
-                <tr>
-                    <th class="col-pos">POS</th>
-                    <th style="text-align:left">PLAYER</th>
-                    <th class="col-stat">R1</th>
-                    <th class="col-stat">R2</th>
-                    <th id="th-r3" class="col-stat hidden">R3</th>
-                    <th id="th-r4" class="col-stat hidden">R4</th>
-                    <th class="col-stat">TOT</th>
-                    <th class="col-money">PRIZE</th>
-                    <th class="col-bonus">FiR%</th>
-                    <th class="col-bonus">GiR%</th>
-                    <th class="col-bonus">SCRAM</th>
-                    <th class="col-bonus">NTP</th>
-                </tr>
-            </thead>
+    <tr>
+        <th class="col-pos">POS</th>
+        <th style="text-align:left">PLAYER</th>
+        <th class="col-stat">TO PAR</th> <th class="col-stat">R1</th>
+        <th class="col-stat">R2</th>
+        <th id="th-r3" class="col-stat hidden">R3</th>
+        <th id="th-r4" class="col-stat hidden">R4</th>
+        <th class="col-stat">TOT</th>
+        <th class="col-money">PRIZE</th>
+        <th class="col-bonus">FiR%</th>
+        <th class="col-bonus">GiR%</th>
+        <th class="col-bonus">SCRAM</th>
+        <th class="col-bonus">NTP</th>
+    </tr>
+</thead>
             <tbody id="leaderboard-body"></tbody>
         </table>
     </div>
@@ -166,6 +172,10 @@
     const sortedLB = [...tourData.players].sort((a,b) => calculateTotal(a) - calculateTotal(b));
     
     sortedLB.forEach((p, idx) => {
+        const toParValue = calculateToParValue(p, tourData.coursePar || 72);
+        const toParClass = getToParClass(toParValue);
+        const toParDisplay = formatToPar(toParValue);
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td class="col-pos">${idx + 1}</td>
@@ -176,7 +186,7 @@
                     ${p.name}
                 </div>
             </td>
-            <td class="col-stat">${p.r1 || '-'}</td>
+            <td class="to-par ${toParClass}">${toParDisplay}</td> <td class="col-stat">${p.r1 || '-'}</td>
             <td class="col-stat">${p.r2 || '-'}</td>
             <td class="col-stat ${shouldShowExtended ? '' : 'hidden'}">${p.r3 || '-'}</td>
             <td class="col-stat ${shouldShowExtended ? '' : 'hidden'}">${p.r4 || '-'}</td>
@@ -189,6 +199,35 @@
         `;
         lbBody.appendChild(tr);
     });
+}
+
+function calculateToParValue(p, par) {
+    let total = 0;
+    let played = 0;
+    [p.r1, p.r2, p.r3, p.r4].forEach(r => {
+        const val = parseInt(r);
+        if (!isNaN(val) && val > 0) {
+            total += val;
+            played++;
+        }
+    });
+    return played > 0 ? total - (par * played) : null;
+}
+
+// Helper to get CSS class based on score
+function getToParClass(score) {
+    if (score === null) return '';
+    if (score < 0) return 'under';
+    if (score === 0) return 'even';
+    return 'over';
+}
+
+// Helper to format the text display (e.g., -5, E, +2)
+function formatToPar(score) {
+    if (score === null) return '-';
+    if (score === 0) return 'E';
+    return (score > 0 ? '+' : '') + score;
+}
 
         const stBody = document.getElementById('standings-body');
         const standings = Object.keys(tourData.seasonPoints || {}).map(name => {
