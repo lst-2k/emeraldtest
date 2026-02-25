@@ -148,6 +148,7 @@
     // --- DOM ELEMENTS ---
     const tableBody = document.getElementById('leaderboard-body');
     const bonusBody = document.getElementById('bonus-body');
+    const historyBody = document.getElementById('history-body');
     const courseParElement = document.getElementById('course-par');
     const dateField = document.getElementById('date-field');
     const venueField = document.querySelector('.venue');
@@ -158,23 +159,24 @@
 
     // --- STORAGE KEYS ---
     const STORAGE_KEY = 'golfLeaderboardData';
+    const PRIZE_KEY = 'golfCurrentPrizePool';
     const SEASON_EARNINGS_KEY = 'golfSeasonEarnings';
     const SEASON_POINTS_KEY = 'golfSeasonPoints';
     const SEASON_EVENTS_KEY = 'golfSeasonEvents';
-    const BONUS_STATS_KEY = 'golfSeasonBonusStats'; // New key to preserve stats
+    const EVENT_COUNT_KEY = 'golfEventCount';
     const HISTORY_KEY = 'golfEventHistory';
 
     // --- STATE ---
     let seasonEarnings = JSON.parse(localStorage.getItem(SEASON_EARNINGS_KEY) || '{}');
     let seasonPoints = JSON.parse(localStorage.getItem(SEASON_POINTS_KEY) || '{}');
     let seasonEvents = JSON.parse(localStorage.getItem(SEASON_EVENTS_KEY) || '{}');
-    let seasonBonusStats = JSON.parse(localStorage.getItem(BONUS_STATS_KEY) || '{}');
     let eventHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
 
     const payoutPercentages = [0, 18.00, 10.90, 6.90, 4.90, 4.10, 3.70, 3.40, 3.10, 2.90, 2.70, 2.50, 2.30, 2.10, 2.00, 1.90, 1.70];
     const pointsTable = [500, 300, 190, 135, 110, 100, 95, 90, 85, 80, 75, 70, 65, 60, 57, 54, 51, 48, 45, 42];
 
     // --- CORE FUNCTIONS ---
+    function isMajor() { return /major/i.test(venueField.textContent); }
     function getCurrentPrizePool() { return parseInt(prizePoolElement.textContent.replace(/[$,]/g, '')) || 500000; }
 
     function createMainRow(p) {
@@ -199,7 +201,8 @@
             <td class="prize" data-type="prize">${p.prize || '$0'}</td>
         `;
 
-        tr.querySelectorAll('.score-input').forEach(input => {
+        const inputs = tr.querySelectorAll('.score-input');
+        inputs.forEach(input => {
             input.oninput = () => updateRowVisuals(tr); 
             input.onblur = sortAndRender; 
         });
@@ -207,7 +210,8 @@
         tr.querySelector('.delete-btn').onclick = () => {
             if(confirm('Delete ' + p.name + '?')) {
                 tr.remove();
-                document.querySelector('#bonus-body tr[data-player="' + p.name + '"]')?.remove();
+                const bRow = bonusBody.querySelector('tr[data-player="' + p.name + '"]');
+                if(bRow) bRow.remove();
                 sortAndRender();
             }
         };
@@ -225,17 +229,15 @@
     function createBonusRow(p) {
         const tr = document.createElement('tr');
         tr.dataset.player = p.name.trim();
-        // Load preserved stats if they exist
-        const stats = seasonBonusStats[p.name] || {};
         tr.innerHTML = `
             <td class="player">${p.name}</td>
             <td class="season-points">${(seasonPoints[p.name] || 0).toLocaleString()}</td>
             <td class="season-earnings">$ ${(seasonEarnings[p.name] || 0).toLocaleString()}</td>
             <td class="season-events">${seasonEvents[p.name] || 0}</td>
-            <td class="editable bonus-input fir" contenteditable="true">${p.fir || stats.fir || ''}</td>
-            <td class="editable bonus-input gir" contenteditable="true">${p.gir || stats.gir || ''}</td>
-            <td class="editable bonus-input scrambling" contenteditable="true">${p.scrambling || stats.scrambling || ''}</td>
-            <td class="editable bonus-input ntp" contenteditable="true">${p.ntp || stats.ntp || ''}</td>
+            <td class="editable bonus-input fir" contenteditable="true">${p.fir || ''}</td>
+            <td class="editable bonus-input gir" contenteditable="true">${p.gir || ''}</td>
+            <td class="editable bonus-input scrambling" contenteditable="true">${p.scrambling || ''}</td>
+            <td class="editable bonus-input ntp" contenteditable="true">${p.ntp || ''}</td>
         `;
         return tr;
     }
@@ -313,7 +315,7 @@
             venue: venueField.textContent.trim(),
             coursePar: courseParElement.textContent.trim(),
             prizePool: prizePoolElement.textContent.trim(),
-            seasonEarnings, seasonPoints, seasonEvents, eventHistory, seasonBonusStats,
+            seasonEarnings, seasonPoints, seasonEvents, eventHistory,
             players: Array.from(tableBody.querySelectorAll('tr')).map(r => {
                 const name = r.dataset.player;
                 const bRow = bonusBody.querySelector('tr[data-player="' + name + '"]');
@@ -339,43 +341,29 @@
     }
 
     document.getElementById('new-tournament').onclick = () => {
-        if (!confirm("Finalize tournament? This updates Season totals AND preserves FiR/GiR/SCR/NTP stats.")) return;
-        
+        if (!confirm("Finalize tournament and update Season Standings?")) return;
         tableBody.querySelectorAll('tr').forEach(r => {
             const name = r.dataset.player;
             const prize = parseInt(r.querySelector('[data-type="prize"]').textContent.replace(/[$,]/g, '')) || 0;
-            const rank = parseInt(r.querySelector('.pos').textContent.replace('T','')) || 99;
+            const rankText = r.querySelector('.pos').textContent;
+            const rank = parseInt(rankText.replace('T','')) || 99;
             const points = (rank <= 20) ? pointsTable[rank-1] : 0;
 
             if (r.querySelector('[data-type="total"]').textContent !== '-') {
                 seasonEarnings[name] = (seasonEarnings[name] || 0) + prize;
                 seasonPoints[name] = (seasonPoints[name] || 0) + points;
                 seasonEvents[name] = (seasonEvents[name] || 0) + 1;
-
-                // PRESERVE BONUS STATS
-                const bRow = bonusBody.querySelector('tr[data-player="' + name + '"]');
-                if(bRow) {
-                    seasonBonusStats[name] = {
-                        fir: bRow.querySelector('.fir').textContent,
-                        gir: bRow.querySelector('.gir').textContent,
-                        scrambling: bRow.querySelector('.scrambling').textContent,
-                        ntp: bRow.querySelector('.ntp').textContent
-                    };
-                }
             }
         });
-        
         localStorage.setItem(SEASON_EARNINGS_KEY, JSON.stringify(seasonEarnings));
         localStorage.setItem(SEASON_POINTS_KEY, JSON.stringify(seasonPoints));
         localStorage.setItem(SEASON_EVENTS_KEY, JSON.stringify(seasonEvents));
-        localStorage.setItem(BONUS_STATS_KEY, JSON.stringify(seasonBonusStats));
-        
-        alert("Season finalized and Bonus Stats preserved!");
+        alert("Season totals updated! You can now export the full data.");
         location.reload();
     };
 
     document.getElementById('clear-season').onclick = () => {
-        if (!confirm("Clear current scores? Season Standings and preserved stats remain.")) return;
+        if (!confirm("Clear current scores for next week? Names and Season Standings will remain.")) return;
         tableBody.querySelectorAll('.score-input').forEach(i => i.value = '');
         sortAndRender();
     };
@@ -391,7 +379,6 @@
                 if(d.seasonEarnings) localStorage.setItem(SEASON_EARNINGS_KEY, JSON.stringify(d.seasonEarnings));
                 if(d.seasonPoints) localStorage.setItem(SEASON_POINTS_KEY, JSON.stringify(d.seasonPoints));
                 if(d.seasonEvents) localStorage.setItem(SEASON_EVENTS_KEY, JSON.stringify(d.seasonEvents));
-                if(d.seasonBonusStats) localStorage.setItem(BONUS_STATS_KEY, JSON.stringify(d.seasonBonusStats));
                 location.reload();
             };
             reader.readAsText(e.target.files[0]);
@@ -410,25 +397,11 @@
             r4: r.querySelectorAll('.score-input')[3].value,
             prize: r.querySelector('[data-type="prize"]').textContent
         }));
-        
-        // Save temporary round data
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
             header: document.getElementById('header-text-content').textContent,
             date: dateField.textContent, venue: venueField.textContent,
             coursePar: courseParElement.textContent, players
         }));
-
-        // Also save current live bonus inputs so they don't vanish on refresh
-        const currentLiveBonus = {};
-        bonusBody.querySelectorAll('tr').forEach(tr => {
-            currentLiveBonus[tr.dataset.player] = {
-                fir: tr.querySelector('.fir').textContent,
-                gir: tr.querySelector('.gir').textContent,
-                scrambling: tr.querySelector('.scrambling').textContent,
-                ntp: tr.querySelector('.ntp').textContent
-            };
-        });
-        localStorage.setItem(BONUS_STATS_KEY, JSON.stringify(currentLiveBonus));
     }
 
     function loadData() {
@@ -454,7 +427,10 @@
 
     toggleButton.onclick = () => {
         showR3R4 = !showR3R4;
-        document.querySelectorAll('th.r-extra, td.r-extra').forEach(el => el.classList.toggle('hidden'));
+        // Toggle Table Headers
+        document.querySelectorAll('th.r-extra').forEach(th => th.classList.toggle('hidden'));
+        // Toggle Table Cells
+        document.querySelectorAll('td.r-extra').forEach(td => td.classList.toggle('hidden'));
         toggleButton.textContent = showR3R4 ? 'Hide R3/R4' : 'Show R3/R4';
         sortAndRender();
     };
