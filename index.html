@@ -43,10 +43,63 @@
         .top-tier { background: linear-gradient(to right, #eef7ee, #ffffff) !important; }
         .cutoff-row td { border-bottom: 4px solid #228B22 !important; }
 
-        .hof-container { padding: 30px 10px; background: #1a1a1a; color: white; }
-        .hof-header { text-align: center; font-size: 22px; color: #FFD700; margin-bottom: 20px; border-bottom: 2px solid #FFD700; padding-bottom: 10px; }
-        .hof-cards { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-        .hof-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 6px; padding: 15px; width: 220px; text-align: center; }
+        /* Container adjustments for mobile spacing */
+		.hof-cards {
+			display: flex;
+			justify-content: center;
+			gap: 20px;
+			flex-wrap: wrap;
+			padding: 30px 10px;
+			perspective: 1000px;
+		}
+
+		.hof-card {
+			background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+			border: 1px solid rgba(255, 215, 0, 0.4);
+			border-radius: 12px;
+			padding: 20px 15px;
+			width: 160px; /* Slimmer for mobile side-by-side display */
+			text-align: center;
+			position: relative;
+			
+			/* THE 3D EFFECT: Default Tilt and Lift */
+			transform: rotateX(10deg) rotateY(-5deg); 
+			box-shadow: 
+				5px 5px 0px rgba(0, 0, 0, 0.2),   /* Side thickness */
+				10px 15px 25px rgba(0, 0, 0, 0.5); /* Ground shadow */
+			
+			transition: transform 0.3s ease;
+		}
+
+		/* Add a "shine" layer to the top of the card */
+		.hof-card::after {
+			content: "";
+			position: absolute;
+			top: 0; left: 0; right: 0; bottom: 0;
+			border-radius: 12px;
+			background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%);
+			pointer-events: none;
+		}
+
+		/* Specific styling for the Gold winner to stand out more */
+		.hof-card:nth-child(1) {
+			border: 2px solid #FFD700;
+			transform: rotateX(10deg) rotateY(-5deg) scale(1.05);
+			z-index: 2; /* Keeps it on top of other cards */
+		}
+
+		/* For mobile: if they DO tap it, it "depresses" like a button */
+		.hof-card:active {
+			transform: rotateX(0deg) rotateY(0deg) scale(0.98);
+			box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+		}
+
+		.hof-medal {
+			font-size: 36px;
+			margin-bottom: 5px;
+			/* Makes the emoji look 3D */
+			filter: drop-shadow(3px 3px 2px rgba(0,0,0,0.5));
+		}
     </style>
 </head>
 <body>
