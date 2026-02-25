@@ -10,6 +10,7 @@
         :root { 
             --emerald: #228B22; 
             --dark-emerald: #124d12; 
+            --highlight-green: rgba(34, 139, 34, 0.08);
             --ps-blue: #003791;
             --xbox-green: #107C10;
             --steam-blue: #171a21;
@@ -18,11 +19,9 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f4; margin: 10px; }
         .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        /* Full Width Logo Header */
         .header { background: #000; line-height: 0; }
         .header img { width: 100%; height: auto; display: block; }
         
-        /* Venue Information Bar */
         .venue-bar { 
             display: flex; 
             flex-wrap: wrap; 
@@ -49,23 +48,25 @@
         .pos { font-weight: bold; width: 40px; text-align: center; }
         .player-cell { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
         
-        /* Console Icon Colors */
         .fa-playstation { color: var(--ps-blue); }
         .fa-xbox { color: var(--xbox-green); }
         .fa-steam { color: var(--steam-blue); }
         .fa-gamepad { color: #555; }
 
+        /* Narrow Points Column */
+        .col-points { width: 100px; text-align: center; }
+        .col-earnings { min-width: 110px; white-space: nowrap; color: var(--emerald); font-weight: bold; text-align: right; }
+        
         .to-par { font-weight: bold; width: 60px; }
         .under { color: #d9534f; }
         .total { font-weight: bold; background: #f9f9f9; width: 60px; }
-        
-        /* Alignment Styles */
-        .col-earnings { min-width: 110px; white-space: nowrap; color: var(--emerald); font-weight: bold; text-align: right; }
         .prize { color: var(--emerald); font-weight: bold; text-align: right; white-space: nowrap; }
 
-        .bonus-stat { color: #666; font-size: 0.85em; width: 60px; }
+        /* Top 50% Highlighting */
+        .top-tier { background: linear-gradient(to right, var(--highlight-green), transparent); }
+        .cut-line { border-bottom: 3px solid var(--emerald) !important; }
 
-        tr:nth-child(even) { background-color: #fafafa; }
+        tr:nth-child(even):not(.top-tier) { background-color: #fafafa; }
         .hidden { display: none; }
     </style>
 </head>
@@ -80,8 +81,7 @@
         <span id="display-venue">---</span>
         <span id="display-date">---</span>
         <span>PAR: <span id="display-par">--</span></span>
-        <span>PURSE: <span id="display-purse">--</span></span>
-    </div>
+        <span>PURSE: $<span id="display-purse">--</span></span> </div>
 
     <h2>Current Event Leaderboard</h2>
     <div class="table-wrapper">
@@ -114,7 +114,7 @@
                 <tr>
                     <th class="center">Pos</th>
                     <th>Player</th>
-                    <th class="center">Season Pts</th>
+                    <th class="col-points">Season Pts</th>
                     <th class="right">Earnings</th>
                     <th class="center">Events</th>
                 </tr>
@@ -178,13 +178,17 @@
                 lbBody.innerHTML += row;
             });
 
-            // Season Standings rendering
+            // Season Standings Logic
             const sortedPlayers = Object.keys(data.seasonPoints || {}).sort((a,b) => data.seasonPoints[b] - data.seasonPoints[a]);
+            const cutIndex = Math.ceil(sortedPlayers.length / 2) - 1; // Last index of top 50%
+
             sortedPlayers.forEach((name, index) => {
                 const pInfo = data.players.find(p => p.name === name) || {};
+                const isTopTier = index <= cutIndex;
+                const isLastTopTier = index === cutIndex && sortedPlayers.length > 1;
 
                 const row = `
-                    <tr>
+                    <tr class="${isTopTier ? 'top-tier' : ''} ${isLastTopTier ? 'cut-line' : ''}">
                         <td class="pos center">${index + 1}</td>
                         <td>
                             <div class="player-cell">
@@ -193,7 +197,7 @@
                                 <span style="font-weight:bold">${name}</span>
                             </div>
                         </td>
-                        <td class="center">${(data.seasonPoints[name] || 0).toLocaleString()}</td>
+                        <td class="col-points">${(data.seasonPoints[name] || 0).toLocaleString()}</td>
                         <td class="right col-earnings">$ ${(data.seasonEarnings[name] || 0).toLocaleString()}</td>
                         <td class="center">${data.seasonEvents[name] || 0}</td>
                     </tr>
