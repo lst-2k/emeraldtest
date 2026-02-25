@@ -1,12 +1,14 @@
 {
-  "header": "● Emerald Tour Leaderboard",
-  "date": "Feb 2026",
-  "venue": "Season 1, Week 5 - Victor Pines",
+  "timestamp": "2026-02-25T08:47:18.594Z",
+  "header": "New Emerald Tour Leaderboard",
+  "date": "25 February 2026",
+  "venue": "Season 1, Week 9 - Braeside Park",
   "coursePar": "72",
-  "prizePool": "500,000",
+  "prizePool": 1300000,
+  "eventCount": 8,
   "seasonEarnings": {
     "3offthetee": 841091,
-    "Colly": 2221691,
+    "Colly": 1411691,
     "Wing": 1044666,
     "Kalessin": 1164891,
     "Tenbobnote": 575337,
@@ -24,7 +26,7 @@
   },
   "seasonPoints": {
     "3offthetee": 1423,
-    "Colly": 7100,
+    "Colly": 2600,
     "Wing": 1607,
     "Kalessin": 1653,
     "Tenbobnote": 1168,
@@ -42,7 +44,7 @@
   },
   "seasonEvents": {
     "3offthetee": 8,
-    "Colly": 17,
+    "Colly": 8,
     "Wing": 7,
     "Kalessin": 8,
     "Tenbobnote": 6,
@@ -132,59 +134,34 @@
       "scoringPlayers": 13
     }
   ],
-  "seasonBonusStats": {
-    "Colly": {
-      "fir": "85",
-      "gir": "85",
-      "scrambling": "85",
-      "ntp": "85"
-    }
-  },
   "players": [
+    {
+      "name": "Tenbobnote",
+      "console": "fa-playstation",
+      "country": "gb",
+      "r1": "",
+      "r2": "",
+      "r3": "",
+      "r4": "",
+      "fir": "",
+      "gir": "",
+      "scrambling": "",
+      "ntp": "",
+      "prize": "$0"
+    },
     {
       "name": "Colly",
       "console": "fa-xbox",
       "country": "gb",
-      "r1": "71",
-      "r2": "71",
-      "r3": "71",
-      "r4": "71",
-      "prize": "$90,000",
-      "livePoints": "7,100",
-      "fir": "85",
-      "gir": "85",
-      "scrambling": "85",
-      "ntp": "85"
-    },
-    {
-      "name": "Horusphoenix",
-      "console": "fa-xbox",
-      "country": "jp",
       "r1": "",
       "r2": "",
       "r3": "",
       "r4": "",
-      "prize": "$0",
-      "livePoints": "135",
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
-    },
-    {
-      "name": "Hopz",
-      "console": "fa-playstation",
-      "country": "us",
-      "r1": "",
-      "r2": "",
-      "r3": "",
-      "r4": "",
-      "prize": "$0",
-      "livePoints": "496",
-      "fir": "",
-      "gir": "",
-      "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Kalessin",
@@ -194,42 +171,39 @@
       "r2": "",
       "r3": "",
       "r4": "",
-      "prize": "$0",
-      "livePoints": "1,653",
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
-      "name": "Tenbobnote",
-      "console": "fa-steam",
-      "country": "gb",
-      "r1": "",
-      "r2": "",
-      "r3": "",
-      "r4": "",
-      "prize": "$0",
-      "livePoints": "1,168",
-      "fir": "",
-      "gir": "",
-      "scrambling": "",
-      "ntp": ""
-    },
-    {
-      "name": "3offthetee",
+      "name": "Horusphoenix",
       "console": "fa-xbox",
-      "country": "gb",
+      "country": "jp",
       "r1": "",
       "r2": "",
       "r3": "",
       "r4": "",
-      "prize": "$0",
-      "livePoints": "1,423",
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
+    },
+    {
+      "name": "Hopz",
+      "console": "fa-playstation",
+      "country": "us",
+      "r1": "",
+      "r2": "",
+      "r3": "",
+      "r4": "",
+      "fir": "",
+      "gir": "",
+      "scrambling": "",
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Wing",
@@ -239,12 +213,11 @@
       "r2": "",
       "r3": "",
       "r4": "",
-      "prize": "$0",
-      "livePoints": "1,607",
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Mr Longpole",
@@ -254,12 +227,25 @@
       "r2": "",
       "r3": "",
       "r4": "",
-      "prize": "$0",
-      "livePoints": "1,063",
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
+    },
+    {
+      "name": "3offthetee",
+      "console": "fa-xbox",
+      "country": "gb",
+      "r1": "",
+      "r2": "",
+      "r3": "",
+      "r4": "",
+      "fir": "",
+      "gir": "",
+      "scrambling": "",
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Polekatt",
@@ -269,12 +255,11 @@
       "r2": "",
       "r3": "",
       "r4": "",
-      "prize": "$0",
-      "livePoints": "633",
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Geordieboy",
@@ -284,12 +269,11 @@
       "r2": "",
       "r3": "",
       "r4": "",
-      "prize": "$0",
-      "livePoints": "937",
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Hammersman",
@@ -299,12 +283,11 @@
       "r2": "",
       "r3": "",
       "r4": "",
-      "prize": "$0",
-      "livePoints": "984",
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Dubz",
@@ -314,12 +297,11 @@
       "r2": "",
       "r3": "",
       "r4": "",
-      "prize": "$0",
-      "livePoints": "368",
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Koof",
@@ -329,12 +311,11 @@
       "r2": "",
       "r3": "",
       "r4": "",
-      "prize": "$0",
-      "livePoints": "313",
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "SimChars",
@@ -344,12 +325,11 @@
       "r2": "",
       "r3": "",
       "r4": "",
-      "prize": "$0",
-      "livePoints": "155",
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Arfabubble",
@@ -359,12 +339,11 @@
       "r2": "",
       "r3": "",
       "r4": "",
-      "prize": "$0",
-      "livePoints": "180",
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     },
     {
       "name": "Bfctino",
@@ -374,12 +353,11 @@
       "r2": "",
       "r3": "",
       "r4": "",
-      "prize": "$0",
-      "livePoints": "143",
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "",
+      "prize": "$0"
     }
   ]
 }
