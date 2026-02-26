@@ -145,38 +145,37 @@
             if(hasR3) document.querySelectorAll('.r34').forEach(el => el.classList.remove('hidden'));
 
             // Leaderboard rendering
-            data.players.forEach((p, index) => {
-                const par = parseInt(data.coursePar) || 72;
-                let total = 0, rounds = 0;
-                [p.r1, p.r2, p.r3, p.r4].forEach(r => { if(r > 0) { total += parseInt(r); rounds++; } });
-                const toPar = rounds > 0 ? total - (par * rounds) : 0;
-                const toParText = toPar === 0 ? 'E' : (toPar > 0 ? `+${toPar}` : toPar);
+data.players.forEach((p, index) => {
+    const par = parseInt(data.coursePar) || 72;
+    let total = 0, rounds = 0;
+    [p.r1, p.r2, p.r3, p.r4].forEach(r => { if(r > 0) { total += parseInt(r); rounds++; } });
+    const toPar = rounds > 0 ? total - (par * rounds) : 0;
+    const toParText = toPar === 0 ? 'E' : (toPar > 0 ? `+${toPar}` : toPar);
 
-                const row = `
-                    <tr>
-                        <td class="pos center">${index + 1}</td>
-                        <td>
-                            <div class="player-cell">
-                                <i class="fa-brands ${p.console || 'fa-gamepad'}"></i>
-                                <span class="fi fi-${p.country || 'un'}"></span>
-                                <span>${p.name}</span>
-                            </div>
-                        </td>
-                        <td class="to-par center ${toPar < 0 ? 'under' : ''}">${toParText}</td>
-                        <td class="center">${p.r1 || '-'}</td>
-                        <td class="center">${p.r2 || '-'}</td>
-                        <td class="r34 center ${hasR3 ? '' : 'hidden'}">${p.r3 || '-'}</td>
-                        <td class="r34 center ${hasR3 ? '' : 'hidden'}">${p.r4 || '-'}</td>
-                        <td class="total center">${total || '-'}</td>
-                        <td class="prize right">${p.prize || '$0'}</td>
-                        <td class="center bonus-stat">${p.fir || '-'}</td>
-                        <td class="center bonus-stat">${p.gir || '-'}</td>
-                        <td class="center bonus-stat">${p.scrambling || '-'}</td>
-                        <td class="center bonus-stat">${p.ntp || '-'}</td>
-                    </tr>
-                `;
-                lbBody.innerHTML += row;
-            });
+    lbBody.innerHTML += `
+        <tr>
+            <td class="pos center">${index + 1}</td>
+            <td class="col-player">
+                <div class="player-cell">
+                    <i class="fa-brands ${p.console || 'fa-gamepad'}"></i>
+                    <span class="fi fi-${p.country || 'un'}"></span>
+                    <span>${p.name}</span>
+                </div>
+            </td>
+            <td class="to-par center ${toPar < 0 ? 'under' : ''}">${toParText}</td>
+            <td class="center">${p.r1 || '-'}</td>
+            <td class="center">${p.r2 || '-'}</td>
+            <td class="r34 center ${hasR3 ? '' : 'hidden'}">${p.r3 || '-'}</td>
+            <td class="r34 center ${hasR3 ? '' : 'hidden'}">${p.r4 || '-'}</td>
+            <td class="total center">${total || '-'}</td>
+            <td class="prize right">${p.prize || '$0'}</td>
+            <td class="center bonus-stat" style="color:#888">${p.fir || '-'}</td>
+            <td class="center bonus-stat" style="color:#888">${p.gir || '-'}</td>
+            <td class="center bonus-stat" style="color:#888">${p.scrambling || '-'}</td>
+            <td class="center bonus-stat" style="color:#888">${p.ntp || '-'}</td>
+        </tr>
+    `;
+});
 
             // Season Standings Logic
             const sortedPlayers = Object.keys(data.seasonPoints || {}).sort((a,b) => data.seasonPoints[b] - data.seasonPoints[a]);
