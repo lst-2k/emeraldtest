@@ -1,18 +1,33 @@
 {
+  "header": "EMERALD TOUR",
   "venue": "The Royal Golf Club",
   "date": "Feb 2026",
   "coursePar": "72",
   "prizePool": "$500,000",
   "players": [
     {
+      "name": "Colly45x",
+      "console": "fa-xbox",
+      "country": "gb",
+      "r1": "64",
+      "r2": "76",
+      "r3": "",
+      "r4": "",
+      "prize": "$90,000",
+      "fir": "",
+      "gir": "",
+      "scrambling": "",
+      "ntp": ""
+    },
+    {
       "name": "x3offthetee",
       "console": "fa-xbox",
       "country": "gb",
-      "r1": "71",
+      "r1": "73",
       "r2": "71",
       "r3": "71",
       "r4": "71",
-      "prize": "$90,000",
+      "prize": "$54,500",
       "fir": "",
       "gir": "",
       "scrambling": "",
@@ -36,7 +51,8 @@
     "Koof": 313,
     "SimChars": 155,
     "Horusphoenix": 135,
-    "x3offthetee": 500
+    "x3offthetee": 800,
+    "Colly45x": 500
   },
   "seasonEarnings": {
     "3offthetee": 841091,
@@ -55,7 +71,8 @@
     "Koof": 201407,
     "SimChars": 81982,
     "Horusphoenix": 99055,
-    "x3offthetee": 130000
+    "x3offthetee": 204500,
+    "Colly45x": 110000
   },
   "seasonEvents": {
     "3offthetee": 8,
@@ -74,6 +91,7 @@
     "Koof": 3,
     "SimChars": 2,
     "Horusphoenix": 1,
-    "x3offthetee": 1
+    "x3offthetee": 2,
+    "Colly45x": 1
   }
 }
