@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Emerald Tour - Official Standings</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.2/css/flag-icons.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -12,14 +12,29 @@
             --gold: #ffd700; --silver: #c0c0c0; --bronze: #cd7f32;
         }
         
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f0; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1300px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        /* Edge-to-edge body */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: #f0f2f0; 
+            margin: 0; 
+            padding: 0; 
+            color: #333; 
+        }
+
+        .container { 
+            max-width: 1300px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 25px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
+            min-height: 100vh;
+        }
         
-        /* Full Width Image Section */
+        /* Image Header flush with container */
         .image-header {
             margin: -25px -25px 20px -25px;
             overflow: hidden;
-            border-radius: 12px 12px 0 0;
+            border-radius: 0;
         }
 
         .banner-img {
@@ -28,7 +43,6 @@
             display: block;
         }
 
-        /* Middle Logo */
         .mid-logo-container {
             width: 100%;
             text-align: center;
@@ -40,7 +54,6 @@
             height: auto;
         }
 
-        /* Broadcast Style Header */
         .event-info-bar {
             text-align: center;
             margin: 25px 0;
@@ -63,13 +76,11 @@
 
         h3 { border-bottom: 2px solid var(--emerald); padding-bottom: 10px; color: #222; margin-top: 40px; }
 
-        /* Scroll & Sticky Container */
         .table-container {
             width: 100%;
             overflow-x: auto;
             margin-bottom: 20px;
             border: 1px solid #ddd;
-            border-radius: 8px;
         }
 
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
@@ -88,17 +99,9 @@
 
         td { padding: 12px 10px; border-bottom: 1px solid #eee; background: white; }
 
-        .player-cell {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            white-space: nowrap;
-        }
-
+        .player-cell { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
         .under-par { color: #d9534f; font-weight: bold; }
         .even-par { color: #228B22; font-weight: bold; }
-        .over-par { color: #000; }
-        
         .bonus-stat { font-size: 0.85em; color: #555; background: #fafafa; text-align: center; border-left: 1px solid #eee; }
         .total-cell { font-weight: bold; text-align: center; background: #fafffa; border-left: 2px solid #eee; }
         .hidden-col { display: none; }
@@ -111,6 +114,15 @@
         .fa-xbox { color: #107C10; }
         .fa-steam { color: #171a21; }
         .fi { border-radius: 2px; flex-shrink: 0; }
+
+        /* MOBILE OPTIMIZATION */
+        @media (max-width: 600px) {
+            body { background-color: white; }
+            .container { padding: 10px 5px; border-radius: 0; box-shadow: none; }
+            .image-header { margin: -10px -5px 20px -5px; }
+            .week-title { font-size: 1.4em; }
+            h3 { font-size: 1.1em; }
+        }
     </style>
 </head>
 <body>
@@ -122,8 +134,8 @@
     </div>
 
     <div class="event-info-bar">
-        <div class="week-title" id="display-week">LOADING SEASON...</div>
-        <div class="date-subtitle" id="display-date">LOADING DATE...</div>
+        <div class="week-title" id="display-week">LOADING...</div>
+        <div class="date-subtitle" id="display-date">LOADING...</div>
     </div>
 
     <h3>Tournament Leaderboard</h3>
