@@ -9,50 +9,30 @@
     <style>
         :root { 
             --emerald: #228B22; 
-            --gold: #ffd700;
-            --silver: #c0c0c0;
-            --bronze: #cd7f32;
+            --gold: #ffd700; --silver: #c0c0c0; --bronze: #cd7f32;
         }
         
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f0; margin: 20px; color: #333; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         
         h2, h3 { border-bottom: 2px solid var(--emerald); padding-bottom: 10px; color: #222; }
-
         table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
         th { background: #333; color: white; padding: 12px; text-align: left; font-size: 0.9em; }
         td { padding: 12px; border-bottom: 1px solid #eee; }
 
-        /* Tournament Table Specifics */
-        .pos { font-weight: bold; width: 50px; }
-        .total-cell { font-weight: bold; color: var(--emerald); }
+        /* Console Colors */
+        .fa-playstation { color: #003791; }
+        .fa-xbox { color: #107C10; }
+        .fa-steam { color: #171a21; }
+        .fa-brands { width: 20px; text-align: center; margin-right: 5px; }
 
-        /* --- Season Standings Podium Styling --- */
-        #season-table { border: 1px solid #ddd; }
-
-        /* 1st Place - Gold */
-        #season-body tr:nth-child(1) {
-            background: linear-gradient(90deg, #fff9e6 0%, #ffffff 100%);
-            border-left: 6px solid var(--gold);
-            font-weight: bold;
-        }
-        #season-body tr:nth-child(1) td:first-child { color: #b8860b; font-size: 1.2em; }
-
-        /* 2nd Place - Silver */
-        #season-body tr:nth-child(2) {
-            background: linear-gradient(90deg, #f2f2f2 0%, #ffffff 100%);
-            border-left: 6px solid var(--silver);
-        }
-        #season-body tr:nth-child(2) td:first-child { color: #707070; }
-
-        /* 3rd Place - Bronze */
-        #season-body tr:nth-child(3) {
-            background: linear-gradient(90deg, #fff5ee 0%, #ffffff 100%);
-            border-left: 6px solid var(--bronze);
-        }
-        #season-body tr:nth-child(3) td:first-child { color: #8b4513; }
-
+        /* Podium Styling */
+        #season-body tr:nth-child(1) { background: linear-gradient(90deg, #fff9e6 0%, #ffffff 100%); border-left: 6px solid var(--gold); font-weight: bold; }
+        #season-body tr:nth-child(2) { background: linear-gradient(90deg, #f2f2f2 0%, #ffffff 100%); border-left: 6px solid var(--silver); }
+        #season-body tr:nth-child(3) { background: linear-gradient(90deg, #fff5ee 0%, #ffffff 100%); border-left: 6px solid var(--bronze); }
+        
         .fi { margin-right: 8px; border-radius: 2px; }
+        .total-cell { font-weight: bold; color: var(--emerald); }
     </style>
 </head>
 <body>
@@ -75,8 +55,7 @@
                 <th>Total</th>
             </tr>
         </thead>
-        <tbody id="tournament-body">
-            </tbody>
+        <tbody id="tournament-body"></tbody>
     </table>
 
     <h3>Season Standings</h3>
@@ -90,103 +69,68 @@
                 <th>Total Earnings</th>
             </tr>
         </thead>
-        <tbody id="season-body">
-            </tbody>
+        <tbody id="season-body"></tbody>
     </table>
 </div>
 
 <script>
-    // Fetch the data.json file exported from your admin panel
     fetch('data.json')
         .then(response => response.json())
         .then(data => {
-            // Update Headers
             document.getElementById('display-title').textContent = data.header;
             document.getElementById('display-venue').textContent = data.venue;
             document.getElementById('display-date').textContent = data.date;
-
-            // Render Tables
             renderTournament(data.players);
-            renderSeason(data.seasonPoints, data.seasonEarnings, data.seasonEvents);
-        })
-        .catch(err => console.error("Error loading data:", err));
+            renderSeason(data.seasonPoints, data.seasonEarnings, data.seasonEvents, data.players);
+        });
 
     function renderTournament(players) {
         const tbody = document.getElementById('tournament-body');
-        
-        // Ensure players are sorted by score for display
-        const sortedPlayers = players.sort((a,b) => (parseInt(a.total) || 999) - (parseInt(b.total) || 999));
-
-        tbody.innerHTML = sortedPlayers.map((p, index) => `
+        const sorted = [...players].sort((a,b) => (parseInt(a.total) || 999) - (parseInt(b.total) || 999));
+        tbody.innerHTML = sorted.map((p, i) => `
             <tr>
-                <td class="pos">${index + 1}</td>
-                <td>
-                    <i class="fa-brands ${p.console}"></i>
-                    <span class="fi fi-${p.country}"></span>
-                    ${p.name}
-                </td>
+                <td>${i + 1}</td>
+                <td><i class="fa-brands ${p.console}"></i><span class="fi fi-${p.country}"></span> ${p.name}</td>
                 <td>${calculateToPar(p)}</td>
-                <td>${p.r1 || '-'}</td>
-                <td>${p.r2 || '-'}</td>
-                <td>${p.r3 || '-'}</td>
-                <td>${p.r4 || '-'}</td>
+                <td>${p.r1 || '-'}</td><td>${p.r2 || '-'}</td><td>${p.r3 || '-'}</td><td>${p.r4 || '-'}</td>
                 <td class="total-cell">${calculateTotal(p)}</td>
             </tr>
         `).join('');
     }
 
-    function renderSeason(points, earnings, events) {
+    function renderSeason(points, earnings, events, players) {
         const tbody = document.getElementById('season-body');
-        
-        // Map objects into an array
-        const standings = Object.keys(points).map(name => ({
-            name: name,
-            pts: points[name] || 0,
-            cash: earnings[name] || 0,
-            evs: events[name] || 0
-        }));
-
-        // Sort by Points (Highest first)
-        standings.sort((a, b) => b.pts - a.pts);
+        const standings = Object.keys(points).map(name => {
+            const pInfo = players.find(p => p.name === name) || { console: 'fa-user', country: 'un' };
+            return { name, pts: points[name], cash: earnings[name], evs: events[name], console: pInfo.console, country: pInfo.country };
+        }).sort((a, b) => b.pts - a.pts);
 
         tbody.innerHTML = standings.map((player, index) => {
-            let medal = "";
-            if (index === 0) medal = " 🥇";
-            if (index === 1) medal = " 🥈";
-            if (index === 2) medal = " 🥉";
-
+            let medal = index === 0 ? " 🥇" : index === 1 ? " 🥈" : index === 2 ? " 🥉" : "";
             return `
                 <tr>
                     <td>${index + 1}</td>
-                    <td><strong>${player.name}${medal}</strong></td>
-                    <td>${player.evs}</td>
-                    <td>${player.pts.toLocaleString()}</td>
-                    <td>$${player.cash.toLocaleString()}</td>
+                    <td><i class="fa-brands ${player.console}"></i><span class="fi fi-${player.country}"></span> <strong>${player.name}${medal}</strong></td>
+                    <td>${player.evs || 0}</td>
+                    <td>${(player.pts || 0).toLocaleString()}</td>
+                    <td>$${(player.cash || 0).toLocaleString()}</td>
                 </tr>
             `;
         }).join('');
     }
 
-    // Helper to calculate total score for the tournament table
     function calculateTotal(p) {
-        let t = 0;
-        if(p.r1) t += parseInt(p.r1);
-        if(p.r2) t += parseInt(p.r2);
-        if(p.r3) t += parseInt(p.r3);
-        if(p.r4) t += parseInt(p.r4);
+        let t = (parseInt(p.r1)||0) + (parseInt(p.r2)||0) + (parseInt(p.r3)||0) + (parseInt(p.r4)||0);
         return t === 0 ? '-' : t;
     }
 
-    // Helper to calculate to-par relative to a standard 72 (or your par)
     function calculateToPar(p) {
-        const par = 72; // Default
         let total = calculateTotal(p);
         if(total === '-') return '-';
         let rounds = [p.r1, p.r2, p.r3, p.r4].filter(r => r !== "").length;
-        let diff = total - (par * rounds);
+        let diff = total - (72 * rounds);
         return diff === 0 ? 'E' : (diff > 0 ? `+${diff}` : diff);
     }
 </script>
-
 </body>
 </html>
