@@ -15,8 +15,19 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f0; margin: 20px; color: #333; }
         .container { max-width: 1300px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         
-        /* Header & Logo */
-        .header-logo { max-height: 100px; margin-bottom: 15px; }
+        /* Full Width Image Header Logic */
+        .image-header {
+            margin: -25px -25px 20px -25px; /* Aligns images flush with the container edges */
+            overflow: hidden;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .banner-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
         h3 { border-bottom: 2px solid var(--emerald); padding-bottom: 10px; color: #222; margin-top: 30px; }
 
         /* Scroll & Sticky Container */
@@ -30,7 +41,6 @@
 
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
         
-        /* Emerald Header Styling */
         thead th { 
             position: sticky; 
             top: 0; 
@@ -45,13 +55,7 @@
 
         td { padding: 10px; border-bottom: 1px solid #eee; background: white; }
 
-        /* One Line Player Info */
-        .player-cell {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-        }
+        .player-cell { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
 
         /* Colors & Bonus Stats */
         .under-par { color: #d9534f; font-weight: bold; }
@@ -60,7 +64,7 @@
         .total-cell { font-weight: bold; text-align: center; background: #fafffa; border-left: 2px solid #eee; }
         .hidden-col { display: none; }
 
-        /* Podium */
+        /* Podium styling */
         #season-body tr:nth-child(1) td { background: #fffdf2; border-left: 6px solid var(--gold); }
         #season-body tr:nth-child(2) td { background: #f9f9f9; border-left: 6px solid var(--silver); }
         #season-body tr:nth-child(3) td { background: #fffaf7; border-left: 6px solid var(--bronze); }
@@ -68,14 +72,19 @@
         .fa-playstation { color: #003791; }
         .fa-xbox { color: #107C10; }
         .fa-steam { color: #171a21; }
-        .fi { border-radius: 2px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <img src="logo.png" alt="Emerald Tour Logo" class="header-logo">
-    <p><strong id="display-venue">---</strong> | <span id="display-date">---</span></p>
+    <div class="image-header">
+        <img src="logo.png" alt="Emerald Tour Logo" class="banner-img">
+        <img src="event.png" alt="Event Banner" class="banner-img">
+    </div>
+
+    <p style="margin-top: 10px;">
+        <strong id="display-venue">---</strong> | <span id="display-date">---</span>
+    </p>
 
     <h3>Tournament Leaderboard</h3>
     <div class="table-container">
