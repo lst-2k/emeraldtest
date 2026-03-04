@@ -3,211 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emerald Tour - Member Standings</title>
+    <title>Emerald Tour - Official Standings</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.2/css/flag-icons.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root { 
             --emerald: #228B22; 
-            --dark-emerald: #124d12; 
-            --highlight-green: rgba(34, 139, 34, 0.08);
-            --ps-blue: #003791;
-            --xbox-green: #107C10;
-            --steam-blue: #171a21;
+            --gold: #ffd700;
+            --silver: #c0c0c0;
+            --bronze: #cd7f32;
         }
         
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f4; margin: 10px; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f0; margin: 20px; color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         
-        .header { background: #000; line-height: 0; }
-        .header img { width: 100%; height: auto; display: block; }
-        
-        .venue-bar { 
-            display: flex; 
-            flex-wrap: wrap; 
-            justify-content: space-around; 
-            background: linear-gradient(135deg, var(--dark-emerald), var(--emerald)); 
-            color: white; 
-            padding: 12px 10px; 
-            font-weight: bold; 
-            font-size: 0.9em; 
-            gap: 10px;
-            border-bottom: 3px solid #0e3a0e;
+        h2, h3 { border-bottom: 2px solid var(--emerald); padding-bottom: 10px; color: #222; }
+
+        table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+        th { background: #333; color: white; padding: 12px; text-align: left; font-size: 0.9em; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+
+        /* Tournament Table Specifics */
+        .pos { font-weight: bold; width: 50px; }
+        .total-cell { font-weight: bold; color: var(--emerald); }
+
+        /* --- Season Standings Podium Styling --- */
+        #season-table { border: 1px solid #ddd; }
+
+        /* 1st Place - Gold */
+        #season-body tr:nth-child(1) {
+            background: linear-gradient(90deg, #fff9e6 0%, #ffffff 100%);
+            border-left: 6px solid var(--gold);
+            font-weight: bold;
         }
+        #season-body tr:nth-child(1) td:first-child { color: #b8860b; font-size: 1.2em; }
 
-        .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        
-        h2 { background: #eee; margin: 0; padding: 15px; border-bottom: 2px solid var(--emerald); color: #333; font-size: 1.2em; }
-        table { width: 100%; border-collapse: collapse; min-width: 900px; } 
-        th { background: #f8f8f8; color: #666; font-size: 0.75em; text-transform: uppercase; padding: 12px; text-align: left; border-bottom: 2px solid #ddd; }
-        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 0.9em; }
-        
-        .center { text-align: center !important; }
-        .right { text-align: right !important; }
+        /* 2nd Place - Silver */
+        #season-body tr:nth-child(2) {
+            background: linear-gradient(90deg, #f2f2f2 0%, #ffffff 100%);
+            border-left: 6px solid var(--silver);
+        }
+        #season-body tr:nth-child(2) td:first-child { color: #707070; }
 
-        .pos { font-weight: bold; width: 40px; text-align: center; }
-        .player-cell { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
-        
-        .fa-playstation { color: var(--ps-blue); }
-        .fa-xbox { color: var(--xbox-green); }
-        .fa-steam { color: var(--steam-blue); }
-        .fa-gamepad { color: #555; }
+        /* 3rd Place - Bronze */
+        #season-body tr:nth-child(3) {
+            background: linear-gradient(90deg, #fff5ee 0%, #ffffff 100%);
+            border-left: 6px solid var(--bronze);
+        }
+        #season-body tr:nth-child(3) td:first-child { color: #8b4513; }
 
-        /* Narrow Points Column */
-        .col-points { width: 100px; text-align: center; }
-        .col-earnings { min-width: 110px; white-space: nowrap; color: var(--emerald); font-weight: bold; text-align: right; }
-        
-        .to-par { font-weight: bold; width: 60px; }
-        .under { color: #d9534f; }
-        .total { font-weight: bold; background: #f9f9f9; width: 60px; }
-        .prize { color: var(--emerald); font-weight: bold; text-align: right; white-space: nowrap; }
-
-        /* Top 50% Highlighting */
-        .top-tier { background: linear-gradient(to right, var(--highlight-green), transparent); }
-        .cut-line { border-bottom: 3px solid var(--emerald) !important; }
-
-        tr:nth-child(even):not(.top-tier) { background-color: #fafafa; }
-        .hidden { display: none; }
+        .fi { margin-right: 8px; border-radius: 2px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <img src="logo.png" alt="Emerald Tour Logo">
-    </div>
+    <h2 id="display-title">EMERALD TOUR</h2>
+    <p><strong id="display-venue">---</strong> | <span id="display-date">---</span></p>
 
-    <div class="venue-bar">
-        <span id="display-venue">---</span>
-        <span id="display-date">---</span>
-        <span>PAR: <span id="display-par">--</span></span>
-        <span>PURSE: $<span id="display-purse">--</span></span> </div>
+    <h3>Current Tournament Leaderboard</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Pos</th>
+                <th>Player</th>
+                <th>To Par</th>
+                <th>R1</th>
+                <th>R2</th>
+                <th>R3</th>
+                <th>R4</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody id="tournament-body">
+            </tbody>
+    </table>
 
-    <h2>Current Event Leaderboard</h2>
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th class="center">Pos</th>
-                    <th>Player</th>
-                    <th class="center">To Par</th>
-                    <th class="center">R1</th>
-                    <th class="center">R2</th>
-                    <th class="r34 hidden center">R3</th>
-                    <th class="r34 hidden center">R4</th>
-                    <th class="center">Total</th>
-                    <th class="right">Prize</th>
-                    <th class="center">FiR</th>
-                    <th class="center">GiR</th>
-                    <th class="center">Scram</th>
-                    <th class="center">NTP</th>
-                </tr>
-            </thead>
-            <tbody id="leaderboard-body"></tbody>
-        </table>
-    </div>
-
-    <h2>Season Standings</h2>
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th class="center">Pos</th>
-                    <th>Player</th>
-                    <th class="col-points">Season Pts</th>
-                    <th class="right">Earnings</th>
-                    <th class="center">Events</th>
-                </tr>
-            </thead>
-            <tbody id="standings-body"></tbody>
-        </table>
-    </div>
+    <h3>Season Standings</h3>
+    <table id="season-table">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Events</th>
+                <th>Points</th>
+                <th>Total Earnings</th>
+            </tr>
+        </thead>
+        <tbody id="season-body">
+            </tbody>
+    </table>
 </div>
 
 <script>
-    const DATA_FILE = 'emerald_tour_full_backup.json';
+    // Fetch the data.json file exported from your admin panel
+    fetch('data.json')
+        .then(response => response.json())
+        .then(data => {
+            // Update Headers
+            document.getElementById('display-title').textContent = data.header;
+            document.getElementById('display-venue').textContent = data.venue;
+            document.getElementById('display-date').textContent = data.date;
 
-    async function loadResults() {
-        try {
-            const response = await fetch(DATA_FILE);
-            if (!response.ok) throw new Error("JSON not found");
-            const data = await response.json();
+            // Render Tables
+            renderTournament(data.players);
+            renderSeason(data.seasonPoints, data.seasonEarnings, data.seasonEvents);
+        })
+        .catch(err => console.error("Error loading data:", err));
 
-            document.getElementById('display-venue').textContent = data.venue || "---";
-            document.getElementById('display-date').textContent = data.date || "---";
-            document.getElementById('display-par').textContent = data.coursePar || "--";
-            document.getElementById('display-purse').textContent = data.prizePool || "--";
+    function renderTournament(players) {
+        const tbody = document.getElementById('tournament-body');
+        
+        // Ensure players are sorted by score for display
+        const sortedPlayers = players.sort((a,b) => (parseInt(a.total) || 999) - (parseInt(b.total) || 999));
 
-            const lbBody = document.getElementById('leaderboard-body');
-            const stBody = document.getElementById('standings-body');
-
-            const hasR3 = data.players.some(p => p.r3 && p.r3 > 0);
-            if(hasR3) document.querySelectorAll('.r34').forEach(el => el.classList.remove('hidden'));
-
-            // Leaderboard rendering
-data.players.forEach((p, index) => {
-    const par = parseInt(data.coursePar) || 72;
-    let total = 0, rounds = 0;
-    [p.r1, p.r2, p.r3, p.r4].forEach(r => { if(r > 0) { total += parseInt(r); rounds++; } });
-    const toPar = rounds > 0 ? total - (par * rounds) : 0;
-    const toParText = toPar === 0 ? 'E' : (toPar > 0 ? `+${toPar}` : toPar);
-
-    lbBody.innerHTML += `
-        <tr>
-            <td class="pos center">${index + 1}</td>
-            <td class="col-player">
-                <div class="player-cell">
-                    <i class="fa-brands ${p.console || 'fa-gamepad'}"></i>
-                    <span class="fi fi-${p.country || 'un'}"></span>
-                    <span>${p.name}</span>
-                </div>
-            </td>
-            <td class="to-par center ${toPar < 0 ? 'under' : ''}">${toParText}</td>
-            <td class="center">${p.r1 || '-'}</td>
-            <td class="center">${p.r2 || '-'}</td>
-            <td class="r34 center ${hasR3 ? '' : 'hidden'}">${p.r3 || '-'}</td>
-            <td class="r34 center ${hasR3 ? '' : 'hidden'}">${p.r4 || '-'}</td>
-            <td class="total center">${total || '-'}</td>
-            <td class="prize right">${p.prize || '$0'}</td>
-            <td class="center bonus-stat" style="color:#888">${p.fir || '-'}</td>
-            <td class="center bonus-stat" style="color:#888">${p.gir || '-'}</td>
-            <td class="center bonus-stat" style="color:#888">${p.scrambling || '-'}</td>
-            <td class="center bonus-stat" style="color:#888">${p.ntp || '-'}</td>
-        </tr>
-    `;
-});
-
-            // Season Standings Logic
-            const sortedPlayers = Object.keys(data.seasonPoints || {}).sort((a,b) => data.seasonPoints[b] - data.seasonPoints[a]);
-            const cutIndex = Math.ceil(sortedPlayers.length / 2) - 1; // Last index of top 50%
-
-            sortedPlayers.forEach((name, index) => {
-                const pInfo = data.players.find(p => p.name === name) || {};
-                const isTopTier = index <= cutIndex;
-                const isLastTopTier = index === cutIndex && sortedPlayers.length > 1;
-
-                const row = `
-                    <tr class="${isTopTier ? 'top-tier' : ''} ${isLastTopTier ? 'cut-line' : ''}">
-                        <td class="pos center">${index + 1}</td>
-                        <td>
-                            <div class="player-cell">
-                                <i class="fa-brands ${pInfo.console || 'fa-gamepad'}"></i>
-                                <span class="fi fi-${pInfo.country || 'un'}"></span>
-                                <span style="font-weight:bold">${name}</span>
-                            </div>
-                        </td>
-                        <td class="col-points">${(data.seasonPoints[name] || 0).toLocaleString()}</td>
-                        <td class="right col-earnings">$ ${(data.seasonEarnings[name] || 0).toLocaleString()}</td>
-                        <td class="center">${data.seasonEvents[name] || 0}</td>
-                    </tr>
-                `;
-                stBody.innerHTML += row;
-            });
-        } catch (err) {
-            document.body.innerHTML = `<div style="text-align:center; padding:50px;"><h2>Results not yet posted.</h2></div>`;
-        }
+        tbody.innerHTML = sortedPlayers.map((p, index) => `
+            <tr>
+                <td class="pos">${index + 1}</td>
+                <td>
+                    <i class="fa-brands ${p.console}"></i>
+                    <span class="fi fi-${p.country}"></span>
+                    ${p.name}
+                </td>
+                <td>${calculateToPar(p)}</td>
+                <td>${p.r1 || '-'}</td>
+                <td>${p.r2 || '-'}</td>
+                <td>${p.r3 || '-'}</td>
+                <td>${p.r4 || '-'}</td>
+                <td class="total-cell">${calculateTotal(p)}</td>
+            </tr>
+        `).join('');
     }
-    window.onload = loadResults;
+
+    function renderSeason(points, earnings, events) {
+        const tbody = document.getElementById('season-body');
+        
+        // Map objects into an array
+        const standings = Object.keys(points).map(name => ({
+            name: name,
+            pts: points[name] || 0,
+            cash: earnings[name] || 0,
+            evs: events[name] || 0
+        }));
+
+        // Sort by Points (Highest first)
+        standings.sort((a, b) => b.pts - a.pts);
+
+        tbody.innerHTML = standings.map((player, index) => {
+            let medal = "";
+            if (index === 0) medal = " 🥇";
+            if (index === 1) medal = " 🥈";
+            if (index === 2) medal = " 🥉";
+
+            return `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${player.name}${medal}</strong></td>
+                    <td>${player.evs}</td>
+                    <td>${player.pts.toLocaleString()}</td>
+                    <td>$${player.cash.toLocaleString()}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    // Helper to calculate total score for the tournament table
+    function calculateTotal(p) {
+        let t = 0;
+        if(p.r1) t += parseInt(p.r1);
+        if(p.r2) t += parseInt(p.r2);
+        if(p.r3) t += parseInt(p.r3);
+        if(p.r4) t += parseInt(p.r4);
+        return t === 0 ? '-' : t;
+    }
+
+    // Helper to calculate to-par relative to a standard 72 (or your par)
+    function calculateToPar(p) {
+        const par = 72; // Default
+        let total = calculateTotal(p);
+        if(total === '-') return '-';
+        let rounds = [p.r1, p.r2, p.r3, p.r4].filter(r => r !== "").length;
+        let diff = total - (par * rounds);
+        return diff === 0 ? 'E' : (diff > 0 ? `+${diff}` : diff);
+    }
 </script>
+
 </body>
 </html>
