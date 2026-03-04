@@ -1,9 +1,9 @@
 {
   "header": "EMERALD TOUR",
-  "venue": "Season 1 Week 10 Cherrybrook Farm GC",
-  "date": "4-11 March 2026",
+  "venue": "The Royal Golf Club",
+  "date": "Feb 2026",
   "coursePar": "72",
-  "prizePool": "$1.4M",
+  "prizePool": "$500,000",
   "players": [
     {
       "name": "Colly45x",
@@ -14,7 +14,7 @@
       "r3": "",
       "r4": "",
       "prize": "$90,000",
-      "fir": "",
+      "fir": "50",
       "gir": "",
       "scrambling": "",
       "ntp": ""
@@ -29,7 +29,7 @@
       "r4": "",
       "prize": "$54,500",
       "fir": "",
-      "gir": "",
+      "gir": "50",
       "scrambling": "",
       "ntp": ""
     },
@@ -44,7 +44,7 @@
       "prize": "$34,500",
       "fir": "",
       "gir": "",
-      "scrambling": "",
+      "scrambling": "50",
       "ntp": ""
     },
     {
@@ -59,7 +59,7 @@
       "fir": "",
       "gir": "",
       "scrambling": "",
-      "ntp": ""
+      "ntp": "50"
     }
   ],
   "seasonPoints": {},
