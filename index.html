@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emerald Tour Leaderboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.2/css/flag-icons.min.css" />
+    <link rel="stylesheet" href="https://cdn. Sherman.gh/lipis/flag-icons@7.0.2/css/flag-icons.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root { --emerald: #228B22; --dark: #1a1a1a; }
@@ -17,105 +17,50 @@
             min-height: 100vh;
         }
         
-        /* HEADER IMAGES (SCROLL AWAY) */
-        .full-img-container { 
-            width: 100%; 
-            background: white;
-            display: flex;
-            justify-content: center;
-        }
-        .full-img-container img { 
-            width: 100%; 
-            height: auto; 
-            display: block;
-        }
+        .full-img-container { width: 100%; background: white; display: flex; justify-content: center; }
+        .full-img-container img { width: 100%; height: auto; display: block; }
         
-        /* STICKY VENUE BAR */
         .event-info-bar { 
-            background: var(--emerald); color: white; 
-            padding: 15px; text-align: center;
-            position: sticky; 
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background: var(--emerald); color: white; padding: 15px; text-align: center;
+            position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .major-event { background: linear-gradient(135deg, #4b0082, #2e004f) !important; }
 
-        /* MAIN LAYOUT */
-        .main-content { 
-            display: flex; 
-            flex-direction: row; 
-            gap: 15px; 
-            padding: 15px; 
-            width: 100%;
-        }
+        .fa-playstation { color: #003791; }
+        .fa-xbox { color: #107c10; }
+        .fa-steam { color: #171a21; }
 
-        .scroll-card { 
-            background: white; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-            display: flex; 
-            flex-direction: column; 
-            flex: 1;
-            min-width: 0; /* Prevents flex items from breaking layout */
-        }
+        .main-content { display: flex; flex-direction: row; gap: 15px; padding: 15px; width: 100%; }
+        .scroll-card { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; flex: 1; min-width: 0; }
         
         #leaderboard-card { flex: 2.5; } 
-        #standings-card { flex: 1; }
+        #standings-card { flex: 1.2; }
 
-        /* INDEPENDENT HORIZONTAL SCROLL WRAPPER */
-        .table-responsive { 
-            width: 100%;
-            overflow-x: auto; /* Independent horizontal scroll */
-            -webkit-overflow-scrolling: touch; /* Smooth for iOS */
-        }
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-        /* STICKY TABLE HEADERS */
-        th { 
-            background: #f8f9fa; 
-            padding: 10px; 
-            text-align: left; 
-            font-size: 0.7em; 
-            position: sticky; 
-            top: 0; /* Sticky to the top of the scroll-card */
-            z-index: 5; 
-            white-space: nowrap;
-        }
+        th { background: #f8f9fa; padding: 10px; text-align: left; font-size: 0.7em; position: sticky; top: 0; z-index: 5; white-space: nowrap; }
+        h2 { padding: 15px; margin: 0; border-bottom: 1px solid #eee; font-size: 1.1em; }
+
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        #standings-card table { min-width: 450px; }
+
+        td { padding: 10px; border-bottom: 1px solid #eee; font-size: 0.85em; white-space: nowrap; }
         
-        h2 { 
-            padding: 15px; 
-            margin: 0; 
-            border-bottom: 1px solid #eee; 
-            font-size: 1.1em;
-        }
-
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            min-width: 600px; /* Ensures table is wide enough to trigger scroll on mobile */
-        }
-
-        td { 
-            padding: 8px; 
-            border-bottom: 1px solid #eee; 
-            font-size: 0.85em; 
-            white-space: nowrap; /* Keeps data on one line */
-        }
+        /* ALIGNMENT CLASSES */
+        .txt-right { text-align: right; }
+        .txt-center { text-align: center; }
 
         .playoff-zone { background-color: rgba(34, 139, 34, 0.08) !important; border-left: 5px solid var(--emerald); }
-        .standings-player { display: flex; align-items: center; gap: 5px; }
+        .player-cell { display: flex; align-items: center; gap: 8px; }
         .q-marker { color: var(--emerald); font-weight: bold; margin-left: 5px; }
 
-        @media (max-width: 1000px) {
-            .main-content { flex-direction: column; }
-            #standings-card table { min-width: 400px; }
-        }
+        @media (max-width: 1000px) { .main-content { flex-direction: column; } }
     </style>
 </head>
 <body>
 
-<div class="full-img-container"><img src="logo.png" alt="Tour Logo"></div>
-<div class="full-img-container" style="border-bottom: 4px solid var(--emerald);"><img src="event.png" alt="Event Image"></div>
+<div class="full-img-container"><img src="logo.png" alt="Logo"></div>
+<div class="full-img-container" style="border-bottom: 4px solid var(--emerald);"><img src="event.png" alt="Event"></div>
 
 <div class="event-info-bar" id="branding-bar">
     <h1 id="display-week" style="margin:0; font-size: 1.3em;">WEEK 1</h1>
@@ -133,16 +78,12 @@
                         <th>Pos</th>
                         <th>Player</th>
                         <th>+/-</th>
-                        <th>R1</th>
-                        <th>R2</th>
-                        <th class="col-r3">R3</th>
-                        <th class="col-r4">R4</th>
-                        <th style="text-align:center">Tot</th>
-                        <th style="text-align:center">Pts</th>
-                        <th>FiR</th>
-                        <th>GiR</th>
-                        <th>Scr</th>
-                        <th>NTP</th>
+                        <th>R1</th><th>R2</th>
+                        <th class="col-r3">R3</th><th class="col-r4">R4</th>
+                        <th class="txt-center">Tot</th>
+                        <th class="txt-center">Pts</th>
+                        <th class="txt-right">Prize</th>
+                        <th>FiR</th><th>GiR</th><th>Scr</th><th>NTP</th>
                     </tr>
                 </thead>
                 <tbody id="tournament-body"></tbody>
@@ -156,11 +97,11 @@
             <table>
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>Pos</th>
                         <th>Player</th>
-                        <th>Ev</th>
-                        <th>Pts</th>
-                        <th>Earn</th>
+                        <th class="txt-center">Ev</th>
+                        <th class="txt-center">Pts</th>
+                        <th class="txt-right">Earnings</th>
                     </tr>
                 </thead>
                 <tbody id="season-body"></tbody>
@@ -175,29 +116,27 @@
         return t === 0 ? 999 : t;
     };
 
-    fetch('data.json')
-        .then(res => res.json())
-        .then(data => {
-            const brandingBar = document.getElementById('branding-bar');
-            const titleEl = document.getElementById('display-week');
-            if (data.isSignature) {
-                brandingBar.classList.add('major-event');
-                titleEl.innerHTML = `${data.venue} <span style="background:#ffd700; color:black; padding:2px 5px; border-radius:3px; font-size:0.6em; margin-left:8px;">MAJOR</span>`;
-            } else {
-                brandingBar.classList.remove('major-event');
-                titleEl.textContent = data.venue;
-            }
-            document.getElementById('display-date').textContent = data.date;
-            document.getElementById('course-par').textContent = data.coursePar;
+    fetch('data.json').then(res => res.json()).then(data => {
+        const brandingBar = document.getElementById('branding-bar');
+        const titleEl = document.getElementById('display-week');
+        if (data.isSignature) {
+            brandingBar.classList.add('major-event');
+            titleEl.innerHTML = `${data.venue} <span style="background:#ffd700; color:black; padding:2px 5px; border-radius:3px; font-size:0.6em; margin-left:8px;">MAJOR</span>`;
+        } else {
+            brandingBar.classList.remove('major-event');
+            titleEl.textContent = data.venue;
+        }
+        document.getElementById('display-date').textContent = data.date;
+        document.getElementById('course-par').textContent = data.coursePar;
 
-            const hasR3 = data.players.some(p => p.r3);
-            const hasR4 = data.players.some(p => p.r4);
-            document.querySelectorAll('.col-r3').forEach(el => el.style.display = hasR3 ? 'table-cell' : 'none');
-            document.querySelectorAll('.col-r4').forEach(el => el.style.display = hasR4 ? 'table-cell' : 'none');
+        const hasR3 = data.players.some(p => p.r3);
+        const hasR4 = data.players.some(p => p.r4);
+        document.querySelectorAll('.col-r3').forEach(el => el.style.display = hasR3 ? 'table-cell' : 'none');
+        document.querySelectorAll('.col-r4').forEach(el => el.style.display = hasR4 ? 'table-cell' : 'none');
 
-            renderTournament(data.players, parseInt(data.coursePar), hasR3, hasR4);
-            renderSeason(data.seasonPoints, data.seasonEarnings, data.seasonEvents);
-        });
+        renderTournament(data.players, parseInt(data.coursePar), hasR3, hasR4);
+        renderSeason(data.seasonPoints, data.seasonEarnings, data.seasonEvents);
+    });
 
     function renderTournament(players, par, r3, r4) {
         const tbody = document.getElementById('tournament-body');
@@ -217,18 +156,18 @@
             return `
                 <tr>
                     <td>${displayPos}</td>
-                    <td><div class="standings-player"><i class="fa-brands ${p.console}"></i><span class="fi fi-${p.country}" style="margin:0 5px;"></span><strong>${p.name}</strong></div></td>
+                    <td><div class="player-cell"><i class="fa-brands ${p.console}"></i><span class="fi fi-${p.country}"></span><strong>${p.name}</strong></div></td>
                     <td style="font-weight:bold; color:${toPar.toString().includes('-')?'red':'inherit'}">${toPar}</td>
-                    <td>${p.r1 || '-'}</td>
-                    <td>${p.r2 || '-'}</td>
+                    <td>${p.r1 || '-'}</td><td>${p.r2 || '-'}</td>
                     <td style="display:${r3?'table-cell':'none'}">${p.r3 || '-'}</td>
                     <td style="display:${r4?'table-cell':'none'}">${p.r4 || '-'}</td>
-                    <td style="background:#f9f9f9; font-weight:bold; text-align:center;">${total === 999 ? '-' : total}</td>
-                    <td style="color:var(--emerald); font-weight:bold; text-align:center;">${p.points || '-'}</td>
-                    <td style="font-size:0.75em;">${fStat(p.fir, '%')}</td>
-                    <td style="font-size:0.75em;">${fStat(p.gir, '%')}</td>
-                    <td style="font-size:0.75em;">${fStat(p.scrambling, '%')}</td>
-                    <td style="font-size:0.75em;">${fStat(p.ntp, 'ft')}</td>
+                    <td class="txt-center" style="background:#f9f9f9; font-weight:bold;">${total === 999 ? '-' : total}</td>
+                    <td class="txt-center" style="color:var(--emerald); font-weight:bold;">${p.points || '-'}</td>
+                    <td class="txt-right" style="font-weight:bold;">${p.prize || '$0'}</td>
+                    <td style="font-size:0.75em; color:#555;">${fStat(p.fir, '%')}</td>
+                    <td style="font-size:0.75em; color:#555;">${fStat(p.gir, '%')}</td>
+                    <td style="font-size:0.75em; color:#555;">${fStat(p.scrambling, '%')}</td>
+                    <td style="font-size:0.75em; color:#555;">${fStat(p.ntp, 'ft')}</td>
                 </tr>
             `;
         }).join('');
@@ -240,14 +179,19 @@
         const cutoff = Math.ceil(names.length / 2);
 
         tbody.innerHTML = names.map((n, i) => {
+            const pScore = pts[n];
+            const isTied = names.filter(name => pts[name] === pScore).length > 1;
+            const firstIdx = names.findIndex(name => pts[name] === pScore);
+            const displayPos = isTied ? "T" + (firstIdx + 1) : (i + 1);
             const isQ = (i < cutoff && names.length > 1);
+
             return `
                 <tr class="${isQ ? 'playoff-zone' : ''}">
-                    <td>${i+1}</td>
-                    <td class="standings-player"><strong>${n}</strong> ${isQ ? '<span class="q-marker">(Q)</span>' : ''}</td>
-                    <td>${evs[n] || 0}</td>
-                    <td style="color:var(--emerald); font-weight:bold;">${pts[n].toLocaleString()}</td>
-                    <td>$${earn[n].toLocaleString()}</td>
+                    <td>${displayPos}</td>
+                    <td><div class="player-cell"><strong>${n}</strong> ${isQ ? '<span class="q-marker">(Q)</span>' : ''}</div></td>
+                    <td class="txt-center">${evs[n] || 0}</td>
+                    <td class="txt-center" style="color:var(--emerald); font-weight:bold;">${pts[n].toLocaleString()}</td>
+                    <td class="txt-right" style="font-weight:bold;">$${earn[n].toLocaleString()}</td>
                 </tr>
             `;
         }).join('');
