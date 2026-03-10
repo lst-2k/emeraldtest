@@ -4,113 +4,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emerald Tour Leaderboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.2/css/flag-icons.min.css" />
+    <link rel="stylesheet" href="https://cdn.gh/lipis/flag-icons@7.0.2/css/flag-icons.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root { --emerald: #228B22; --dark: #1a1a1a; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f4f4f4; color: var(--dark); }
         
-        /* Header Styling */
-        .event-info-bar { background: var(--emerald); color: white; padding: 20px; text-align: center; transition: all 0.5s ease; }
-        .major-event { background: linear-gradient(135deg, #4b0082, #2e004f) !important; color: white !important; }
-        .major-tag { background: #ffd700; color: black; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; font-weight: 900; margin-left: 10px; vertical-align: middle; }
+        /* 1. STICKY HEADER & LAYOUT */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            background: #f4f4f4; 
+            color: var(--dark); 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; /* Prevents whole page from scrolling */
+        }
         
-        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 0.8em; text-transform: uppercase; border-bottom: 2px solid #eee; }
-        td { padding: 12px; border-bottom: 1px solid #eee; }
+        .event-info-bar { 
+            background: var(--emerald); 
+            color: white; 
+            padding: 15px 20px; 
+            text-align: center; 
+            z-index: 100;
+            flex-shrink: 0; /* Keeps header size fixed */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
 
-        /* Playoff (Q) Highlighting */
+        .major-event { background: linear-gradient(135deg, #4b0082, #2e004f) !important; }
+        .major-tag { background: #ffd700; color: black; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; font-weight: 900; margin-left: 10px; }
+
+        /* 2. LOGO AND EVENT IMAGE CONTAINERS */
+        .logo-container { position: absolute; left: 20px; top: 10px; }
+        .logo-container img { height: 60px; }
+        .event-img-container { position: absolute; right: 20px; top: 10px; }
+        .event-img-container img { height: 60px; border-radius: 4px; }
+
+        /* 3. INDEPENDENT SCROLLING COLUMNS */
+        .main-content { 
+            display: grid; 
+            grid-template-columns: 1.8fr 1fr; /* Leaderboard wider than Standings */
+            gap: 20px; 
+            padding: 20px; 
+            flex-grow: 1; 
+            overflow: hidden; 
+        }
+
+        .scroll-card { 
+            background: white; 
+            padding: 0; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+
+        .scroll-body { 
+            overflow-y: auto; 
+            padding: 0 20px 20px 20px; 
+        }
+        
+        .scroll-card h2 { position: sticky; top: 0; background: white; margin: 0; padding: 20px; z-index: 10; border-bottom: 1px solid #eee; }
+
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 0.75em; position: sticky; top: 60px; z-index: 5; }
+        td { padding: 10px; border-bottom: 1px solid #eee; font-size: 0.9em; }
+
         .playoff-zone { background-color: rgba(34, 139, 34, 0.08) !important; border-left: 5px solid var(--emerald); }
         .q-marker { color: var(--emerald); font-weight: bold; margin-left: 5px; }
-
-        .player-cell { display: flex; align-items: center; gap: 10px; }
-        .total-cell { font-weight: bold; text-align: center; background: #f0f0f0; }
-        .bonus-stat { text-align: center; color: #666; font-size: 0.9em; }
+        .player-cell { display: flex; align-items: center; gap: 8px; }
         
-        @media (max-width: 768px) { .hidden-mobile { display: none; } }
+        @media (max-width: 1000px) {
+            .main-content { grid-template-columns: 1fr; overflow-y: auto; }
+            body { overflow: auto; }
+            .logo-container, .event-img-container { display: none; }
+        }
     </style>
 </head>
 <body>
 
 <div class="event-info-bar">
-    <h1 id="display-week" style="margin:0;">SEASON 1 | WEEK 1</h1>
-    <div id="display-date" style="opacity: 0.9;">Loading tournament details...</div>
-    <div style="margin-top:10px; font-size: 0.9em;">Course Par: <span id="course-par">72</span></div>
+    <div class="logo-container"><img src="logo.png" alt="Tour Logo"></div>
+    <div class="event-img-container"><img src="event.png" alt="Event Image"></div>
+    
+    <h1 id="display-week" style="margin:0; font-size: 1.5em;">SEASON 1 | WEEK 1</h1>
+    <div id="display-date" style="opacity: 0.9; font-size: 0.9em;">Loading details...</div>
+    <div style="margin-top:5px; font-size: 0.8em;">Par: <span id="course-par">72</span></div>
 </div>
 
-<div class="container">
-    <div class="card">
+<div class="main-content">
+    <div class="scroll-card">
         <h2>Tournament Leaderboard</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Pos</th>
-                    <th>Player</th>
-                    <th>To Par</th>
-                    <th>R1</th>
-                    <th>R2</th>
-                    <th class="col-r3">R3</th>
-                    <th class="col-r4">R4</th>
-                    <th style="text-align:center">Total</th>
-                    <th style="text-align:center">Points</th>
-                    <th style="text-align:center">Prize</th>
-                    <th class="hidden-mobile">FiR</th>
-                    <th class="hidden-mobile">GiR</th>
-                    <th class="hidden-mobile">Scram</th>
-                    <th class="hidden-mobile">NTP</th>
-                </tr>
-            </thead>
-            <tbody id="tournament-body"></tbody>
-        </table>
+        <div class="scroll-body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th>Player</th>
+                        <th>To Par</th>
+                        <th>R1</th>
+                        <th>R2</th>
+                        <th class="col-r3">R3</th>
+                        <th class="col-r4">R4</th>
+                        <th style="text-align:center">Total</th>
+                        <th style="text-align:center">Pts</th>
+                        <th style="text-align:center">Prize</th>
+                        <th>FiR</th>
+                        <th>GiR</th>
+                    </tr>
+                </thead>
+                <tbody id="tournament-body"></tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="card">
-        <h2>Season Standings <small style="font-weight:normal; font-size: 0.6em; color: #666;">(Top 50% = Q)</small></h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Player</th>
-                    <th>Events</th>
-                    <th>Points</th>
-                    <th>Earnings</th>
-                </tr>
-            </thead>
-            <tbody id="season-body"></tbody>
-        </table>
+    <div class="scroll-card">
+        <h2>Season Standings <small style="font-size:0.5em; color:var(--emerald);">(Top 50%=Q)</small></h2>
+        <div class="scroll-body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Player</th>
+                        <th>Ev</th>
+                        <th>Points</th>
+                        <th>Earnings</th>
+                    </tr>
+                </thead>
+                <tbody id="season-body"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
-    // --- Data Logic ---
     const calculateTotal = (p) => {
-        const r1 = parseInt(p.r1) || 0;
-        const r2 = parseInt(p.r2) || 0;
-        const r3 = parseInt(p.r3) || 0;
-        const r4 = parseInt(p.r4) || 0;
-        const t = r1 + r2 + r3 + r4;
+        const scores = [p.r1, p.r2, p.r3, p.r4].map(s => parseInt(s) || 0);
+        const t = scores.reduce((a, b) => a + b, 0);
         return t === 0 ? '-' : t;
     };
 
-    const formatToPar = (p, coursePar) => {
+    const formatToPar = (p, par) => {
         const total = calculateTotal(p);
         if (total === '-') return '-';
-        const roundsPlayed = [p.r1, p.r2, p.r3, p.r4].filter(r => r && r !== "").length;
-        const diff = total - (coursePar * roundsPlayed);
-        if (diff === 0) return 'E';
-        return diff > 0 ? `+${diff}` : diff;
+        const rd = [p.r1, p.r2, p.r3, p.r4].filter(s => s && s !== "").length;
+        const diff = total - (par * rd);
+        return diff === 0 ? 'E' : (diff > 0 ? `+${diff}` : diff);
     };
 
-    // --- Fetch and Initialize ---
     fetch('data.json')
         .then(res => res.json())
         .then(data => {
-            // Update Branding
             const infoBar = document.querySelector('.event-info-bar');
             const titleEl = document.getElementById('display-week');
+            
             if (data.isSignature) {
                 infoBar.classList.add('major-event');
                 titleEl.innerHTML = `${data.venue} <span class="major-tag">MAJOR</span>`;
@@ -122,10 +171,8 @@
             document.getElementById('display-date').textContent = data.date;
             document.getElementById('course-par').textContent = data.coursePar;
 
-            const hasR3 = data.players.some(p => p.r3 && p.r3 !== "");
-            const hasR4 = data.players.some(p => p.r4 && p.r4 !== "");
-
-            // Handle Column Hiding
+            const hasR3 = data.players.some(p => p.r3);
+            const hasR4 = data.players.some(p => p.r4);
             document.querySelectorAll('.col-r3').forEach(el => el.style.display = hasR3 ? 'table-cell' : 'none');
             document.querySelectorAll('.col-r4').forEach(el => el.style.display = hasR4 ? 'table-cell' : 'none');
 
@@ -133,23 +180,18 @@
             renderSeason(data.seasonPoints, data.seasonEarnings, data.seasonEvents);
         });
 
-    // --- Render Tables ---
-    function renderTournament(players, par, showR3, showR4) {
+    function renderTournament(players, par, r3, r4) {
         const tbody = document.getElementById('tournament-body');
-        const sorted = [...players].sort((a,b) => {
-            const totalA = calculateTotal(a) === '-' ? 999 : calculateTotal(a);
-            const totalB = calculateTotal(b) === '-' ? 999 : calculateTotal(b);
-            return totalA - totalB;
-        });
+        const sorted = [...players].sort((a,b) => (calculateTotal(a) === '-' ? 999 : calculateTotal(a)) - (calculateTotal(b) === '-' ? 999 : calculateTotal(b)));
 
         tbody.innerHTML = sorted.map((p, i) => {
-            const total = calculateTotal(p);
-            const toPar = formatToPar(p, par);
-            const formatStat = (val, unit) => (val && val !== '-' && val !== '') ? `${val}${unit}` : '-';
+            const tot = calculateTotal(p);
+            const tp = formatToPar(p, par);
+            const fStat = (v, u) => (v && v !== '-') ? `${v}${u}` : '-';
 
             return `
                 <tr>
-                    <td>${i + 1}</td>
+                    <td>${i+1}</td>
                     <td>
                         <div class="player-cell">
                             <i class="fa-brands ${p.console}"></i>
@@ -157,42 +199,39 @@
                             <strong>${p.name}</strong>
                         </div>
                     </td>
-                    <td style="font-weight:bold; color:${toPar.toString().includes('-') ? 'red' : 'inherit'}">${toPar}</td>
+                    <td style="font-weight:bold; color:${tp.toString().includes('-')?'red':'inherit'}">${tp}</td>
                     <td>${p.r1 || '-'}</td>
                     <td>${p.r2 || '-'}</td>
-                    <td style="display:${showR3 ? 'table-cell' : 'none'}">${p.r3 || '-'}</td>
-                    <td style="display:${showR4 ? 'table-cell' : 'none'}">${p.r4 || '-'}</td>
-                    <td class="total-cell">${total}</td>
-                    <td style="text-align:center; font-weight:bold; color:var(--emerald);">${p.points || '-'}</td>
+                    <td style="display:${r3?'table-cell':'none'}">${p.r3 || '-'}</td>
+                    <td style="display:${r4?'table-cell':'none'}">${p.r4 || '-'}</td>
+                    <td style="background:#f9f9f9; font-weight:bold; text-align:center;">${tot}</td>
+                    <td style="color:var(--emerald); font-weight:bold; text-align:center;">${p.points || '-'}</td>
                     <td style="text-align:center;">${p.prize || '$0'}</td>
-                    <td class="bonus-stat hidden-mobile">${formatStat(p.fir, '%')}</td>
-                    <td class="bonus-stat hidden-mobile">${formatStat(p.gir, '%')}</td>
-                    <td class="bonus-stat hidden-mobile">${formatStat(p.scrambling, '%')}</td>
-                    <td class="bonus-stat hidden-mobile">${formatStat(p.ntp, 'ft')}</td>
+                    <td style="font-size:0.8em;">${fStat(p.fir, '%')}</td>
+                    <td style="font-size:0.8em;">${fStat(p.gir, '%')}</td>
                 </tr>
             `;
         }).join('');
     }
 
-    function renderSeason(points, earnings, events) {
+    function renderSeason(pts, earn, evs) {
         const tbody = document.getElementById('season-body');
-        const names = Object.keys(points).sort((a, b) => points[b] - points[a]);
+        const names = Object.keys(pts).sort((a,b) => pts[b] - pts[a]);
         const cutoff = Math.ceil(names.length / 2);
 
-        tbody.innerHTML = names.map((name, i) => {
+        tbody.innerHTML = names.map((n, i) => {
             const isQ = (i < cutoff && names.length > 1);
             return `
                 <tr class="${isQ ? 'playoff-zone' : ''}">
-                    <td>${i + 1}</td>
-                    <td style="font-weight:bold;">${name} ${isQ ? '<span class="q-marker">(Q)</span>' : ''}</td>
-                    <td>${events[name] || 0}</td>
-                    <td style="color:var(--emerald); font-weight:bold;">${(points[name] || 0).toLocaleString()}</td>
-                    <td>$${(earnings[name] || 0).toLocaleString()}</td>
+                    <td>${i+1}</td>
+                    <td>${n} ${isQ ? '<span class="q-marker">(Q)</span>' : ''}</td>
+                    <td>${evs[n] || 0}</td>
+                    <td style="color:var(--emerald); font-weight:bold;">${pts[n].toLocaleString()}</td>
+                    <td>$${earn[n].toLocaleString()}</td>
                 </tr>
             `;
         }).join('');
     }
 </script>
-
 </body>
 </html>
