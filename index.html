@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emerald Tour Leaderboard</title>
-    <link rel="stylesheet" href="https://cdn.gh/lipis/flag-icons@7.0.2/css/flag-icons.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.2/css/flag-icons.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root { --emerald: #228B22; --dark: #1a1a1a; }
         
-        /* 1. STICKY HEADER & LAYOUT */
+        /* 1. LAYOUT RESET */
+        * { box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', sans-serif; 
             margin: 0; 
@@ -18,84 +19,97 @@
             height: 100vh; 
             display: flex; 
             flex-direction: column; 
-            overflow: hidden; /* Prevents whole page from scrolling */
+            overflow: hidden; 
         }
         
+        /* 2. STICKY HEADER WITH IMAGES */
         .event-info-bar { 
             background: var(--emerald); 
             color: white; 
             padding: 15px 20px; 
             text-align: center; 
-            z-index: 100;
-            flex-shrink: 0; /* Keeps header size fixed */
+            position: relative; /* Crucial for absolute images */
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-shrink: 0;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 100;
         }
 
         .major-event { background: linear-gradient(135deg, #4b0082, #2e004f) !important; }
         .major-tag { background: #ffd700; color: black; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; font-weight: 900; margin-left: 10px; }
 
-        /* 2. LOGO AND EVENT IMAGE CONTAINERS */
-        .logo-container { position: absolute; left: 20px; top: 10px; }
-        .logo-container img { height: 60px; }
-        .event-img-container { position: absolute; right: 20px; top: 10px; }
-        .event-img-container img { height: 60px; border-radius: 4px; }
+        /* IMAGE PLACEMENT */
+        .logo-container { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); }
+        .logo-container img { height: 70px; display: block; }
+        
+        .event-img-container { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); }
+        .event-img-container img { height: 70px; border-radius: 6px; display: block; border: 1px solid rgba(255,255,255,0.3); }
 
-        /* 3. INDEPENDENT SCROLLING COLUMNS */
+        /* 3. SIDE-BY-SIDE SCROLLING (HORIZONTAL) */
         .main-content { 
-            display: grid; 
-            grid-template-columns: 1.8fr 1fr; /* Leaderboard wider than Standings */
+            display: flex; 
+            flex-direction: row; /* Force side-by-side */
             gap: 20px; 
             padding: 20px; 
-            flex-grow: 1; 
-            overflow: hidden; 
+            flex: 1; 
+            overflow: hidden; /* Prevent page scroll */
         }
 
         .scroll-card { 
             background: white; 
-            padding: 0; 
             border-radius: 12px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
             display: flex; 
             flex-direction: column; 
-            overflow: hidden; 
+            height: 100%; 
         }
 
+        /* Leaderboard gets more space */
+        #leaderboard-card { flex: 2; } 
+        #standings-card { flex: 1; }
+
         .scroll-body { 
-            overflow-y: auto; 
+            overflow-y: auto; /* Independent vertical scroll */
+            flex: 1;
             padding: 0 20px 20px 20px; 
         }
         
-        .scroll-card h2 { position: sticky; top: 0; background: white; margin: 0; padding: 20px; z-index: 10; border-bottom: 1px solid #eee; }
+        h2 { position: sticky; top: 0; background: white; margin: 0; padding: 20px; z-index: 10; border-bottom: 1px solid #eee; }
 
         /* Table Styling */
         table { width: 100%; border-collapse: collapse; }
-        th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 0.75em; position: sticky; top: 60px; z-index: 5; }
+        th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 0.75em; position: sticky; top: 0; z-index: 5; box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1); }
         td { padding: 10px; border-bottom: 1px solid #eee; font-size: 0.9em; }
 
         .playoff-zone { background-color: rgba(34, 139, 34, 0.08) !important; border-left: 5px solid var(--emerald); }
         .q-marker { color: var(--emerald); font-weight: bold; margin-left: 5px; }
         .player-cell { display: flex; align-items: center; gap: 8px; }
         
+        /* Mobile fallback: Switch to vertical if screen is too narrow */
         @media (max-width: 1000px) {
-            .main-content { grid-template-columns: 1fr; overflow-y: auto; }
+            .main-content { flex-direction: column; overflow-y: auto; }
             body { overflow: auto; }
-            .logo-container, .event-img-container { display: none; }
+            .logo-container, .event-img-container { position: static; transform: none; margin: 10px auto; }
+            .event-info-bar { height: auto; }
         }
     </style>
 </head>
 <body>
 
 <div class="event-info-bar">
-    <div class="logo-container"><img src="logo.png" alt="Tour Logo"></div>
-    <div class="event-img-container"><img src="event.png" alt="Event Image"></div>
+    <div class="logo-container"><img src="logo.png" alt="Logo"></div>
+    <div class="event-img-container"><img src="event.png" alt="Event"></div>
     
-    <h1 id="display-week" style="margin:0; font-size: 1.5em;">SEASON 1 | WEEK 1</h1>
-    <div id="display-date" style="opacity: 0.9; font-size: 0.9em;">Loading details...</div>
-    <div style="margin-top:5px; font-size: 0.8em;">Par: <span id="course-par">72</span></div>
+    <h1 id="display-week" style="margin:0; font-size: 1.6em;">SEASON 1 | WEEK 1</h1>
+    <div id="display-date" style="opacity: 0.9; font-size: 1em;">Loading details...</div>
+    <div style="margin-top:5px; font-size: 0.8em; font-weight: bold;">COURSE PAR: <span id="course-par">72</span></div>
 </div>
 
 <div class="main-content">
-    <div class="scroll-card">
+    <div class="scroll-card" id="leaderboard-card">
         <h2>Tournament Leaderboard</h2>
         <div class="scroll-body">
             <table>
@@ -120,8 +134,8 @@
         </div>
     </div>
 
-    <div class="scroll-card">
-        <h2>Season Standings <small style="font-size:0.5em; color:var(--emerald);">(Top 50%=Q)</small></h2>
+    <div class="scroll-card" id="standings-card">
+        <h2>Standings <small style="font-size:0.5em; color:var(--emerald);">(Top 50%=Q)</small></h2>
         <div class="scroll-body">
             <table>
                 <thead>
@@ -129,8 +143,8 @@
                         <th>#</th>
                         <th>Player</th>
                         <th>Ev</th>
-                        <th>Points</th>
-                        <th>Earnings</th>
+                        <th>Pts</th>
+                        <th>Earn</th>
                     </tr>
                 </thead>
                 <tbody id="season-body"></tbody>
