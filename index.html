@@ -9,132 +9,64 @@
     <style>
         :root { --emerald: #228B22; --dark: #1a1a1a; }
         
-        /* 1. LAYOUT RESET */
         * { box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', sans-serif; 
-            margin: 0; 
-            background: #f4f4f4; 
-            color: var(--dark); 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
+            margin: 0; background: #f4f4f4; color: var(--dark); 
+            height: 100vh; display: flex; flex-direction: column; overflow: hidden; 
         }
         
-        /* 2. FULL-WIDTH HERO HEADER (GRID LAYOUT) */
+        /* STACKED HEADER */
+        header { flex-shrink: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        
+        .full-img-container { width: 100%; overflow: hidden; display: flex; }
+        .full-img-container img { width: 100%; height: auto; object-fit: cover; display: block; }
+        
+        .logo-row { background: white; max-height: 80px; }
+        .event-row { max-height: 150px; border-bottom: 4px solid var(--emerald); }
+
         .event-info-bar { 
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr; /* Image-Text-Image */
-            align-items: stretch; /* Stretch images to full height */
-            position: relative;
-            min-height: 120px;
-            background: #eee; /* Fallback */
-            flex-shrink: 0;
-            z-index: 100;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            overflow: hidden; /* Keep images contained */
+            background: var(--emerald); color: white; 
+            padding: 15px; text-align: center; position: relative;
         }
+        .major-event { background: linear-gradient(135deg, #4b0082, #2e004f) !important; }
+        .major-tag { background: #ffd700; color: black; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; font-weight: 900; margin-left: 10px; }
 
-        .major-event .major-tag { background: #ffd700; color: black; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; font-weight: 900; margin-left: 10px; }
-
-        /* HERO IMAGE PLACEMENT */
-        .logo-container { overflow: hidden; }
-        .logo-container img { width: 100%; height: 100%; object-fit: cover; } /* Cover fills container */
+        /* HORIZONTAL LAYOUT */
+        .main-content { display: flex; flex-direction: row; gap: 20px; padding: 20px; flex: 1; overflow: hidden; }
+        .scroll-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 100%; }
         
-        .event-img-container { overflow: hidden; }
-        .event-img-container img { width: 100%; height: 100%; object-fit: cover; } /* Cover fills container */
-
-        /* CENTER TEXT BOX */
-        .header-text {
-            background: rgba(34, 139, 34, 0.95); /* Semi-transparent Green */
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 10px;
-            z-index: 5;
-            transition: all 0.5s ease;
-        }
-
-        /* Update background for Majors */
-        .major-event .header-text { background: linear-gradient(135deg, rgba(75,0,130,0.95), rgba(46,0,79,0.95)) !important; }
-
-        /* 3. SIDE-BY-SIDE SCROLLING (HORIZONTAL) */
-        .main-content { 
-            display: flex; 
-            flex-direction: row; /* Horizontal split */
-            gap: 20px; 
-            padding: 20px; 
-            flex: 1; 
-            overflow: hidden; 
-        }
-
-        .scroll-card { 
-            background: white; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-            display: flex; 
-            flex-direction: column; 
-            height: 100%; 
-        }
-
-        /* Leaderboard wider than Standings */
         #leaderboard-card { flex: 2; } 
         #standings-card { flex: 1; }
 
-        .scroll-body { 
-            overflow-y: auto; /* Independent vertical scroll */
-            flex: 1;
-            padding: 0 20px 20px 20px; 
-        }
-        
+        .scroll-body { overflow-y: auto; flex: 1; padding: 0 20px 20px 20px; }
         h2 { position: sticky; top: 0; background: white; margin: 0; padding: 15px 20px; z-index: 10; border-bottom: 1px solid #eee; }
 
-        /* Table Styling */
         table { width: 100%; border-collapse: collapse; }
         th { background: #f8f9fa; padding: 10px; text-align: left; font-size: 0.75em; position: sticky; top: 0; z-index: 5; box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1); }
         td { padding: 8px; border-bottom: 1px solid #eee; font-size: 0.9em; }
 
-        .total-cell { background:#f9f9f9; font-weight:bold; text-align:center; }
         .playoff-zone { background-color: rgba(34, 139, 34, 0.08) !important; border-left: 5px solid var(--emerald); }
+        .standings-player { display: flex; align-items: center; white-space: nowrap; min-width: 180px; }
+        .q-marker { color: var(--emerald); font-weight: bold; margin-left: 8px; }
         
-        /* 4. FORCE SINGLE LINE (Q) TAG */
-        .standings-player {
-            display: flex;
-            align-items: center;
-            white-space: nowrap; /* Prevents text from ever wrapping */
-            overflow: hidden;
-            text-overflow: ellipsis; /* Adds ... if name is incredibly long */
-            min-width: 200px; /* Crucial: Ensures enough space for name+(Q) */
-        }
-        .q-marker { color: var(--emerald); font-weight: bold; margin-left: 8px; flex-shrink: 0; } /* Won't shrink */
-
-        .player-cell { display: flex; align-items: center; gap: 8px; }
-        .fa-playstation { color: #003791; } .fa-xbox { color: #107C10; } .fa-steam { color: #171a21; }
-        
-        /* Mobile fallback */
         @media (max-width: 1000px) {
             .main-content { flex-direction: column; overflow-y: auto; }
             body { overflow: auto; }
-            .event-info-bar { grid-template-columns: 1fr; grid-template-rows: 100px auto; height: auto; }
-            .logo-container, .event-img-container { display: none; }
         }
     </style>
 </head>
 <body>
 
-<div class="event-info-bar">
-    <div class="logo-container"><img src="logo.png" alt="Tour Logo"></div>
-    <div class="header-text">
-        <h1 id="display-week" style="margin:0; font-size: 1.6em;">SEASON 1 | WEEK 1</h1>
-        <div id="display-date" style="opacity: 0.9; font-size: 1em;">Loading details...</div>
-        <div style="margin-top:5px; font-size: 0.8em; font-weight: bold;">COURSE PAR: <span id="course-par">72</span></div>
+<header id="main-header">
+    <div class="full-img-container logo-row"><img src="logo.png" alt="Tour Logo"></div>
+    <div class="full-img-container event-row"><img src="event.png" alt="Event Image"></div>
+    <div class="event-info-bar" id="branding-bar">
+        <h1 id="display-week" style="margin:0; font-size: 1.4em;">SEASON 1 | WEEK 1</h1>
+        <div id="display-date" style="opacity: 0.9; font-size: 0.9em;">Loading...</div>
+        <div style="margin-top:5px; font-size: 0.8em; font-weight: bold;">PAR: <span id="course-par">72</span></div>
     </div>
-    <div class="event-img-container"><img src="event.png" alt="Event Image"></div>
-</div>
+</header>
 
 <div class="main-content">
     <div class="scroll-card" id="leaderboard-card">
@@ -155,7 +87,9 @@
                         <th style="text-align:center">Prize</th>
                         <th>FiR</th>
                         <th>GiR</th>
-                        <th>Scram</th> <th>NTP</th>   </tr>
+                        <th>Scram</th>
+                        <th>NTP</th>
+                    </tr>
                 </thead>
                 <tbody id="tournament-body"></tbody>
             </table>
@@ -182,31 +116,22 @@
 </div>
 
 <script>
-    const calculateTotal = (p) => {
-        const scores = [p.r1, p.r2, p.r3, p.r4].map(s => parseInt(s) || 0);
-        const t = scores.reduce((a, b) => a + b, 0);
-        return t === 0 ? '-' : t;
-    };
-
-    const formatToPar = (p, par) => {
-        const total = calculateTotal(p);
-        if (total === '-') return '-';
-        const rd = [p.r1, p.r2, p.r3, p.r4].filter(s => s && s !== "").length;
-        const diff = total - (par * rd);
-        return diff === 0 ? 'E' : (diff > 0 ? `+${diff}` : diff);
+    const getScore = (p) => {
+        const t = (parseInt(p.r1)||0) + (parseInt(p.r2)||0) + (parseInt(p.r3)||0) + (parseInt(p.r4)||0);
+        return t === 0 ? 999 : t;
     };
 
     fetch('data.json')
         .then(res => res.json())
         .then(data => {
-            const infoBar = document.querySelector('.event-info-bar');
+            const brandingBar = document.getElementById('branding-bar');
             const titleEl = document.getElementById('display-week');
             
             if (data.isSignature) {
-                infoBar.classList.add('major-event');
+                brandingBar.classList.add('major-event');
                 titleEl.innerHTML = `${data.venue} <span class="major-tag">MAJOR</span>`;
             } else {
-                infoBar.classList.remove('major-event');
+                brandingBar.classList.remove('major-event');
                 titleEl.textContent = data.venue;
             }
 
@@ -224,38 +149,46 @@
 
     function renderTournament(players, par, r3, r4) {
         const tbody = document.getElementById('tournament-body');
-        const sorted = [...players].sort((a,b) => (calculateTotal(a) === '-' ? 999 : calculateTotal(a)) - (calculateTotal(b) === '-' ? 999 : calculateTotal(b)));
+        const sorted = [...players].sort((a,b) => getScore(a) - getScore(b));
 
-        tbody.innerHTML = sorted.map((p, i) => {
-            const tot = calculateTotal(p);
-            const tp = formatToPar(p, par);
+        let html = "";
+        sorted.forEach((p, i) => {
+            const total = getScore(p);
+            const displayTotal = total === 999 ? '-' : total;
+            
+            // TIED LOGIC
+            let displayPos = i + 1;
+            const isTied = sorted.filter(player => getScore(player) === total).length > 1;
+            if (isTied && total !== 999) {
+                const firstIndex = sorted.findIndex(player => getScore(player) === total);
+                displayPos = "T" + (firstIndex + 1);
+            }
+
+            const rdCount = [p.r1, p.r2, p.r3, p.r4].filter(s => s && s !== "").length;
+            const diff = total === 999 ? '-' : total - (par * rdCount);
+            const toPar = diff === 0 ? 'E' : (diff > 0 ? `+${diff}` : diff);
             const fStat = (v, u) => (v && v !== '-') ? `${v}${u}` : '-';
 
-            return `
+            html += `
                 <tr>
-                    <td>${i+1}</td>
-                    <td>
-                        <div class="player-cell">
-                            <i class="fa-brands ${p.console}"></i>
-                            <span class="fi fi-${p.country}"></span>
-                            <strong>${p.name}</strong>
-                        </div>
-                    </td>
-                    <td style="font-weight:bold; color:${tp.toString().includes('-')?'red':'inherit'}">${tp}</td>
+                    <td>${displayPos}</td>
+                    <td><div style="display:flex;align-items:center;gap:8px;"><i class="fa-brands ${p.console}"></i><span class="fi fi-${p.country}"></span><strong>${p.name}</strong></div></td>
+                    <td style="font-weight:bold; color:${toPar.toString().includes('-')?'red':'inherit'}">${toPar}</td>
                     <td>${p.r1 || '-'}</td>
                     <td>${p.r2 || '-'}</td>
                     <td style="display:${r3?'table-cell':'none'}">${p.r3 || '-'}</td>
                     <td style="display:${r4?'table-cell':'none'}">${p.r4 || '-'}</td>
-                    <td class="total-cell">${tot}</td>
+                    <td style="background:#f9f9f9; font-weight:bold; text-align:center;">${displayTotal}</td>
                     <td style="color:var(--emerald); font-weight:bold; text-align:center;">${p.points || '-'}</td>
-                    <td style="text-align:center;">${p.prize || '$0'}</td>
-                    <td style="font-size:0.85em; color:#666;">${fStat(p.fir, '%')}</td>
-                    <td style="font-size:0.85em; color:#666;">${fStat(p.gir, '%')}</td>
-                    <td style="font-size:0.85em; color:#666;">${fStat(p.scrambling, '%')}</td>
-                    <td style="font-size:0.85em; color:#666;">${fStat(p.ntp, 'ft')}</td>
+                    <td>${p.prize || '$0'}</td>
+                    <td style="font-size:0.85em;">${fStat(p.fir, '%')}</td>
+                    <td style="font-size:0.85em;">${fStat(p.gir, '%')}</td>
+                    <td style="font-size:0.85em;">${fStat(p.scrambling, '%')}</td>
+                    <td style="font-size:0.85em;">${fStat(p.ntp, 'ft')}</td>
                 </tr>
             `;
-        }).join('');
+        });
+        tbody.innerHTML = html;
     }
 
     function renderSeason(pts, earn, evs) {
