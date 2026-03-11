@@ -123,7 +123,7 @@
         const bar = document.getElementById('branding-bar');
         if (data.isSignature) bar.classList.add('major-event');
         
-        document.getElementById('display-week').textContent = data.header || data.venue;
+        document.getElementById('display-venue').textContent = data.venue || "Tournament Leaderboard";
         document.getElementById('display-date').textContent = data.date;
 
         // 1. RENDER TOURNAMENT
