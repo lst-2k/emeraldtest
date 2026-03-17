@@ -54,12 +54,14 @@
         .col-money { font-weight: bold; color: #2c3e50; }
         .col-bonus-payout { background-color: #fffdf0; font-weight: bold; color: #856404; border-left: 1px solid #eee; }
 
-        .middle-logo-divider { text-align: center; padding: 40px 20px; background: #fff; display: flex; flex-direction: column; align-items: center; gap: 20px; }
-        .middle-logo-divider img { max-width: 80%; max-height: 120px; height: auto; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1)); }
-        .sponsor-img { max-height: 100px !important; }
+        .middle-logo-divider { text-align: center; padding: 20px 20px; background: #fff; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .middle-logo-divider img { max-width: 80%; max-height: 60px; height: auto; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1)); }
+        .sponsor-img { max-height: 50px !important; }
+
+        .bottom-logo-divider { text-align: center; padding: 20px 0; width: 100%; background: #fff; }
+        .bottom-logo-divider img { width: 100%; max-width: 600px; height: auto; max-height: 60px; object-fit: contain; filter: grayscale(0.3); }
 
         .top-tier { background: linear-gradient(to right, #f2f9f2, #ffffff) !important; }
-        .cutoff-row td { border-bottom: 4px solid var(--emerald) !important; }
 
         .hof-container { padding: 40px 10px; background: var(--dark); color: white; text-align: center; }
         .hof-cards { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; perspective: 1000px; }
@@ -113,7 +115,7 @@
     </div>
 
     <div class="middle-logo-divider">
-		<img src="sponsor.png" alt="Sponsor" class="sponsor-img">
+        <img src="sponsor.png" alt="Sponsor" class="sponsor-img">
     </div>
 
     <div class="section-title">Season Standings</div>
@@ -131,9 +133,9 @@
             <tbody id="standings-body"></tbody>
         </table>
     </div>
-	
-	<div class="bottom-logo-divider" style="text-align: center; padding: 20px 0; background: #fff;">
-        <img src="2k25 logo.png" alt="2K25 Logo" style="width: 100%; max-width: 600px; height: auto; max-height: 60px; object-fit: contain; filter: grayscale(0.3);">
+    
+    <div class="bottom-logo-divider">
+        <img src="2k25 logo.png" alt="2K25 Logo">
     </div>
 
     <div class="hof-container">
@@ -154,7 +156,7 @@
     }
 
     function renderAll(data) {
-        // Update Venue Bar with data from data.json
+        // Aligned to use "prizePool" to match admin export
         const venueHTML = `
             <div><span>Venue:</span> ${data.venue || '--'}</div>
             <div><span>Date:</span> ${data.date || '--'}</div>
@@ -223,7 +225,7 @@
             const isQualified = i < qCutoff;
             const tr = document.createElement('tr');
             if(isQualified) tr.classList.add('top-tier');
-            if(i === qCutoff - 1) tr.classList.add('cutoff-row');
+            // Removed cutoff-row logic here to remove green line
 
             tr.innerHTML = `
                 <td>${i+1}</td>
