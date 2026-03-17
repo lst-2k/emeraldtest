@@ -12,11 +12,11 @@
         
         .leaderboard-container { max-width: 1450px; margin: 0 auto; background-color: white; border: 1px solid #ddd; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         
-        /* Full Width Logo Fix */
+        /* Header Fix: Edge to Edge */
         .header { background: var(--emerald); width: 100%; display: block; line-height: 0; }
         .header img { width: 100%; height: auto; display: block; }
         
-        .event-banner { width: 100%; height: auto; border-bottom: 4px solid var(--gold); }
+        .event-banner { width: 100%; height: auto; border-bottom: 4px solid var(--gold); display: block; }
 
         .venue-bar { background: #333; color: white; padding: 12px; text-align: center; font-weight: bold; font-size: 16px; letter-spacing: 1px; }
 
@@ -25,44 +25,53 @@
         th { background-color: #f8f8f8; padding: 12px; font-size: 11px; border-bottom: 2px solid #eee; text-transform: uppercase; color: #666; text-align: center; }
         td { padding: 10px 12px; border-bottom: 1px solid #eee; font-size: 14px; white-space: nowrap; text-align: center; }
         
-        /* Console Icon Colors */
+        /* Official Console Icon Colors */
         .fa-playstation { color: #003791; }
         .fa-xbox { color: #107C10; }
         .fa-steam { color: #171a21; }
+        .fa-gamepad { color: #555; }
 
-        .player-cell { text-align: left; font-weight: bold; min-width: 200px; }
-        .qualified-tag { color: #2e7d32; font-weight: 900; margin-left: 5px; }
+        .player-cell { text-align: left; font-weight: bold; min-width: 200px; display: flex; align-items: center; gap: 8px; }
+        .qualified-tag { color: #2e7d32; font-weight: 900; margin-left: 5px; font-size: 0.85em; }
 
         .section-title { background: var(--emerald); color: white; padding: 12px 20px; font-size: 18px; font-weight: bold; border-left: 10px solid var(--gold); }
 
-        .to-par { font-weight: 800; font-size: 15px; }
+        .to-par { font-weight: 800; font-size: 15px; width: 80px; }
         .under { color: #d32f2f; }
         .even { color: #2e7d32; }
 
         .col-money { font-weight: bold; color: #2c3e50; }
-        .col-bonus-payout { background-color: #fffdf0; font-weight: bold; color: #856404; border-left: 2px solid #eee; }
+        .col-bonus-payout { background-color: #fffdf0; font-weight: bold; color: #856404; border-left: 1px solid #eee; }
 
-        .middle-logo-divider { text-align: center; padding: 40px 20px; background: #fff; display: flex; justify-content: center; }
-        .middle-logo-divider img { max-width: 90%; max-height: 140px; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1)); }
+        /* Middle Divider with Sponsor */
+        .middle-logo-divider { text-align: center; padding: 40px 20px; background: #fff; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .middle-logo-divider img { max-width: 80%; max-height: 120px; height: auto; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1)); }
+        .sponsor-img { max-height: 100px !important; }
 
         .top-tier { background: linear-gradient(to right, #f2f9f2, #ffffff) !important; }
         .cutoff-row td { border-bottom: 4px solid var(--emerald) !important; }
 
+        /* 3D HOF Cards */
         .hof-container { padding: 40px 10px; background: var(--dark); color: white; text-align: center; }
+        .hof-cards { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; perspective: 1000px; }
         .hof-card { 
             background: linear-gradient(135deg, #2a2a2a 0%, #111 100%); 
             border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 25px 15px; width: 180px; 
             transform: rotateX(10deg) rotateY(-5deg); box-shadow: 8px 10px 20px rgba(0,0,0,0.5);
         }
+        .hof-card b { display: block; margin: 10px 0; font-size: 1.1em; }
+        .hof-medal { font-size: 40px; }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div class="leaderboard-container">
-    <div class="header"><img src="logo.png" alt="Header Logo"></div>
+    <div class="header"><img src="logo.png" alt="Tour Logo"></div>
     <img src="event.png" alt="Event Banner" class="event-banner">
     
-    <div id="venue-display" class="venue-bar">Loading Venue...</div>
+    <div id="venue-display" class="venue-bar">Tournament Loading...</div>
 
     <div class="section-title">Current Leaderboard</div>
     <div class="table-responsive">
@@ -89,7 +98,10 @@
         </table>
     </div>
 
-    <div class="middle-logo-divider"><img src="2k25 logo.png"></div>
+    <div class="middle-logo-divider">
+        <img src="2k25 logo.png" alt="2K25 Logo">
+        <img src="sponsor.png" alt="Sponsor" class="sponsor-img">
+    </div>
 
     <div class="section-title">Season Standings</div>
     <div class="table-responsive">
@@ -108,7 +120,8 @@
     </div>
 
     <div class="hof-container">
-        <div id="hof-display" class="hof-cards" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap;"></div>
+        <div style="color:var(--gold); font-size:24px; margin-bottom:30px; font-weight:bold;">🏆 SEASON EARNINGS LEADERS 🏆</div>
+        <div id="hof-display" class="hof-cards"></div>
     </div>
 </div>
 
@@ -120,15 +133,25 @@
             const response = await fetch(DATA_URL);
             const data = await response.json();
             renderAll(data);
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Fetch Error:", e); }
     }
 
     function renderAll(data) {
-        document.getElementById('venue-display').innerText = data.venue;
+        document.getElementById('venue-display').innerText = data.venue || "Weekly Event";
         const cPar = parseInt(data.coursePar) || 72;
         const multiplier = data.isSignature ? 2 : 1;
 
-        // 1. Leaderboard
+        // Round Detection
+        const hasR3 = data.players.some(p => p.r3 > 0);
+        const hasR4 = data.players.some(p => p.r4 > 0);
+        const showExtended = data.showR3R4 || hasR3 || hasR4;
+
+        if (showExtended) {
+            document.getElementById('th-r3').classList.remove('hidden');
+            document.getElementById('th-r4').classList.remove('hidden');
+        }
+
+        // 1. Leaderboard Rendering
         const lbBody = document.getElementById('leaderboard-body');
         lbBody.innerHTML = '';
         
@@ -141,31 +164,35 @@
             const toParDisplay = diff === 0 ? 'E' : (diff > 0 ? `+${diff}` : diff);
             const toParClass = diff < 0 ? 'under' : (diff === 0 ? 'even' : '');
 
-            // Calculate Bonus Column
-            let bonusCount = 0;
-            if(p.fir) bonusCount++; if(p.gir) bonusCount++; if(p.scrambling) bonusCount++; if(p.ntp) bonusCount++;
-            const bonusPayout = bonusCount * 10000 * multiplier;
+            // Calculate Bonus Column ($10k per achievement)
+            let bCount = 0;
+            if(p.fir) bCount++; if(p.gir) bCount++; if(p.scrambling) bCount++; if(p.ntp) bCount++;
+            const bonusSum = bCount * 10000 * multiplier;
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${i+1}</td>
-                <td class="player-cell"><i class="fa-brands ${p.console}"></i> <span class="fi fi-${p.country}"></span> ${p.name}</td>
+                <td class="player-cell">
+                    <i class="fa-brands ${p.console || 'fa-gamepad'}"></i> 
+                    <span class="fi fi-${(p.country || 'un').toLowerCase()}"></span> 
+                    ${p.name}
+                </td>
                 <td class="to-par ${toParClass}">${toParDisplay}</td>
                 <td>${p.r1 || '-'}</td><td>${p.r2 || '-'}</td>
-                <td class="${data.showR3R4 ? '' : 'hidden'}">${p.r3 || '-'}</td>
-                <td class="${data.showR3R4 ? '' : 'hidden'}">${p.r4 || '-'}</td>
+                <td class="${showExtended ? '' : 'hidden'}">${p.r3 || '-'}</td>
+                <td class="${showExtended ? '' : 'hidden'}">${p.r4 || '-'}</td>
                 <td><strong>${total || '-'}</strong></td>
                 <td class="col-money">${p.prize || '$0'}</td>
                 <td>${p.fir || '-'}</td><td>${p.gir || '-'}</td><td>${p.scrambling || '-'}</td><td>${p.ntp || '-'}</td>
-                <td class="col-bonus-payout">$${bonusPayout.toLocaleString()}</td>
+                <td class="col-bonus-payout">$${bonusSum.toLocaleString()}</td>
             `;
             lbBody.appendChild(tr);
         });
 
-        // 2. Standings with "Q" Status
+        // 2. Standings Rendering with "Q" Status
         const stBody = document.getElementById('standings-body');
         stBody.innerHTML = '';
-        const standings = Object.keys(data.seasonPoints).map(name => ({
+        const standings = Object.keys(data.seasonPoints || {}).map(name => ({
             name, pts: data.seasonPoints[name], earn: data.seasonEarnings[name], evs: data.seasonEvents[name]
         })).sort((a,b) => b.pts - a.pts);
 
@@ -186,17 +213,21 @@
             `;
             stBody.appendChild(tr);
         });
-        
-        // 3. HOF (Simplified render)
+
+        // 3. HOF Rendering
         const hof = document.getElementById('hof-display');
+        hof.innerHTML = '';
         const top3 = [...standings].sort((a,b) => b.earn - a.earn).slice(0,3);
         const medals = ['🥇','🥈','🥉'];
         top3.forEach((p, i) => {
-            hof.innerHTML += `<div class="hof-card"><span>${medals[i]}</span><br><b>${p.name}</b><br>$${p.earn.toLocaleString()}</div>`;
+            const card = document.createElement('div');
+            card.className = 'hof-card';
+            card.innerHTML = `<span class="hof-medal">${medals[i]}</span><b>${p.name}</b>$${p.earn.toLocaleString()}`;
+            hof.appendChild(card);
         });
     }
 
-    fetchData();
+    window.onload = fetchData;
 </script>
 </body>
 </html>
