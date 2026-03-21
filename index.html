@@ -6,68 +6,21 @@
     <title>Emerald Tour Leaderboard</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
-
-        /* --- STICKY BRANDING SECTION --- */
-        .sticky-top-wrap {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .main-header { 
-            background-color: #1b5e20; 
-            color: white; 
-            text-align: center; 
-            padding: 15px; 
-            font-weight: bold; 
-            font-size: 24px; 
-            border-bottom: 4px solid #fbc02d; 
-            text-transform: uppercase; 
-        }
-        .info-bar { 
-            background-color: #333; 
-            color: #ffeb3b; 
-            padding: 10px 20px; 
-            display: flex; 
-            justify-content: center; 
-            gap: 40px; 
-            align-items: center; 
-            font-size: 14px; 
-            font-weight: bold; 
-        }
-        .venue-section { 
-            text-align: center; 
-            padding: 15px 0; 
-            background: white; 
-            border-bottom: 1px solid #ddd; 
-        }
-        .venue-section h2 { color: #1b5e20; margin: 0; font-size: 24px; text-transform: uppercase; }
-        .venue-section p { font-weight: bold; margin: 5px 0 0 0; font-size: 16px; color: #333; }
-
-        /* --- CONTENT AREA --- */
+        .sticky-top-wrap { position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .main-header { background-color: #1b5e20; color: white; text-align: center; padding: 15px; font-weight: bold; font-size: 24px; border-bottom: 4px solid #fbc02d; text-transform: uppercase; }
+        .info-bar { background-color: #333; color: #ffeb3b; padding: 10px; display: flex; justify-content: center; gap: 40px; font-size: 14px; font-weight: bold; }
+        .venue-section { text-align: center; padding: 15px; background: white; border-bottom: 1px solid #ddd; }
+        .venue-section h2 { color: #1b5e20; margin: 0; text-transform: uppercase; }
         .content-padding { padding: 20px; }
-        .section-title { text-align:center; color:#1b5e20; text-transform: uppercase; margin-top: 30px; margin-bottom: 15px; }
-
-        /* --- TABLES --- */
-        .table-container { 
-            width: 100%; 
-            overflow-x: auto; 
-            background-color: white; 
-            border: 1px solid #ddd;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
+        .section-title { text-align:center; color:#1b5e20; text-transform: uppercase; margin: 30px 0 15px; }
+        .table-container { width: 100%; overflow-x: auto; background: white; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; min-width: 1100px; }
-        th { background-color: #1b5e20; color: white; padding: 12px; text-transform: uppercase; font-size: 11px; border-bottom: 2px solid #fbc02d; }
+        th { background-color: #1b5e20; color: white; padding: 12px; text-transform: uppercase; font-size: 11px; }
         td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px; }
-        
-        /* HIGHLIGHT COLUMNS */
         .net-cell { background-color: #f1f8e9; font-weight: bold; color: #1b5e20; }
         .hcap-cell { background-color: #fffde7; font-style: italic; }
         .bonus-cell { color: #666; font-size: 12px; }
-
-        /* ICONS */
-        .platform-icon { width: 18px; height: 18px; vertical-align: middle; margin-right: 8px; }
+        .platform-icon { width: 18px; vertical-align: middle; margin-right: 8px; }
     </style>
 </head>
 <body>
@@ -75,35 +28,21 @@
     <div class="sticky-top-wrap">
         <div class="main-header">EMERALD TOUR LEADERBOARD</div>
         <div class="info-bar">
-            <div>DATE: <span id="event-date" style="color: white;">--</span></div>
-            <div>COURSE PAR: <span id="course-par" style="color: white;">--</span></div>
+            <div>DATE: <span id="event-date" style="color:white">--</span></div>
+            <div>COURSE PAR: <span id="course-par" style="color:white">--</span></div>
         </div>
         <div class="venue-section">
-            <h2 id="current-venue">Loading Leaderboard...</h2>
+            <h2 id="current-venue">Loading...</h2>
             <p id="total-prize-pool">Total Prize Pool: --</p>
         </div>
     </div>
 
     <div class="content-padding">
-        
         <h3 class="section-title">Current Tournament</h3>
         <div class="table-container">
             <table>
                 <thead>
-                    <tr>
-                        <th>POS</th>
-                        <th style="text-align:left;">PLAYER</th>
-                        <th>HCP</th>
-                        <th>R1</th><th>R2</th><th>R3</th><th>R4</th>
-                        <th>GROSS</th>
-                        <th>NET</th>
-                        <th>TO PAR</th>
-                        <th>FiR%</th>
-                        <th>GiR%</th>
-                        <th>SCRAM</th>
-                        <th>NTP</th>
-                        <th>PRIZES</th>
-                    </tr>
+                    <tr><th>POS</th><th style="text-align:left">PLAYER</th><th>HCP</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th><th>GROSS</th><th>NET</th><th>TO PAR</th><th>FiR%</th><th>GiR%</th><th>SCRAM</th><th>NTP</th><th>PRIZES</th></tr>
                 </thead>
                 <tbody id="leaderboard-body"></tbody>
             </table>
@@ -112,109 +51,79 @@
         <h3 class="section-title">Season Standings</h3>
         <div class="table-container">
             <table>
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th style="text-align:left;">Player</th>
-                        <th>Events</th>
-                        <th>Points</th>
-                        <th>Earnings</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Rank</th><th style="text-align:left">Player</th><th>Events</th><th>Points</th><th>Earnings</th></tr></thead>
                 <tbody id="season-body"></tbody>
             </table>
         </div>
 
         <h3 class="section-title">Season 1 Event History</h3>
         <div class="table-container">
-            <table id="history-table">
-                <thead>
-                    <tr>
-                        <th>Event</th>
-                        <th style="text-align:left;">Venue</th>
-                        <th>Winner</th>
-                        <th>Winning Score</th>
-                        <th>Purse</th>
-                    </tr>
-                </thead>
-                <tbody id="history-body">
-                    </tbody>
+            <table>
+                <thead><tr><th>Event</th><th style="text-align:left">Venue</th><th>Winner</th><th>Score</th><th>Purse</th></tr></thead>
+                <tbody id="history-body"></tbody>
             </table>
         </div>
     </div>
 
     <script>
-const platformIcons = {
-    'fa-playstation': 'https://upload.wikimedia.org/wikipedia/commons/0/00/PlayStation_logo.svg',
-    'fa-xbox': 'https://upload.wikimedia.org/wikipedia/commons/f/f9/Xbox_one_logo.svg',
-    'fa-steam': 'https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg'
-};
+        const platformIcons = {
+            'fa-playstation': 'https://upload.wikimedia.org/wikipedia/commons/0/00/PlayStation_logo.svg',
+            'fa-xbox': 'https://upload.wikimedia.org/wikipedia/commons/f/f9/Xbox_one_logo.svg',
+            'fa-steam': 'https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg'
+        };
 
-async function loadData() {
-    try {
-        const response = await fetch('data.json?t=' + Date.now());
-        const data = await response.json();
-        render(data);
-    } catch (err) { 
-        console.error("Load Error:", err);
-    }
-}
+        async function loadData() {
+            try {
+                const res = await fetch('data.json?t=' + Date.now());
+                const data = await res.json();
+                render(data);
+            } catch (err) { console.error(err); }
+        }
 
-function render(data) {
-    const par = parseInt(data.coursePar) || 72;
-    document.getElementById('current-venue').innerText = data.venue || "Tournament";
-    document.getElementById('course-par').innerText = par;
-    document.getElementById('event-date').innerText = data.date || "--";
-    document.getElementById('total-prize-pool').innerText = `Total Prize Pool: ${data.prizePool || '--'}`;
+        function render(data) {
+            const par = parseInt(data.coursePar) || 72;
+            document.getElementById('current-venue').innerText = data.venue;
+            document.getElementById('course-par').innerText = par;
+            document.getElementById('event-date').innerText = data.date;
+            document.getElementById('total-prize-pool').innerText = `Total Prize Pool: ${data.prizePool}`;
 
-    // --- RENDER TOURNAMENT BOARD ---
-    const lbBody = document.getElementById('leaderboard-body');
-    const players = data.players.map(p => {
-        const rounds = [p.r1, p.r2, p.r3, p.r4].map(r => parseInt(r) || 0);
-        const active = rounds.filter(r => r > 0).length;
-        const gross = rounds.reduce((a, b) => a + b, 0);
-        const net = active > 0 ? (gross - (parseInt(p.hcap) || 0)) : 0;
-        const toParVal = active > 0 ? (net - (par * active)) : 999;
-        return { ...p, gross, net, toParVal, active };
-    }).sort((a, b) => a.toParVal - b.toParVal);
+            const players = data.players.map(p => {
+                const rounds = [p.r1, p.r2, p.r3, p.r4].map(r => parseInt(r) || 0);
+                const active = rounds.filter(r => r > 0).length;
+                const gross = rounds.reduce((a,b) => a+b, 0);
+                const net = active > 0 ? (gross - (parseInt(p.hcap)||0)) : 0;
+                const toParVal = active > 0 ? (net - (par * active)) : 999;
+                return { ...p, gross, net, toParVal, active };
+            }).sort((a,b) => a.toParVal - b.toParVal);
 
-    lbBody.innerHTML = players.map((p, i) => `
-        <tr>
-            <td>${p.active > 0 ? (i + 1) : '-'}</td>
-            <td style="text-align:left; font-weight:bold;">
-                <img src="${platformIcons[p.console] || ''}" class="platform-icon">${p.name}
-            </td>
-            <td class="hcap-cell">${p.hcap}</td>
-            <td>${p.r1 || '-'}</td><td>${p.r2 || '-'}</td>
-            <td>${p.r3 || '-'}</td><td>${p.r4 || '-'}</td>
-            <td>${p.active > 0 ? p.gross : '-'}</td>
-            <td class="net-cell">${p.active > 0 ? p.net : '-'}</td>
-            <td style="font-weight:bold;">${p.active > 0 ? (p.toParVal === 0 ? 'E' : (p.toParVal > 0 ? '+'+p.toParVal : p.toParVal)) : '-'}</td>
-            <td class="bonus-cell">${p.fir || '-'}</td>
-            <td class="bonus-cell">${p.gir || '-'}</td>
-            <td class="bonus-cell">${p.scram || '-'}</td>
-            <td class="bonus-cell">${p.ntp || '-'}</td>
-            <td style="font-weight:bold; color:#1b5e20;">${p.prize || '$0'}</td>
-        </tr>
-    `).join('');
+            document.getElementById('leaderboard-body').innerHTML = players.map((p, i) => `
+                <tr>
+                    <td>${p.active > 0 ? i+1 : '-'}</td>
+                    <td style="text-align:left; font-weight:bold;"><img src="${platformIcons[p.console]||''}" class="platform-icon">${p.name}</td>
+                    <td class="hcap-cell">${p.hcap}</td>
+                    <td>${p.r1||'-'}</td><td>${p.r2||'-'}</td><td>${p.r3||'-'}</td><td>${p.r4||'-'}</td>
+                    <td>${p.active > 0 ? p.gross : '-'}</td>
+                    <td class="net-cell">${p.active > 0 ? p.net : '-'}</td>
+                    <td style="font-weight:bold">${p.active > 0 ? (p.toParVal === 0 ? 'E' : (p.toParVal > 0 ? '+'+p.toParVal : p.toParVal)) : '-'}</td>
+                    <td class="bonus-cell">${p.fir||'-'}</td><td class="bonus-cell">${p.gir||'-'}</td><td class="bonus-cell">${p.scram||'-'}</td><td class="bonus-cell">${p.ntp||'-'}</td>
+                    <td style="font-weight:bold; color:#1b5e20;">${p.prize||'$0'}</td>
+                </tr>
+            `).join('');
 
-    // --- RENDER SEASON STANDINGS ---
-    const seasonBody = document.getElementById('season-body');
-    if (data.seasonPoints) {
-        const sortedNames = Object.keys(data.seasonPoints).sort((a,b) => data.seasonPoints[b] - data.seasonPoints[a]);
-        seasonBody.innerHTML = sortedNames.map((name, i) => `
-            <tr>
-                <td>${i + 1}</td>
-                <td style="text-align:left; font-weight:bold;">${name}</td>
-                <td>${data.seasonEvents ? (data.seasonEvents[name] || 0) : 0}</td>
-                <td style="color:#1b5e20; font-weight:bold;">${data.seasonPoints[name].toLocaleString()}</td>
-                <td>$${data.seasonEarnings[name].toLocaleString()}</td>
-            </tr>
-        `).join('');
-    }
-}
+            if(data.seasonPoints) {
+                const sorted = Object.keys(data.seasonPoints).sort((a,b) => data.seasonPoints[b] - data.seasonPoints[a]);
+                document.getElementById('season-body').innerHTML = sorted.map((n, i) => `
+                    <tr><td>${i+1}</td><td style="text-align:left; font-weight:bold">${n}</td><td>${data.seasonEvents[n]||0}</td><td style="color:#1b5e20; font-weight:bold">${data.seasonPoints[n].toLocaleString()}</td><td>$${data.seasonEarnings[n].toLocaleString()}</td></tr>
+                `).join('');
+            }
 
-loadData();
+            if(data.eventHistory) {
+                document.getElementById('history-body').innerHTML = data.eventHistory.map(h => `
+                    <tr><td>${h.event}</td><td style="text-align:left; font-weight:bold">${h.venue}</td><td>${h.winner}</td><td>${h.score}</td><td>${h.purse}</td></tr>
+                `).join('');
+            }
+        }
+        loadData();
     </script>
 </body>
 </html>
