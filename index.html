@@ -3,227 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emerald Tour - Member Portal</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.2/css/flag-icons.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Emerald Tour Leaderboard</title>
     <style>
-        :root { --emerald: #124d12; --gold: #FFD700; --dark: #1a1a1a; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f4; margin: 0; padding: 10px; color: #333; }
-        .leaderboard-container { max-width: 1450px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .header img, .event-banner { width: 100%; height: auto; display: block; }
-        .venue-bar { background: #333; color: white; padding: 12px; text-align: center; display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; font-weight: bold; }
-        .venue-bar span { color: var(--gold); text-transform: uppercase; font-size: 11px; margin-right: 5px; }
-        .section-title { background: var(--emerald); color: white; padding: 12px 20px; font-size: 18px; font-weight: bold; border-left: 10px solid var(--gold); }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f8f8f8; padding: 12px; font-size: 11px; border-bottom: 2px solid #eee; text-transform: uppercase; }
-        td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
-        .player-cell { text-align: left; font-weight: bold; display: flex; align-items: center; gap: 8px; }
-        .to-par { font-weight: 800; } .under { color: #d32f2f; } .even { color: #2e7d32; }
-        .middle-logo-divider { text-align: center; padding: 40px; background: #fff; }
-        .middle-logo-divider img { max-height: 60px; }
-        .bottom-logo-divider { text-align: center; padding: 20px; }
-        .bottom-logo-divider img { max-height: 60px; width: auto; }
-        
-        /* History Accordion */
-        .history-item { border-bottom: 1px solid #eee; }
-        .history-header { padding: 15px 20px; cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; background: #fff; }
-        .history-header:hover { background: #f9f9f9; }
-        .history-content { display: none; padding: 15px 20px; background: #fcfcfc; font-size: 14px; }
-        .active .history-content { display: block; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
 
-        /* HOF Cards */
-        .hof-container { padding: 40px; background: var(--dark); color: white; text-align: center; }
-        .hof-cards { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
-        .hof-card { background: linear-gradient(135deg, #333, #111); padding: 20px; border-radius: 12px; width: 220px; border: 1px solid rgba(255,215,0,0.3); }
-        .hof-medal { font-size: 40px; display: block; }
-        .hof-wins { color: var(--gold); font-weight: bold; margin-top: 10px; display: block; }
-        .hidden { display: none; }
+        /* --- STICKY BRANDING SECTION --- */
+        .sticky-top-wrap {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .main-header { 
+            background-color: #1b5e20; 
+            color: white; 
+            text-align: center; 
+            padding: 15px; 
+            font-weight: bold; 
+            font-size: 24px; 
+            border-bottom: 4px solid #fbc02d; 
+            text-transform: uppercase; 
+        }
+        .info-bar { 
+            background-color: #333; 
+            color: #ffeb3b; 
+            padding: 10px 20px; 
+            display: flex; 
+            justify-content: center; 
+            gap: 40px; 
+            align-items: center; 
+            font-size: 14px; 
+            font-weight: bold; 
+        }
+        .venue-section { 
+            text-align: center; 
+            padding: 15px 0; 
+            background: white; 
+            border-bottom: 1px solid #ddd; 
+        }
+        .venue-section h2 { color: #1b5e20; margin: 0; font-size: 24px; text-transform: uppercase; }
+        .venue-section p { font-weight: bold; margin: 5px 0 0 0; font-size: 16px; color: #333; }
+
+        /* --- CONTENT AREA --- */
+        .content-padding { padding: 20px; }
+        .section-title { text-align:center; color:#1b5e20; text-transform: uppercase; margin-top: 30px; margin-bottom: 15px; }
+
+        /* --- TABLES --- */
+        .table-container { 
+            width: 100%; 
+            overflow-x: auto; 
+            background-color: white; 
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        th { background-color: #1b5e20; color: white; padding: 12px; text-transform: uppercase; font-size: 11px; border-bottom: 2px solid #fbc02d; }
+        td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; }
+        
+        /* HIGHLIGHT COLUMNS */
+        .net-cell { background-color: #f1f8e9; font-weight: bold; color: #1b5e20; }
+        .hcap-cell { background-color: #fffde7; font-style: italic; }
+
+        /* ICONS */
+        .platform-icon { width: 20px; height: 20px; vertical-align: middle; margin-right: 8px; object-fit: contain; }
     </style>
 </head>
 <body>
 
-<div class="leaderboard-container">
-    <div class="header"><img src="logo.png"></div>
-    <img src="event.png" class="event-banner">
-    <div id="venue-display" class="venue-bar"></div>
-
-    <div class="section-title">Current Leaderboard</div>
-    <div style="overflow-x:auto">
-        <table>
-            <thead>
-    <tr>
-        <th>POS</th>
-        <th style="text-align:left">PLAYER</th>
-        <th>TO PAR</th>
-        <th>R1</th>
-        <th>R2</th>
-        <th id="th-r3" class="hidden">R3</th>
-        <th id="th-r4" class="hidden">R4</th>
-        <th>TOT</th>
-        <th>PRIZE</th>
-        <th>FiR%</th>
-        <th>GiR%</th>
-        <th>SCRAM</th>
-        <th>NTP</th>
-        <th style="background:#fffdf0">BONUS</th>
-    </tr>
-</thead>
-            <tbody id="leaderboard-body"></tbody>
-        </table>
+    <div class="sticky-top-wrap">
+        <div class="main-header">EMERALD TOUR LEADERBOARD</div>
+        <div class="info-bar">
+            <div>DATE: <span id="event-date" style="color: white;">--</span></div>
+            <div>COURSE PAR: <span id="course-par" style="color: white;">--</span></div>
+        </div>
+        <div class="venue-section">
+            <h2 id="current-venue">Loading Leaderboard...</h2>
+            <p id="total-prize-pool">Total Prize Pool: --</p>
+        </div>
     </div>
 
-    <div class="middle-logo-divider"><img src="sponsor.png"></div>
+    <div class="content-padding">
+        
+        <h3 class="section-title">Tournament Leaderboard</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>POS</th>
+                        <th style="text-align:left;">PLAYER</th>
+                        <th>HCP</th>
+                        <th>R1</th>
+                        <th>R2</th>
+                        <th>R3</th>
+                        <th>R4</th>
+                        <th>GROSS</th>
+                        <th>NET</th>
+                        <th>TO PAR</th>
+                        <th>PRIZES</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body"></tbody>
+            </table>
+        </div>
 
-    <div class="section-title">Season Standings</div>
-<div class="table-responsive">
-    <table>
-        <thead>
-            <tr>
-                <th>POS</th>
-                <th style="text-align:left">PLAYER</th>
-                <th style="text-align:right; padding-right:30px;">POINTS</th>
-                <th style="text-align:right; padding-right:30px;">EARNINGS</th>
-                <th style="text-align:right; padding-right:30px;">EVENTS</th> </tr>
-        </thead>
-        <tbody id="standings-body"></tbody>
-    </table>
-</div>
-
-    <div class="section-title">Tournament History</div>
-    <div id="history-container"></div>
-
-    <div class="bottom-logo-divider"><img src="2k25 logo.png"></div>
-
-    <div class="hof-container">
-        <h2 style="color:var(--gold)">🏆 SEASON HALL OF FAME 🏆</h2>
-        <div id="hof-display" class="hof-cards"></div>
+        <h3 class="section-title">Season Stats & Standings</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Rank</th><th style="text-align:left;">Player</th><th>Points</th><th>Earnings</th><th>Events</th><th>FIR %</th><th>GIR %</th><th>Scram</th><th>NTP</th></tr>
+                </thead>
+                <tbody id="stats-body"></tbody>
+            </table>
+        </div>
     </div>
-</div>
 
-<script>
-    async function fetchData() {
-        try {
-            const response = await fetch('data.json');
-            const data = await response.json();
-            render(data);
-        } catch (e) { console.error("Fetch Error:", e); }
+    <script>
+const DATA_URL = 'data.json';
+
+const platformIcons = {
+    'fa-playstation': 'https://upload.wikimedia.org/wikipedia/commons/0/00/PlayStation_logo.svg',
+    'fa-xbox': 'https://upload.wikimedia.org/wikipedia/commons/f/f9/Xbox_one_logo.svg',
+    'fa-steam': 'https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg'
+};
+
+async function loadData() {
+    try {
+        const response = await fetch(DATA_URL + '?t=' + Date.now());
+        if (!response.ok) throw new Error("File not found");
+        const data = await response.json();
+        renderData(data);
+    } catch (err) { 
+        console.error("Load Error:", err);
+        document.getElementById('current-venue').innerText = "Data Error: Make sure data.json exists.";
     }
+}
 
-	function render(data) {
-		// 1. Venue Bar
-		document.getElementById('venue-display').innerHTML = `
-			<div><span>Venue:</span> ${data.venue || '--'}</div>
-			<div><span>Date:</span> ${data.date || '--'}</div>
-			<div><span>Par:</span> ${data.coursePar || '--'}</div>
-			<div><span>Purse:</span> ${data.prizePool || '--'}</div>
-		`;
-		
-		const hasExtra = data.players.some(p => p.r3 || p.r4);
-		if(hasExtra) { 
-			document.getElementById('th-r3').classList.remove('hidden'); 
-			document.getElementById('th-r4').classList.remove('hidden'); 
-		}
+function renderData(data) {
+    const parVal = parseInt(data.coursePar) || 72;
+    document.getElementById('current-venue').innerText = data.venue || "Tournament";
+    document.getElementById('course-par').innerText = parVal;
+    document.getElementById('event-date').innerText = data.date || "--";
+    document.getElementById('total-prize-pool').innerText = `Total Prize Pool: ${data.prizePool || '--'}`;
 
-		const lb = document.getElementById('leaderboard-body');
-		lb.innerHTML = '';
-		
-		data.players.forEach((p, i) => {
-			const scores = [p.r1, p.r2, p.r3, p.r4].filter(s => s && s !== "");
-			const tot = scores.reduce((a, b) => parseInt(a) + parseInt(b), 0) || 0;
-			const parDiff = tot - (parseInt(data.coursePar) * scores.length);
-			const toPar = scores.length > 0 ? (parDiff === 0 ? 'E' : (parDiff > 0 ? '+'+parDiff : parDiff)) : '-';
-			
-			// Calculate Bonus Total ($)
-			let bCount = 0;
-			if(p.fir) bCount++; if(p.gir) bCount++; if(p.scrambling) bCount++; if(p.ntp) bCount++;
-			const bonusVal = bCount * 10000 * (data.isSignature ? 2 : 1);
+    const lbBody = document.getElementById('leaderboard-body');
+    lbBody.innerHTML = "";
 
-			// THE FIX: Exact column alignment
-			lb.innerHTML += `
-				<tr>
-					<td>${i+1}</td>
-					<td class="player-cell">
-						<i class="fa-brands ${p.console}"></i> 
-						<span class="fi fi-${p.country}"></span> ${p.name}
-					</td>
-					<td class="to-par ${parDiff < 0 ? 'under' : parDiff === 0 ? 'even' : ''}">${toPar}</td>
-					<td>${p.r1 || '-'}</td>
-					<td>${p.r2 || '-'}</td>
-					<td class="${hasExtra ? '' : 'hidden'}">${p.r3 || '-'}</td>
-					<td class="${hasExtra ? '' : 'hidden'}">${p.r4 || '-'}</td>
-					<td><b>${tot || '-'}</b></td>
-					<td class="col-money">${p.prize || '$0'}</td>
-					<td>${p.fir || '-'}</td>
-					<td>${p.gir || '-'}</td>
-					<td>${p.scrambling || '-'}</td>
-					<td>${p.ntp || '-'}</td>
-					<td class="col-bonus-payout" style="background:#fffdf0"><b>$${bonusVal.toLocaleString()}</b></td>
-				</tr>
-			`;
-		});
+    if (data.players && Array.isArray(data.players)) {
+        let players = data.players.map(p => {
+            const hcap = parseInt(p.hcap) || 0;
+            const rounds = [p.r1, p.r2, p.r3, p.r4].map(r => parseInt(r) || 0);
+            const activeCount = rounds.filter(r => r > 0).length;
+            
+            const gross = rounds.reduce((a, b) => a + b, 0);
+            const net = activeCount > 0 ? (gross - hcap) : 0;
+            
+            let toParValue = 999;
+            let toParDisplay = "--";
+            
+            if (activeCount > 0) {
+                toParValue = net - (parVal * activeCount);
+                toParDisplay = toParValue > 0 ? `+${toParValue}` : (toParValue === 0 ? "E" : toParValue);
+            }
 
-        // 3. Season Standings Rendering (Including Events)
-		const st = document.getElementById('standings-body');
-		st.innerHTML = '';
-		const sortedStandings = Object.keys(data.seasonPoints || {}).map(name => ({
-			name, 
-			pts: data.seasonPoints[name], 
-			earn: data.seasonEarnings[name],
-			evs: data.seasonEvents ? data.seasonEvents[name] : 0 
-		})).sort((a,b) => b.pts - a.pts);
+            const iconUrl = platformIcons[p.console] || "";
+            const iconHtml = iconUrl ? `<img src="${iconUrl}" class="platform-icon">` : "";
+            
+            return { ...p, hcap, rounds, gross, net, toParDisplay, toParValue, iconHtml, activeCount };
+        });
 
-		sortedStandings.forEach((s, i) => {
-			const tr = document.createElement('tr');
-			// Optional: add your 'top-tier' logic here if needed
-			
-			tr.innerHTML = `
-				<td>${i+1}</td>
-				<td class="player-cell">${s.name}</td>
-				<td style="text-align:right; padding-right:30px;">${s.pts.toLocaleString()}</td>
-				<td style="text-align:right; padding-right:30px;"><b>$${s.earn.toLocaleString()}</b></td>
-				<td style="text-align:right; padding-right:30px;">${s.evs}</td> 
-			`;
-			st.appendChild(tr);
-		});
+        // SORT BY NET TO PAR
+        players.sort((a, b) => a.toParValue - b.toParValue);
 
-        // 4. History Rendering
-        const hist = document.getElementById('history-container');
-        hist.innerHTML = '';
-        if(data.history) {
-            [...data.history].reverse().forEach((h, i) => {
-                hist.innerHTML += `
-                    <div class="history-item" onclick="this.classList.toggle('active')">
-                        <div class="history-header">
-                            Week ${data.history.length-i}: ${h.venue} <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="history-content">
-                            Winner: <b>${h.winner}</b> | Score: ${h.score} | Prize: ${h.prize}
-                        </div>
-                    </div>`;
-            });
-        }
-
-        // 5. Hall of Fame Rendering
-        const hof = document.getElementById('hof-display');
-        hof.innerHTML = '';
-        const top3 = Object.keys(data.seasonEarnings || {}).map(n => ({ 
-            name: n, 
-            earn: data.seasonEarnings[n], 
-            wins: data.seasonWins ? data.seasonWins[n] : 0 
-        })).sort((a,b) => b.earn - a.earn).slice(0,3);
-
-        const medals = ['🥇','🥈','🥉'];
-        top3.forEach((p, i) => {
-            hof.innerHTML += `
-                <div class="hof-card">
-                    <span class="hof-medal">${medals[i]}</span>
-                    <b>${p.name}</b><br>
-                    Earnings: $${p.earn.toLocaleString()}<br>
-                    <span class="hof-wins">🏆 ${p.wins} Wins</span>
-                </div>`;
+        players.forEach((p, i) => {
+            lbBody.innerHTML += `
+                <tr>
+                    <td>${p.activeCount > 0 ? (i + 1) : '-'}</td>
+                    <td style="text-align:left; font-weight:bold;">${p.iconHtml}${p.name}</td>
+                    <td class="hcap-cell">${p.hcap}</td>
+                    <td>${p.rounds[0]||'-'}</td>
+                    <td>${p.rounds[1]||'-'}</td>
+                    <td>${p.rounds[2]||'-'}</td>
+                    <td>${p.rounds[3]||'-'}</td>
+                    <td>${p.activeCount > 0 ? p.gross : '-'}</td>
+                    <td class="net-cell">${p.activeCount > 0 ? p.net : '-'}</td>
+                    <td style="font-weight:bold; color:${p.toParValue <= 0 ? 'red' : 'black'}">${p.toParDisplay}</td>
+                    <td style="color:#1b5e20; font-weight:bold;">${p.prize || '--'}</td>
+                </tr>`;
         });
     }
-    window.onload = fetchData;
-</script>
+
+    // SEASON STATS
+    const statsBody = document.getElementById('stats-body');
+    statsBody.innerHTML = "";
+    if (data.seasonPoints && data.seasonEarnings) {
+        const playerNames = Object.keys(data.seasonPoints).sort((a,b) => data.seasonPoints[b] - data.seasonPoints[a]);
+
+        playerNames.forEach((name, i) => {
+            const sPoints = data.seasonPoints[name] || 0;
+            const sEarn = data.seasonEarnings[name] || 0;
+            const sEvents = data.seasonEvents ? (data.seasonEvents[name] || 0) : 0;
+            
+            // Find player object for bonus stats
+            const pObj = data.players.find(p => p.name === name) || {};
+
+            statsBody.innerHTML += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td style="text-align:left; font-weight:bold;">${name}</td>
+                    <td><b>${sPoints.toLocaleString()}</b></td>
+                    <td style="color:#1b5e20; font-weight:bold;">$${sEarn.toLocaleString()}</td>
+                    <td>${sEvents}</td>
+                    <td>${pObj.fir || '--'}%</td>
+                    <td>${pObj.gir || '--'}%</td>
+                    <td>${pObj.scrambling || '--'}%</td>
+                    <td>${pObj.ntp ? pObj.ntp + 'ft' : '--'}</td>
+                </tr>`;
+        });
+    }
+}
+
+loadData();
+    </script>
 </body>
 </html>

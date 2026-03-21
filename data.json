@@ -1,123 +1,54 @@
 {
-  "venue": "The Royal Golf Club",
-  "date": "Feb 2026",
-  "coursePar": "72",
-  "prizePool": "$500,000",
-  "isSignature": false,
   "players": [
     {
-      "name": "Scottie",
-      "console": "fa-xbox",
-      "country": "us",
+      "name": "NoWorries",
+      "hcap": "8",
       "r1": "68",
-      "r2": "64",
+      "r2": "76",
       "r3": "",
-      "r4": "",
-      "prize": "$90,000",
-      "eventPoints": "500",
-      "fir": "",
-      "gir": "",
-      "scrambling": "",
-      "ntp": ""
+      "r4": ""
     },
     {
-      "name": "Tyrell",
-      "console": "fa-steam",
-      "country": "gb",
-      "r1": "68",
-      "r2": "66",
-      "r3": "",
-      "r4": "",
-      "prize": "$54,500",
-      "eventPoints": "300",
-      "fir": "50",
-      "gir": "",
-      "scrambling": "",
-      "ntp": "50"
-    },
-    {
-      "name": "Shane",
-      "console": "fa-playstation",
-      "country": "gb",
+      "name": "Mr Longpole",
+      "hcap": "0",
       "r1": "69",
-      "r2": "67",
-      "r3": "",
-      "r4": "",
-      "prize": "$34,500",
-      "eventPoints": "190",
-      "fir": "",
-      "gir": "50",
-      "scrambling": "",
-      "ntp": ""
-    },
-    {
-      "name": "Justin",
-      "console": "fa-playstation",
-      "country": "gb",
-      "r1": "70",
       "r2": "68",
       "r3": "",
-      "r4": "",
-      "prize": "$22,500",
-      "eventPoints": "123",
-      "fir": "",
-      "gir": "",
-      "scrambling": "",
-      "ntp": ""
+      "r4": ""
     },
     {
-      "name": "Rory",
-      "console": "fa-playstation",
-      "country": "gb",
-      "r1": "69",
-      "r2": "69",
+      "name": "Geordieboy85",
+      "hcap": "0",
+      "r1": "70",
+      "r2": "70",
       "r3": "",
-      "r4": "",
-      "prize": "$22,500",
-      "eventPoints": "123",
-      "fir": "",
-      "gir": "",
-      "scrambling": "50",
-      "ntp": ""
+      "r4": ""
     },
     {
-      "name": "Brooks",
-      "console": "fa-xbox",
-      "country": "us",
+      "name": "Polekatt",
+      "hcap": "6",
       "r1": "72",
-      "r2": "69",
+      "r2": "75",
       "r3": "",
-      "r4": "",
-      "prize": "$18,500",
-      "eventPoints": "100",
-      "fir": "",
-      "gir": "",
-      "scrambling": "",
-      "ntp": ""
+      "r4": ""
+    },
+    {
+      "name": "x3offthetee",
+      "hcap": "0",
+      "r1": "72",
+      "r2": "72",
+      "r3": "",
+      "r4": ""
+    },
+    {
+      "name": "Colly45x",
+      "hcap": "0",
+      "r1": "78",
+      "r2": "74",
+      "r3": "",
+      "r4": ""
     }
   ],
-  "seasonPoints": {
-    "Tyrell": 800,
-    "Scottie": 635,
-    "Shane": 490,
-    "Rory": 313,
-    "Justin": 258,
-    "Brooks": 200
-  },
-  "seasonEarnings": {
-    "Tyrell": 174500,
-    "Scottie": 122500,
-    "Shane": 99000,
-    "Rory": 77000,
-    "Justin": 45000,
-    "Brooks": 47000
-  },
-  "seasonEvents": {
-    "Tyrell": 2,
-    "Scottie": 2,
-    "Shane": 2,
-    "Rory": 2,
-    "Justin": 2,
-    "Brooks": 2
-  }
+  "seasonPoints": {},
+  "seasonEarnings": {}
 }
