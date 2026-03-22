@@ -5,102 +5,102 @@
   "date": "18 Mar - 24 Mar 2026",
   "players": [
     {
-      "name": "COLLY45X",
-      "hcap": "0",
+      "name": "NOWORRIES",
+      "hcap": "9",
       "console": "fa-xbox",
-      "r1": "63",
-      "r2": "68",
+      "r1": "68",
+      "r2": "72",
       "r3": "",
       "r4": "",
-      "fir": "85.45",
+      "fir": "",
       "gir": "",
       "scram": "",
       "ntp": "",
-      "prize": "$82,250"
+      "prize": "$90,000"
     },
     {
       "name": "X3OFFTHETEE",
       "hcap": "0",
       "console": "fa-xbox",
-      "r1": "66",
-      "r2": "65",
+      "r1": "69",
+      "r2": "66",
       "r3": "",
       "r4": "",
       "fir": "",
-      "gir": "90.85",
+      "gir": "",
       "scram": "",
       "ntp": "",
-      "prize": "$82,250"
+      "prize": "$54,500"
     },
     {
-      "name": "NOWORRIES",
-      "hcap": "9",
-      "console": "fa-xbox",
-      "r1": "70",
-      "r2": "79",
+      "name": "HAMMERSMAN",
+      "hcap": "0",
+      "console": "fa-steam",
+      "r1": "71",
+      "r2": "68",
       "r3": "",
       "r4": "",
-      "fir": "",
-      "gir": "90.85",
+      "fir": "55",
+      "gir": "",
       "scram": "",
       "ntp": "",
       "prize": "$44,500"
     },
     {
-      "name": "GEORDIEBOY85",
-      "hcap": "0",
-      "console": "fa-playstation",
-      "r1": "72",
-      "r2": "69",
-      "r3": "",
-      "r4": "",
-      "fir": "",
-      "gir": "",
-      "scram": "",
-      "ntp": "",
-      "prize": "$24,500"
-    },
-    {
-      "name": "POLEKATT",
-      "hcap": "7",
-      "console": "fa-steam",
-      "r1": "73",
-      "r2": "77",
-      "r3": "",
-      "r4": "",
-      "fir": "",
-      "gir": "",
-      "scram": "66.66",
-      "ntp": "",
-      "prize": "$30,500"
-    },
-    {
       "name": "MR LONGPOLE",
       "hcap": "0",
       "console": "fa-xbox",
-      "r1": "69",
+      "r1": "70",
+      "r2": "72",
+      "r3": "",
+      "r4": "",
+      "fir": "",
+      "gir": "55",
+      "scram": "",
+      "ntp": "",
+      "prize": "$32,500"
+    },
+    {
+      "name": "COLLY45X",
+      "hcap": "0",
+      "console": "fa-xbox",
+      "r1": "71",
+      "r2": "71",
+      "r3": "",
+      "r4": "",
+      "fir": "",
+      "gir": "",
+      "scram": "55",
+      "ntp": "",
+      "prize": "$32,500"
+    },
+    {
+      "name": "GEORDIEBOY85",
+      "hcap": "0",
+      "console": "fa-playstation",
+      "r1": "68",
       "r2": "75",
       "r3": "",
       "r4": "",
       "fir": "",
       "gir": "",
       "scram": "",
-      "ntp": "",
-      "prize": "$18,500"
+      "ntp": "55",
+      "prize": "$28,500"
     },
     {
-      "name": "HAMMERSMAN",
-      "hcap": "0",
+      "name": "POLEKATT",
+      "hcap": "7",
       "console": "fa-steam",
-      "r1": "75",
-      "r2": "74",
+      "r1": "77",
+      "r2": "79",
       "r3": "",
       "r4": "",
       "fir": "",
       "gir": "",
       "scram": "",
-      "ntp": "15.3",
-      "prize": "$27,000"
+      "ntp": "",
+      "prize": "$17,000"
     }
   ],
   "seasonPoints": {
@@ -113,22 +113,22 @@
     "HAMMERSMAN": 95
   },
   "seasonEarnings": {
-    "COLLY45X": 82250,
-    "X3OFFTHETEE": 82250,
-    "NOWORRIES": 44500,
-    "GEORDIEBOY85": 24500,
-    "POLEKATT": 30500,
-    "MR LONGPOLE": 18500,
-    "HAMMERSMAN": 27000
+    "COLLY45X": 377000,
+    "X3OFFTHETEE": 219000,
+    "NOWORRIES": 179000,
+    "GEORDIEBOY85": 77500,
+    "POLEKATT": 78000,
+    "MR LONGPOLE": 69500,
+    "HAMMERSMAN": 98500
   },
   "seasonEvents": {
-    "COLLY45X": 1,
-    "X3OFFTHETEE": 1,
-    "NOWORRIES": 1,
-    "GEORDIEBOY85": 1,
-    "POLEKATT": 1,
-    "MR LONGPOLE": 1,
-    "HAMMERSMAN": 1
+    "COLLY45X": 5,
+    "X3OFFTHETEE": 3,
+    "NOWORRIES": 3,
+    "GEORDIEBOY85": 3,
+    "POLEKATT": 3,
+    "MR LONGPOLE": 3,
+    "HAMMERSMAN": 3
   },
   "eventHistory": [
     {
@@ -138,6 +138,190 @@
       "winner": "COLLY45X",
       "score": "131 (-13)",
       "purse": "$82,250"
+    },
+    {
+      "event": "W2",
+      "date": "18 Mar - 24 Mar",
+      "venue": "ANTALYA PGA",
+      "winner": "COLLY45X",
+      "score": "131 (-13)",
+      "purse": "$82,250",
+      "details": [
+        {
+          "pos": "T1",
+          "name": "COLLY45X",
+          "gross": "131",
+          "net": "131",
+          "tp": "-13",
+          "prize": "$82,250",
+          "pts": ""
+        },
+        {
+          "pos": "T1",
+          "name": "X3OFFTHETEE",
+          "gross": "131",
+          "net": "131",
+          "tp": "-13",
+          "prize": "$82,250",
+          "pts": ""
+        },
+        {
+          "pos": "3",
+          "name": "NOWORRIES",
+          "gross": "149",
+          "net": "140",
+          "tp": "-4",
+          "prize": "$44,500",
+          "pts": ""
+        },
+        {
+          "pos": "4",
+          "name": "GEORDIEBOY85",
+          "gross": "141",
+          "net": "141",
+          "tp": "-3",
+          "prize": "$24,500",
+          "pts": ""
+        },
+        {
+          "pos": "5",
+          "name": "POLEKATT",
+          "gross": "150",
+          "net": "143",
+          "tp": "-1",
+          "prize": "$30,500",
+          "pts": ""
+        },
+        {
+          "pos": "6",
+          "name": "MR LONGPOLE",
+          "gross": "144",
+          "net": "144",
+          "tp": "E",
+          "prize": "$18,500",
+          "pts": ""
+        },
+        {
+          "pos": "7",
+          "name": "HAMMERSMAN",
+          "gross": "149",
+          "net": "149",
+          "tp": "+5",
+          "prize": "$27,000",
+          "pts": ""
+        }
+      ]
+    },
+    {
+      "event": "W3",
+      "date": "18 Mar - 24 Mar",
+      "venue": "ANTALYA PGA",
+      "winner": "COLLY45X",
+      "score": "132 (-12)",
+      "purse": "$90,000",
+      "details": [
+        {
+          "pos": "1",
+          "name": "COLLY45X",
+          "gross": "132",
+          "net": "132",
+          "tp": "-12",
+          "prize": "$90,000",
+          "pts": ""
+        }
+      ]
+    },
+    {
+      "event": "W4",
+      "date": "18 Mar - 24 Mar",
+      "venue": "ANTALYA PGA",
+      "winner": "COLLY45X",
+      "score": "132 (-12)",
+      "purse": "$90,000",
+      "details": [
+        {
+          "pos": "1",
+          "name": "COLLY45X",
+          "gross": "132",
+          "net": "132",
+          "tp": "-12",
+          "pts": "",
+          "prize": "$90,000"
+        }
+      ]
+    },
+    {
+      "event": "W5",
+      "date": "18 Mar - 24 Mar",
+      "venue": "ANTALYA PGA",
+      "winner": "NOWORRIES",
+      "score": "131 (-13)",
+      "purse": "$90,000",
+      "details": [
+        {
+          "pos": "1",
+          "name": "NOWORRIES",
+          "gross": "140",
+          "net": "131",
+          "tp": "-13",
+          "pts": "",
+          "prize": "$90,000"
+        },
+        {
+          "pos": "2",
+          "name": "X3OFFTHETEE",
+          "gross": "135",
+          "net": "135",
+          "tp": "-9",
+          "pts": "",
+          "prize": "$54,500"
+        },
+        {
+          "pos": "3",
+          "name": "HAMMERSMAN",
+          "gross": "139",
+          "net": "139",
+          "tp": "-5",
+          "pts": "",
+          "prize": "$44,500"
+        },
+        {
+          "pos": "T4",
+          "name": "MR LONGPOLE",
+          "gross": "142",
+          "net": "142",
+          "tp": "-2",
+          "pts": "",
+          "prize": "$32,500"
+        },
+        {
+          "pos": "T4",
+          "name": "COLLY45X",
+          "gross": "142",
+          "net": "142",
+          "tp": "-2",
+          "pts": "",
+          "prize": "$32,500"
+        },
+        {
+          "pos": "6",
+          "name": "GEORDIEBOY85",
+          "gross": "143",
+          "net": "143",
+          "tp": "-1",
+          "pts": "",
+          "prize": "$28,500"
+        },
+        {
+          "pos": "7",
+          "name": "POLEKATT",
+          "gross": "156",
+          "net": "149",
+          "tp": "+5",
+          "pts": "",
+          "prize": "$17,000"
+        }
+      ]
     }
   ]
 }
