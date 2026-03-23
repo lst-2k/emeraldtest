@@ -243,16 +243,15 @@
                     };
                 }).sort((a,b) => b.pts - a.pts);
 
-                // Calculate the cutoff for the top 50% (rounding up for odd numbers)
+                // Calculate the cutoff (top 50%, rounding up)
                 const cutoff = Math.ceil(projected.length / 2);
 
-                document.getElementById('season-body').innerHTML = projected.map((p, idx) => {
+                const tableHTML = projected.map((p, idx) => {
                     const isQualified = (idx < cutoff);
                     const oldIdx = before.indexOf(p.n);
                     const move = idx < oldIdx ? '▲' : (idx > oldIdx ? '▼' : '•');
                     const moveCol = idx < oldIdx ? '#2e7d32' : (idx > oldIdx ? '#c62828' : '#999');
                     
-                    // Apply soft green background if in the top 50%
                     const rowStyle = isQualified ? 'style="background-color: #e8f5e9;"' : '';
                     const qLetter = isQualified ? '<span style="color: #2e7d32; margin-left: 5px; font-weight: 900;">Q</span>' : '';
 
@@ -267,6 +266,24 @@
                         <td style="text-align:right; padding-right:15px;"><b>$${p.earn.toLocaleString()}</b></td>
                     </tr>`;
                 }).join('');
+
+                // Legend to explain the Q
+                const legendHTML = `
+                    <div style="text-align:center; padding: 10px; font-size: 13px; color: #555;">
+                        <span style="display:inline-block; width:12px; height:12px; background:#e8f5e9; border:1px solid #c8e6c9; margin-right:5px; vertical-align:middle;"></span>
+                        <strong>Q</strong> = Qualified for End of Season Playoff
+                    </div>`;
+
+                document.getElementById('season-body').innerHTML = tableHTML;
+                
+                // Append legend after the table container if not already there
+                const container = document.getElementById('season-body').closest('.table-container');
+                if (!document.getElementById('standings-legend')) {
+                    const div = document.createElement('div');
+                    div.id = 'standings-legend';
+                    div.innerHTML = legendHTML;
+                    container.parentNode.insertBefore(div, container.nextSibling);
+                }
             }
 
             // 3. History Accordion Logic (Week - Venue - Date)
