@@ -84,6 +84,7 @@
             <h3 style="color:var(--gold); margin-top:0;">Tournament Manager</h3>
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:10px;">
                 <div><label>Venue</label><input type="text" id="admin-venue"></div>
+				<label>Event Date</label><input type="date" id="admin-date-picker" min="2024-01-01" max="2030-12-31">
                 <div><label>Par</label><input type="number" id="admin-par"></div>
                 <div><label>Event Date</label><input type="date" id="admin-date-picker"></div>
                 <div><label>Prize Pool $</label><input type="number" id="admin-pool"></div>
@@ -186,7 +187,7 @@
             let html = "";
             snap.forEach(d => {
                 const h = d.data();
-                const dStr = h.date ? new Date(h.date).toLocaleDateString('en-GB', {day:'2-digit', month:'2-digit'}) : "Past";
+                const dStr = h.date ? new Date(h.date).toLocaleDateString('en-GB', {day:'2-digit', month:'2-digit', year:'numeric'}) : "Past";
                 const rows = h.results ? h.results.slice(0, 10).map((r, i) => {
                     const toPar = r.toPar === 0 ? 'E' : (r.toPar > 0 ? '+' + r.toPar : r.toPar);
                     const parColor = r.toPar < 0 ? "#b71c1c" : (r.toPar === 0 ? "#2e7d32" : "#333");
