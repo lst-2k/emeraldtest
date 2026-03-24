@@ -19,7 +19,7 @@
         
         .venue-section { text-align: center; padding: 15px; background: white; }
         .venue-section h2 { color: var(--emerald); margin: 0; text-transform: uppercase; font-size: 28px; }
-        .update-tag { font-size: 11px; color: #888; margin-top: 5px; }
+        .update-tag { font-size: 11px; color: #888; margin-top: 5px; font-weight: bold; text-transform: uppercase; }
 
         .info-bar-below { background-color: var(--dark); color: #ffeb3b; padding: 10px; display: flex; justify-content: center; gap: 40px; font-size: 14px; font-weight: bold; }
         .content-padding { padding: 10px; max-width: 1500px; margin: 0 auto; position: relative; }
@@ -30,6 +30,10 @@
         .submit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; margin-top: 10px; }
         input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; font-size: 14px; }
         label { display: block; font-size: 10px; font-weight: bold; margin-bottom: 4px; color: #666; text-transform: uppercase; }
+        
+        /* Admin specific input styling to ensure calendar icon is visible */
+        input[type="date"] { color-scheme: dark; }
+
         .btn { padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; text-transform: uppercase; }
         .btn-primary { background: var(--emerald); color: white; }
         .btn-admin { background: var(--gold); color: #222; }
@@ -52,15 +56,14 @@
         .net-cell { background-color: #e8f5e9; font-weight: bold; color: var(--emerald); }
         .winner-highlight { background-color: #fff9c4; font-weight: bold; outline: 2px solid var(--gold); }
         
-        /* 2K25 Logo Section */
+        /* Footer Logos */
         .footer-logo-wrap { text-align: center; padding: 40px 0; opacity: 0.8; }
         .footer-logo-wrap img { max-width: 250px; height: auto; }
 
-        /* Back to Top Button */
+        /* Back to Top */
         #backToTop { position: fixed; bottom: 30px; right: 30px; background: var(--emerald); color: white; border: 2px solid var(--gold); 
                       width: 50px; height: 50px; border-radius: 50%; cursor: pointer; display: none; align-items: center; justify-content: center; 
                       box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000; transition: transform 0.2s; }
-        #backToTop:hover { transform: scale(1.1); }
 
         .history-item { background: white; border: 1px solid var(--emerald); margin-bottom: 10px; border-radius: 5px; }
         .history-header { display: flex; padding: 15px; cursor: pointer; background: var(--emerald); color: white; font-weight: bold; justify-content: space-between; }
@@ -76,8 +79,8 @@
         <div class="logo-container" id="admin-trigger"><img src="logo.png" alt="Emerald Tour Logo"></div>
         <div class="venue-section">
             <h2 id="current-venue">Emerald Tour</h2>
-            <p id="total-prize-pool" style="font-size: 18px; margin: 5px 0; font-weight: bold;">Main Pool: --</p>
-            <div class="update-tag">LIVE SYNC: <span id="last-update-time">--</span></div>
+            <p id="total-prize-pool" style="font-size: 18px; margin: 5px 0; font-weight: bold;">Prize Pool: --</p>
+            <div class="update-tag">Last Updated: <span id="last-update-time">--</span></div>
         </div>
         <div class="info-bar-below">
             <div>EVENT DATE: <span id="event-date">--</span></div>
@@ -87,14 +90,14 @@
 
     <div class="content-padding">
         <div id="admin-panel" class="admin-section">
-            <h3 style="color:var(--gold); margin-top:0;">Tournament Director</h3>
+            <h3 style="color:var(--gold); margin-top:0;">Tournament Manager</h3>
             <div class="submit-grid">
                 <div><label>Venue</label><input type="text" id="admin-venue"></div>
                 <div><label>Par</label><input type="number" id="admin-par"></div>
-                <div><label>Date</label><input type="text" id="admin-date"></div>
-                <div><label>Main Pool $</label><input type="number" id="admin-pool"></div>
+                <div><label>Event Date</label><input type="date" id="admin-date"></div>
+                <div><label>Prize Pool $</label><input type="number" id="admin-pool"></div>
             </div>
-            <button id="saveSettingsBtn" class="btn btn-admin">Update Tournament Info</button>
+            <button id="saveSettingsBtn" class="btn btn-admin">Update Event Data</button>
             <hr style="border-color: #444; margin: 20px 0;">
             <div class="submit-grid">
                 <input type="text" id="admin-corr-name" placeholder="Exact Player Name">
@@ -105,21 +108,21 @@
             </div>
             <button id="adminUpdateStatsBtn" class="btn" style="background:#444; color:white;">Force Update Stats</button>
             <div style="display:flex; gap:10px; margin-top: 15px;">
-                <button id="archiveEventBtn" class="btn" style="background:#0277bd; color:white">Archive & Update Season</button>
-                <button id="clearBoardBtn" class="btn" style="background:#b71c1c; color:white">Reset Weekly Scores</button>
+                <button id="archiveEventBtn" class="btn" style="background:#0277bd; color:white">Archive & Pay Out</button>
+                <button id="clearBoardBtn" class="btn" style="background:#b71c1c; color:white">Clear Weekly Scores</button>
             </div>
         </div>
 
         <div class="submit-section">
-            <h3 style="color:var(--emerald); margin-top:0">⛳ Submit Card</h3>
+            <h3 style="color:var(--emerald); margin-top:0">⛳ Post Scorecard</h3>
             <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px; margin-bottom: 10px;">
-                <div><label>Name</label><input type="text" id="form-name"></div>
-                <div><label>PIN</label><input type="password" id="form-pin" maxlength="4"></div>
-                <div><label>Platform</label>
+                <div><label>Player Name</label><input type="text" id="form-name"></div>
+                <div><label>4-Digit PIN</label><input type="password" id="form-pin" maxlength="4"></div>
+                <div><label>Console</label>
                     <select id="form-platform">
                         <option value="ps-icon fa-brands fa-playstation">PlayStation 5</option>
-                        <option value="xb-icon fa-brands fa-xbox">Xbox</option>
-                        <option value="st-icon fa-brands fa-steam">PC</option>
+                        <option value="xb-icon fa-brands fa-xbox">Xbox Series X|S</option>
+                        <option value="st-icon fa-brands fa-steam">PC / Steam</option>
                     </select>
                 </div>
             </div>
@@ -134,7 +137,7 @@
                 <div><label>SCR %</label><input type="number" id="form-scram" step="0.01"></div>
                 <div><label>NTP Yds</label><input type="number" id="form-ntp" step="0.01"></div>
             </div>
-            <button class="btn btn-primary" id="submitScoreBtn">Post Scorecard</button>
+            <button class="btn btn-primary" id="submitScoreBtn">Submit Weekly Round</button>
         </div>
 
         <h3 style="text-align:center; color:var(--emerald); letter-spacing:1px;">LIVE LEADERBOARD</h3>
@@ -171,6 +174,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, doc, setDoc, getDoc, getDocs, onSnapshot, query, orderBy, addDoc, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // FIREBASE CONFIG - REPLACE WITH YOUR KEYS
         const firebaseConfig = {
           apiKey: "AIzaSyDXQU4I1XvkNi-XE4f5q7dixo3BrVkfuC8",
 		  authDomain: "emeraldtour2-f556d.firebaseapp.com",
@@ -188,10 +192,17 @@
         const payoutTable = [0.18, 0.108, 0.068, 0.048, 0.04, 0.036, 0.0335, 0.031, 0.029, 0.027, 0.025, 0.023, 0.021, 0.019, 0.018, 0.017, 0.016, 0.015, 0.014, 0.013];
         const ptsTable = [500, 300, 190, 135, 110, 100, 95, 90, 85, 80, 75, 70, 65, 60, 57, 54, 51, 48, 45, 42];
 
-        // Back to Top Logic
+        // Format Timestamp: HH:MM DD/MM/YYYY
+        function formatUpdate() {
+            const d = new Date();
+            const pad = (n) => n.toString().padStart(2, '0');
+            return `${pad(d.getHours())}:${pad(d.getMinutes())} ${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+        }
+
+        // Back to Top
         window.onscroll = () => { document.getElementById('backToTop').style.display = window.scrollY > 400 ? 'flex' : 'none'; };
 
-        // Admin Trigger
+        // Admin Auth
         let clicks = 0;
         document.getElementById('admin-trigger').onclick = () => { if(++clicks === 5) { if(prompt("Admin Pass:") === "emerald2024") document.getElementById('admin-panel').style.display='block'; clicks=0; }};
 
@@ -217,10 +228,10 @@
                 scram: parseFloat(document.getElementById('form-scram').value)||0,
                 ntp: parseFloat(document.getElementById('form-ntp').value)||0
             }, { merge: true });
-            alert("Updated!");
+            alert("Scorecard Posted!");
         };
 
-        // Admin Manual Update
+        // Admin Override
         document.getElementById('adminUpdateStatsBtn').onclick = async () => {
             const name = document.getElementById('admin-corr-name').value.trim();
             const id = name.toLowerCase().replace(/\s+/g, '-');
@@ -230,30 +241,49 @@
                 scram: parseFloat(document.getElementById('admin-corr-scr').value)||0,
                 ntp: parseFloat(document.getElementById('admin-corr-ntp').value)||0
             }, { merge: true });
-            alert("Stats Overridden!");
+            alert("Admin Override Applied!");
         };
 
-        // Admin Reset
+        // Save Settings (Calendar Picker Update)
+        document.getElementById('saveSettingsBtn').onclick = async () => {
+            const rawDate = document.getElementById('admin-date').value; // YYYY-MM-DD
+            let displayDate = "--";
+            if(rawDate) {
+                const [y, m, d] = rawDate.split('-');
+                displayDate = `${d}/${m}/${y}`; // Convert to DD/MM/YYYY for display
+            }
+            
+            await setDoc(settingsDoc, {
+                venue: document.getElementById('admin-venue').value,
+                par: document.getElementById('admin-par').value,
+                date: displayDate,
+                rawDate: rawDate,
+                pool: document.getElementById('admin-pool').value
+            });
+            alert("Tournament Updated!");
+        };
+
+        // Wipe Scores
         document.getElementById('clearBoardBtn').onclick = async () => {
-            if(confirm("Reset scores for new week?")){
+            if(confirm("Clear weekly scores? Player profiles will be saved.")){
                 const snap = await getDocs(scoresCol);
                 const batch = snap.docs.map(d => setDoc(doc(db, "live_tournament", d.id), {
                     r1:0, r2:0, r3:0, r4:0, fir:0, gir:0, scram:0, ntp:0
                 }, { merge: true }));
                 await Promise.all(batch);
-                alert("Scores Wiped.");
+                alert("Board Reset.");
             }
         };
 
-        // Sync Data
+        // Live Listener
         onSnapshot(scoresCol, async (snapshot) => {
             const sSnap = await getDoc(settingsDoc);
-            const s = sSnap.exists() ? sSnap.data() : {venue:"TBD", par:72, pool:0};
+            const s = sSnap.exists() ? sSnap.data() : {venue:"TBD", par:72, pool:0, date:"--"};
             document.getElementById('current-venue').innerText = s.venue;
             document.getElementById('course-par').innerText = s.par;
-            document.getElementById('event-date').innerText = s.date || "--";
-            document.getElementById('total-prize-pool').innerText = `Main Pool: $${(parseInt(s.pool)||0).toLocaleString()}`;
-            document.getElementById('last-update-time').innerText = new Date().toLocaleTimeString();
+            document.getElementById('event-date').innerText = s.date;
+            document.getElementById('total-prize-pool').innerText = `Prize Pool: $${(parseInt(s.pool)||0).toLocaleString()}`;
+            document.getElementById('last-update-time').innerText = formatUpdate();
             
             let players = [];
             snapshot.forEach(d => players.push({...d.data(), id: d.id}));
@@ -325,9 +355,9 @@
             window.currentCalculatedPlayers = ps; 
         }
 
-        // Archive
+        // Season Archive
         document.getElementById('archiveEventBtn').onclick = async () => {
-            if(!confirm("Push results to Season Standings?")) return;
+            if(!confirm("Finalize standings and archive results?")) return;
             const sSnap = await getDoc(settingsDoc);
             const s = sSnap.data();
             const players = window.currentCalculatedPlayers || [];
@@ -340,10 +370,10 @@
                 archived.push({name:p.name, gross:p.gross, net:p.net, tp:p.tp, pts:p.tempPts, prize:p.tempMoney});
             }
             await addDoc(collection(db, "event_history"), { venue:s.venue, date:s.date, details:archived, timestamp:new Date() });
-            alert("Season Totals Updated!");
+            alert("Tour Records Updated!");
         };
 
-        // Season Stats Sync
+        // Season Sync
         onSnapshot(query(collection(db, "season_stats"), orderBy("pts", "desc")), (snap) => {
             let html = "", r=1;
             snap.forEach(d => {
