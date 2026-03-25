@@ -183,11 +183,11 @@
             let html = "";
             snap.forEach(d => {
                 const h = d.data();
-                const dateStr = h.date ? new Date(h.date).toLocaleDateString('en-GB', {
-					day: '2-digit', 
-					month: '2-digit', 
-					year: 'numeric' // This forces 2026 instead of 26
-				}) : "Past Event";
+				const dStr = h.date ? new Date(h.date + "T12:00:00").toLocaleDateString('en-GB', {
+				day: '2-digit', 
+				month: '2-digit', 
+				year: 'numeric'
+			}) : "Past Event";
                 const rows = h.results ? h.results.slice(0, 10).map((r, i) => {
                     const toPar = r.toPar === 0 ? 'E' : (r.toPar > 0 ? '+' + r.toPar : r.toPar);
                     const parColor = r.toPar < 0 ? "#b71c1c" : (r.toPar === 0 ? "#2e7d32" : "#333");
@@ -202,22 +202,28 @@
         });
 
         // SETTINGS
-        onSnapshot(settingsDoc, (sSnap) => {
-            if (!sSnap.exists()) return;
-            const s = sSnap.data();
-            document.getElementById('current-venue').innerText = s.venue || "Emerald Tour";
-            document.getElementById('course-par').innerText = s.par || "72";
-            const rawDate = s.date || "";
-            document.getElementById('event-date').innerText = rawDate ? new Date(rawDate).toLocaleDateString('en-GB', {day:'2-digit', month:'2-digit'}) : "--";
-            document.getElementById('total-prize-pool').innerText = `$${(parseInt(s.pool)||0).toLocaleString()}`;
-            if(s.closingTimestamp) {
-                const timer = setInterval(() => {
-                    const dist = s.closingTimestamp - new Date().getTime();
-                    if(dist < 0) { document.getElementById("countdown").innerHTML = "CLOSED"; clearInterval(timer); }
-                    else { const d=Math.floor(dist/86400000), h=Math.floor((dist%86400000)/3600000), m=Math.floor((dist%3600000)/60000); document.getElementById("countdown").innerHTML = `${d}d ${h}h ${m}m Remaining`; }
-                }, 1000);
-            }
-        });
+			onSnapshot(settingsDoc, (s) => {
+				if (!s.exists()) return;
+				const data = s.data();
+				
+				// Update Venue and Par
+				document.getElementById('current-venue').innerText = data.venue || "Tournament";
+				document.getElementById('course-par').innerText = data.par || "--";
+				document.getElementById('total-prize-pool').innerText = `$${(parseInt(data.pool) || 0).toLocaleString()}`;
+				
+				// Update Date with Forced 4-Digit Year
+				if (data.date) {
+					// We split the string to avoid timezone "day-shifting"
+					const [year, month, day] = data.date.split('-'); 
+					
+					// Manual format to guarantee DD/MM/YYYY
+					const formattedDate = `${day}/${month}/${year}`;
+					
+					document.getElementById('event-date').innerText = formattedDate;
+				} else {
+					document.getElementById('event-date').innerText = "--/--/----";
+				}
+			});
 
         // BOARD
         function renderBoard(playersData, par, pool) {
