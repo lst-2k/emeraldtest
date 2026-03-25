@@ -225,21 +225,20 @@
 
         // SETTINGS & TIMER
         onSnapshot(settingsDoc, (sSnap) => {
-            if (!sSnap.exists()) return;
-            const s = sSnap.data();
-            document.getElementById('current-venue').innerText = s.venue || "Emerald Tour";
-            document.getElementById('course-par').innerText = s.par || "72";
-            const rawDate = s.date || "";
-            document.getElementById('event-date').innerText = rawDate ? new Date(rawDate).toLocaleDateString('en-GB', {day:'2-digit', month:'2-digit'}) : "--";
-            document.getElementById('total-prize-pool').innerText = `$${(parseInt(s.pool)||0).toLocaleString()}`;
-            if(s.closingTimestamp) {
-                const timer = setInterval(() => {
-                    const dist = s.closingTimestamp - new Date().getTime();
-                    if(dist < 0) { document.getElementById("countdown").innerHTML = "CLOSED"; clearInterval(timer); }
-                    else { const d=Math.floor(dist/86400000), h=Math.floor((dist%86400000)/3600000), m=Math.floor((dist%3600000)/60000); document.getElementById("countdown").innerHTML = `${d}d ${h}h ${m}m Remaining`; }
-                }, 1000);
-            }
-        });
+        if (!sSnap.exists()) return;
+        const s = sSnap.data();
+        document.getElementById('current-venue').innerText = s.venue || "Emerald Tour";
+        document.getElementById('course-par').innerText = s.par || "72";
+        document.getElementById('total-prize-pool').innerText = `$${(parseInt(s.pool)||0).toLocaleString()}`;
+        
+        // FIX: Force 4-digit year in the header
+        if (s.date) {
+            const dateObj = new Date(s.date + "T12:00:00"); // Midday to avoid timezone shifts
+            document.getElementById('event-date').innerText = dateObj.toLocaleDateString('en-GB', {
+                day: '2-digit', month: '2-digit', year: 'numeric'
+            });
+        }
+    });
 
         // LEADERBOARD RENDER
         function renderBoard(playersData, par, pool) {
