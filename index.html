@@ -3,59 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emerald Tour | Professional Series</title>
+    <title>Emerald Tour | 2026 Season</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root { --emerald: #1b5e20; --gold: #fbc02d; --dark: #333; --light-bg: #f4f4f4; 
                 --ps-blue: #003791; --xb-green: #107c10; --st-grey: #171a21; }
         
-        html, body { height: auto; overflow-y: auto; scroll-behavior: smooth; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background-color: var(--light-bg); color: #333; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--light-bg); color: #333; scroll-behavior: smooth; }
         
+        /* Header */
         .header-wrap { width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); background: white; position: sticky; top: 0; z-index: 999; }
         .logo-container { background-color: var(--emerald); text-align: center; padding: 20px 10px; border-bottom: 4px solid var(--gold); cursor: pointer; }
-        .logo-container img { width: 100%; max-width: 500px; height: auto; display: block; margin: 0 auto; }
+        .logo-container img { width: 100%; max-width: 450px; height: auto; display: block; margin: 0 auto; }
         .venue-section { text-align: center; padding: 15px; }
-        .venue-section h2 { color: var(--emerald); margin: 0; text-transform: uppercase; font-size: 24px; letter-spacing: 1px; }
-        .timer-box { font-weight: bold; color: #b71c1c; font-size: 13px; margin-top: 5px; background: #fff9c4; display: inline-block; padding: 5px 15px; border-radius: 20px; border: 1px solid var(--gold); }
+        .venue-section h2 { margin: 0; text-transform: uppercase; font-size: 24px; letter-spacing: 1px; }
         .info-bar-below { background-color: var(--dark); color: #ffeb3b; padding: 10px; display: flex; justify-content: center; gap: 30px; font-size: 13px; font-weight: bold; }
 
-        .content-padding { padding: 10px; max-width: 1500px; margin: 0 auto; }
+        .content-padding { padding: 15px; max-width: 1400px; margin: 0 auto; }
         
-        .submit-section, .admin-section { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 2px solid var(--emerald); }
-        .admin-section { background: #222; color: white; border-color: var(--gold); display: none; }
+        /* Admin Panel */
+        .admin-section { background: #222; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 2px solid var(--gold); display: none; }
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+        
+        /* Submission */
+        .submit-section { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 2px solid var(--emerald); }
         #submission-content { display: none; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
         
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; font-size: 14px; box-sizing: border-box; }
+        input, select { padding: 12px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; font-size: 14px; }
         label { display: block; font-size: 10px; font-weight: bold; margin-bottom: 4px; color: #666; text-transform: uppercase; }
         
-        .btn { padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; text-transform: uppercase; }
-        .btn-primary { background: var(--emerald); color: white; }
+        .btn { padding: 14px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; text-transform: uppercase; transition: 0.2s; }
+        .btn-primary { background: var(--emerald); color: white; margin-top: 10px; }
         .btn-toggle { background: #eee; color: var(--emerald); border: 1px solid var(--emerald); }
-        .btn-admin { background: var(--gold); color: #222; }
 
-        .table-container { width: 100%; overflow-x: auto; background: white; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 25px; }
-        table { width: auto; min-width: 100%; border-collapse: collapse; }
-        th { background-color: var(--emerald); color: white; padding: 12px 10px; font-size: 11px; text-transform: uppercase; }
-        td { padding: 12px 10px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px; white-space: nowrap; }
+        /* Tables */
+        .table-container { width: 100%; overflow-x: auto; background: white; border-radius: 4px; margin-bottom: 25px; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        th { background: var(--emerald); color: white; padding: 12px; font-size: 11px; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px; }
+        .player-cell { text-align: left !important; font-weight: bold; }
         
-        .player-cell { text-align: left !important; font-weight: bold; width: 1%; white-space: nowrap; padding-right: 40px; }
-        .platform-icon { margin-right: 8px; width: 18px; text-align: center; }
-        .ps-icon { color: var(--ps-blue); } .xb-icon { color: var(--xb-green); } .st-icon { color: var(--st-grey); }
-        .q-badge { color: var(--gold); font-weight: 900; margin-left: 8px; }
-        .cut-line-row td { background-color: #ffebee; color: #b71c1c; font-weight: bold; font-size: 11px; padding: 8px; text-transform: uppercase; border-top: 2px dashed #b71c1c; }
-        
-        .q-legend { text-align: center; font-size: 11px; font-weight: bold; color: var(--emerald); margin-bottom: 10px; text-transform: uppercase; }
-        .mid-logo { text-align: center; padding: 30px 0; }
-        .mid-logo img { max-width: 220px; height: auto; opacity: 0.9; }
-
+        /* History */
         .history-accordion { border: 1px solid #ddd; border-radius: 4px; margin-bottom: 8px; overflow: hidden; }
-        .history-header { background-color: var(--emerald); color: white; padding: 12px 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; text-transform: uppercase; font-size: 13px; }
-        .history-content { display: none; background: white; padding: 15px; border-top: 1px solid #eee; }
+        .history-header { background: var(--emerald); color: white; padding: 12px 15px; cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; font-size: 13px; }
+        .history-content { display: none; background: white; padding: 15px; }
         .history-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f2f2f2; font-size: 13px; }
-        .hist-score { font-weight: bold; width: 40px; text-align: center; display: inline-block; }
 
-        #backToTop { position: fixed; bottom: 30px; right: 30px; background: var(--emerald); color: white; border: 2px solid var(--gold); width: 50px; height: 50px; border-radius: 50%; cursor: pointer; display: none; align-items: center; justify-content: center; z-index: 1000; }
+        #backToTop { position: fixed; bottom: 20px; right: 20px; background: var(--emerald); color: white; border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; border: 2px solid var(--gold); cursor: pointer; z-index: 1000; }
     </style>
 </head>
 <body>
@@ -63,14 +57,14 @@
     <button id="backToTop" onclick="window.scrollTo(0,0)"><i class="fa fa-chevron-up"></i></button>
 
     <div class="header-wrap">
-        <div class="logo-container" id="admin-trigger"><img src="logo.png" alt="Emerald Tour Logo"></div>
+        <div class="logo-container" id="admin-trigger"><img src="logo.png" alt="Emerald Tour"></div>
         <div class="venue-section">
-            <h2 id="current-venue">No Active Tournament</h2>
-            <div class="timer-box"><i class="fa fa-clock"></i> <span id="countdown">--</span></div>
+            <h2 id="current-venue">Loading Tournament...</h2>
+            <div id="countdown" style="font-weight:bold; color:#b71c1c; font-size:13px; margin-top:5px;">--:--:--</div>
         </div>
         <div class="info-bar-below">
             <div>POOL: <span id="total-prize-pool">$0</span></div>
-            <div>DATE: <span id="event-date">--</span></div>
+            <div>DATE: <span id="event-date">--/--/----</span></div>
             <div>PAR: <span id="course-par">--</span></div>
         </div>
     </div>
@@ -78,64 +72,62 @@
     <div class="content-padding">
         <div id="admin-panel" class="admin-section">
             <h3 style="color:var(--gold); margin-top:0;">Tournament Manager</h3>
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:10px;">
-                <div><label>Venue</label><input type="text" id="admin-venue"></div>
-                <div><label>Par</label><input type="number" id="admin-par"></div>
-                <div>
-					<label>Event Date</label>
-					<input type="date" id="admin-date-picker" min="2024-01-01" max="2030-12-31">
-				</div>
-                <div><label>Prize Pool $</label><input type="number" id="admin-pool"></div>
-                <div style="grid-column: span 2;"><label>Closing Date/Time</label><input type="datetime-local" id="admin-close-time"></div>
+            <div class="admin-grid">
+                <div><label>Venue Name</label><input type="text" id="admin-venue"></div>
+                <div><label>Course Par</label><input type="number" id="admin-par"></div>
+                <div><label>Event Date</label><input type="date" id="admin-date-picker"></div>
+                <div><label>Prize Pool ($)</label><input type="number" id="admin-pool"></div>
+                <div><label>Closing Time</label><input type="datetime-local" id="admin-close-time"></div>
+                <div style="display: flex; align-items: center; gap: 10px; padding-top: 20px;">
+                    <input type="checkbox" id="admin-signature" style="width: 20px; height: 20px;">
+                    <label style="margin: 0; color: var(--gold); font-size: 13px;">Signature Event (2x Pts)</label>
+                </div>
             </div>
-            <button id="saveSettingsBtn" class="btn btn-admin">Update Dashboard</button>
-            <div style="display:flex; gap:10px; margin-top: 15px;">
-                <button id="archiveEventBtn" class="btn" style="background:#0277bd; color:white">Archive & Pay Out</button>
-                <button id="clearBoardBtn" class="btn" style="background:#b71c1c; color:white">Clear Weekly Scores</button>
+            <button id="saveSettingsBtn" class="btn" style="background:var(--gold); color:#222; margin-top:20px;">Update Dashboard</button>
+            <div style="display:flex; gap:10px; margin-top:15px; border-top:1px solid #444; padding-top:15px;">
+                <button id="archiveEventBtn" class="btn" style="background:#0277bd; color:white">Archive & Payout</button>
+                <button id="clearBoardBtn" class="btn" style="background:#b71c1c; color:white">Clear Live Scores</button>
             </div>
         </div>
 
         <div class="submit-section">
             <button class="btn btn-toggle" id="toggleFormBtn"><i class="fa fa-edit"></i> Open Scorecard Submission</button>
             <div id="submission-content">
-                <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px; margin-bottom: 10px;">
+                <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px; margin-bottom:10px;">
                     <div><label>Player Name</label><input type="text" id="form-name"></div>
                     <div><label>4-Digit PIN</label><input type="password" id="form-pin" maxlength="4"></div>
-                    <div><label>Platform</label>
-                        <select id="form-platform">
-                            <option value="fa-brands fa-playstation ps-icon">PlayStation 5</option>
-                            <option value="fa-brands fa-xbox xb-icon">Xbox Series X|S</option>
-                            <option value="fa-brands fa-steam st-icon">PC / Steam</option>
-                        </select>
-                    </div>
+                    <div><label>Platform</label><select id="form-platform">
+                        <option value="fa-brands fa-playstation">PlayStation 5</option>
+                        <option value="fa-brands fa-xbox">Xbox Series X|S</option>
+                        <option value="fa-brands fa-steam">PC / Steam</option>
+                    </select></div>
                 </div>
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap:10px;">
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(75px, 1fr)); gap:10px;">
                     <div><label>HCP</label><input type="number" id="form-hcap" value="0"></div>
                     <div><label>R1</label><input type="number" id="form-r1"></div>
                     <div><label>R2</label><input type="number" id="form-r2"></div>
                     <div><label>R3</label><input type="number" id="form-r3"></div>
                     <div><label>R4</label><input type="number" id="form-r4"></div>
-                    <div><label>FIR %</label><input type="number" id="form-fir" step="0.01"></div>
-                    <div><label>GIR %</label><input type="number" id="form-gir" step="0.01"></div>
-                    <div><label>SCR %</label><input type="number" id="form-scram" step="0.01"></div>
-                    <div><label>NTP Yds</label><input type="number" id="form-ntp" step="0.01"></div>
+                    <div><label>FIR%</label><input type="number" id="form-fir" step="0.01"></div>
+                    <div><label>GIR%</label><input type="number" id="form-gir" step="0.01"></div>
+                    <div><label>SCR%</label><input type="number" id="form-scram" step="0.01"></div>
+                    <div><label>NTP</label><input type="number" id="form-ntp" step="0.01"></div>
                 </div>
                 <button class="btn btn-primary" id="submitScoreBtn">Post Official Round</button>
             </div>
         </div>
 
         <h3 style="text-align:center; color:var(--emerald); letter-spacing:1px;">LIVE LEADERBOARD</h3>
-        <div class="table-container"><table><thead><tr>
-            <th>POS</th><th class="player-cell">PLAYER</th><th>HCP</th>
-            <th>R1</th><th>R2</th><th>R3</th><th>R4</th><th>GROSS</th><th>NET</th><th>TO PAR</th>
-            <th>FIR %</th><th>GIR %</th><th>SCR %</th><th>NTP</th><th>PTS</th><th>WEEK $</th>
-        </tr></thead><tbody id="leaderboard-body"></tbody></table></div>
+        <div class="table-container"><table>
+            <thead><tr><th>POS</th><th class="player-cell">PLAYER</th><th>HCP</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th><th>NET</th><th>TO PAR</th><th>FIR%</th><th>GIR%</th><th>SCR%</th><th>NTP</th><th>PTS</th><th>WEEK $</th></tr></thead>
+            <tbody id="leaderboard-body"></tbody>
+        </table></div>
 
-        <div class="mid-logo"><img src="2k25-logo.png" alt="PGA Tour 2K25"></div>
-
-        <h3 style="text-align:center; color:var(--emerald); letter-spacing:1px; margin-top:10px;">SEASON STANDINGS</h3>
-        <div class="q-legend">Q - Qualifies for End of Season Playoff (Top 50%)</div>
-        <div class="table-container"><table><thead><tr><th>RANK</th><th class="player-cell">PLAYER</th><th>EV</th><th>POINTS</th><th style="text-align:right">EARNINGS</th></tr></thead><tbody id="season-body"></tbody></table></div>
+        <h3 style="text-align:center; color:var(--emerald); letter-spacing:1px; margin-top:40px;">SEASON STANDINGS</h3>
+        <div class="table-container"><table>
+            <thead><tr><th>RANK</th><th class="player-cell">PLAYER</th><th>EV</th><th>POINTS</th><th style="text-align:right">EARNINGS</th></tr></thead>
+            <tbody id="season-body"></tbody>
+        </table></div>
 
         <h3 style="text-align:center; color:var(--emerald); letter-spacing:1px; margin-top:40px;">TOURNAMENT HISTORY</h3>
         <div id="history-container"></div>
@@ -145,190 +137,193 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, doc, setDoc, getDoc, getDocs, onSnapshot, query, orderBy, limit, writeBatch, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-		const firebaseConfig = {
-			  apiKey: "AIzaSyDXQU4I1XvkNi-XE4f5q7dixo3BrVkfuC8",
-			  authDomain: "emeraldtour2-f556d.firebaseapp.com",
-			  projectId: "emeraldtour2-f556d",
-			  storageBucket: "emeraldtour2-f556d.firebasestorage.app",
-			  messagingSenderId: "148269100724",
-			  appId: "1:148269100724:web:32410ea4096b26fec5f1e1",
-			};
+        // CONFIG
+        const firebaseConfig = { apiKey: "YOUR_KEY", authDomain: "YOUR_DOMAIN", projectId: "YOUR_ID", storageBucket: "YOUR_BUCKET", messagingSenderId: "YOUR_SENDER", appId: "YOUR_APP" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        
-        const scoresCol = collection(db, "live_tournament"), settingsDoc = doc(db, "settings", "current_event"), seasonCol = collection(db, "season_stats"), historyCol = collection(db, "history");
+
+        const settingsDoc = doc(db, "settings", "current_event");
+        const scoresCol = collection(db, "live_tournament");
+        const seasonCol = collection(db, "season_stats");
+        const historyCol = collection(db, "history");
+
         const payoutTable = [0.18, 0.108, 0.068, 0.048, 0.04, 0.036, 0.0335, 0.031, 0.029, 0.027, 0.025, 0.023, 0.021, 0.019, 0.018, 0.017, 0.016, 0.015, 0.014, 0.013];
         const ptsTable = [500, 300, 190, 135, 110, 100, 95, 90, 85, 80, 75, 70, 65, 60, 57, 54, 51, 48, 45, 42];
 
-		document.getElementById('toggleFormBtn').onclick = () => {
-			const content = document.getElementById('submission-content');
-			const btn = document.getElementById('toggleFormBtn');
-			
-			if (content.style.display === "none" || content.style.display === "") {
-				content.style.display = "block";
-				btn.innerHTML = `<i class="fa fa-times"></i> Close Scorecard Submission`;
-				btn.style.background = "#ffebee"; // Optional: slight red tint when opening to "close"
-				btn.style.color = "#b71c1c";
-			} else {
-				content.style.display = "none";
-				btn.innerHTML = `<i class="fa fa-edit"></i> Open Scorecard Submission`;
-				btn.style.background = "#eee"; // Back to original
-				btn.style.color = "var(--emerald)";
-			}
-		};
-        window.toggleAccordion = (el) => { const c = el.nextElementSibling; c.style.display = c.style.display === "block" ? "none" : "block"; };
+        // UI: Toggle Form
+        document.getElementById('toggleFormBtn').onclick = () => {
+            const content = document.getElementById('submission-content');
+            const btn = document.getElementById('toggleFormBtn');
+            if (content.style.display === "none" || content.style.display === "") {
+                content.style.display = "block";
+                btn.innerHTML = `<i class="fa fa-times"></i> Close Scorecard Submission`;
+                btn.style.color = "#b71c1c"; btn.style.borderColor = "#b71c1c";
+            } else {
+                content.style.display = "none";
+                btn.innerHTML = `<i class="fa fa-edit"></i> Open Scorecard Submission`;
+                btn.style.color = "var(--emerald)"; btn.style.borderColor = "var(--emerald)";
+            }
+        };
 
-        // HISTORY
-        onSnapshot(query(historyCol, orderBy("timestamp", "desc"), limit(6)), (snap) => {
-            let html = "";
-            snap.forEach(d => {
-                const h = d.data();
-				const dStr = h.date ? new Date(h.date + "T12:00:00").toLocaleDateString('en-GB', {
-				day: '2-digit', 
-				month: '2-digit', 
-				year: 'numeric'
-			}) : "Past Event";
-                const rows = h.results ? h.results.slice(0, 10).map((r, i) => {
-                    const toPar = r.toPar === 0 ? 'E' : (r.toPar > 0 ? '+' + r.toPar : r.toPar);
-                    const parColor = r.toPar < 0 ? "#b71c1c" : (r.toPar === 0 ? "#2e7d32" : "#333");
-                    return `<div class="history-item">
-                        <span><strong>${i+1}.</strong> ${r.name} <span class="hist-score" style="color:${parColor}">${toPar}</span></span>
-                        <span>${r.pts} pts | <strong>$${r.earned.toLocaleString()}</strong></span>
-                    </div>`
-                }).join('') : "";
-                html += `<div class="history-accordion"><div class="history-header" onclick="toggleAccordion(this)"><span>${h.venue} (${dStr})</span><i class="fa fa-chevron-down"></i></div><div class="history-content">${rows}</div></div>`;
-            });
-            document.getElementById('history-container').innerHTML = html;
+        // ADMIN: Update Dashboard
+        document.getElementById('saveSettingsBtn').onclick = async () => {
+            await setDoc(settingsDoc, {
+                venue: document.getElementById('admin-venue').value,
+                par: document.getElementById('admin-par').value,
+                date: document.getElementById('admin-date-picker').value,
+                pool: document.getElementById('admin-pool').value,
+                isSignature: document.getElementById('admin-signature').checked,
+                closingTimestamp: new Date(document.getElementById('admin-close-time').value).getTime(),
+                lastUpdate: serverTimestamp()
+            }, { merge: true });
+            alert("Tournament Updated!");
+        };
+
+        // UI: Header & Timer Listener
+        onSnapshot(settingsDoc, (s) => {
+            if (!s.exists()) return;
+            const data = s.data();
+            
+            // Signature Style
+            const venueEl = document.getElementById('current-venue');
+            if(data.isSignature) {
+                venueEl.innerHTML = `<i class="fa fa-star" style="color:var(--gold)"></i> ${data.venue} <i class="fa fa-star" style="color:var(--gold)"></i>`;
+                venueEl.style.color = "var(--gold)";
+            } else {
+                venueEl.innerText = data.venue || "Emerald Tour";
+                venueEl.style.color = "var(--emerald)";
+            }
+
+            document.getElementById('course-par').innerText = data.par || "--";
+            document.getElementById('total-prize-pool').innerText = `$${(parseInt(data.pool) || 0).toLocaleString()}`;
+            
+            // Fix: 4-Digit Year Display
+            if (data.date) {
+                const parts = data.date.split('-'); 
+                document.getElementById('event-date').innerText = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+
+            // Timer Logic
+            if (data.closingTimestamp) {
+                if (window.tourTimer) clearInterval(window.tourTimer);
+                window.tourTimer = setInterval(() => {
+                    const dist = data.closingTimestamp - new Date().getTime();
+                    if (dist < 0) { document.getElementById("countdown").innerText = "SUBMISSIONS CLOSED"; clearInterval(window.tourTimer); }
+                    else {
+                        const d = Math.floor(dist / 86400000), h = Math.floor((dist % 86400000) / 3600000), m = Math.floor((dist % 3600000) / 60000);
+                        document.getElementById("countdown").innerHTML = `<i class="fa fa-clock"></i> ${d}d ${h}h ${m}m Remaining`;
+                    }
+                }, 1000);
+            }
         });
 
-        // SETTINGS
-			onSnapshot(settingsDoc, (s) => {
-				if (!s.exists()) return;
-				const data = s.data();
-				
-				// Update Venue and Par
-				document.getElementById('current-venue').innerText = data.venue || "Tournament";
-				document.getElementById('course-par').innerText = data.par || "--";
-				document.getElementById('total-prize-pool').innerText = `$${(parseInt(data.pool) || 0).toLocaleString()}`;
-				
-				// Update Date with Forced 4-Digit Year
-				if (data.date) {
-					// We split the string to avoid timezone "day-shifting"
-					const [year, month, day] = data.date.split('-'); 
-					
-					// Manual format to guarantee DD/MM/YYYY
-					const formattedDate = `${day}/${month}/${year}`;
-					
-					document.getElementById('event-date').innerText = formattedDate;
-				} else {
-					document.getElementById('event-date').innerText = "--/--/----";
-				}
-			});
+        // LIVE LEADERBOARD
+        onSnapshot(scoresCol, async (snap) => {
+            const sSnap = await getDoc(settingsDoc);
+            const par = parseInt(sSnap.data().par) || 72;
+            const pool = parseInt(sSnap.data().pool) || 0;
+            const multiplier = sSnap.data().isSignature ? 2 : 1;
 
-        // BOARD
-        function renderBoard(playersData, par, pool) {
-            let ps = playersData.map(p => {
-                const rs = [p.r1, p.r2, p.r3, p.r4].map(v => parseInt(v) || 0);
-                const act = rs.filter(r => r > 0).length, gross = rs.reduce((a, b) => a + b, 0);
-                const net = act > 0 ? gross - (p.hcap || 0) : 0, tp = act > 0 ? net - (par * act) : 999;
-                return { ...p, gross, net, tp, act };
-            }).sort((a, b) => a.tp - b.tp);
-            const active = ps.filter(p => p.act > 0);
-            if(active.length === 0) { document.getElementById('leaderboard-body').innerHTML = ""; return; }
-            const bF = Math.max(...active.map(p => p.fir || 0), -1), bG = Math.max(...active.map(p => p.gir || 0), -1), bS = Math.max(...active.map(p => p.scram || 0), -1), vN = active.filter(p => p.ntp > 0).map(p => p.ntp), bN = vN.length ? Math.min(...vN) : 999;
-            const cF = active.filter(p => p.fir === bF && bF > 0).length, cG = active.filter(p => p.gir === bG && bG > 0).length, cS = active.filter(p => p.scram === bS && bS > 0).length, cN = active.filter(p => p.ntp === bN && bN < 999).length;
+            let ps = [];
+            snap.forEach(d => {
+                const p = d.data();
+                const rs = [p.r1, p.r2, p.r3, p.r4].filter(v => v > 0);
+                const gross = rs.reduce((a, b) => a + b, 0);
+                const net = rs.length > 0 ? gross - p.hcap : 0;
+                const tp = rs.length > 0 ? net - (par * rs.length) : 999;
+                ps.push({ ...p, net, tp, act: rs.length });
+            });
 
-            let i = 0, rank = 1, html = "";
+            ps.sort((a, b) => a.tp - b.tp);
+            let html = "", i = 0, rank = 1;
+
             while (i < ps.length) {
                 if (ps[i].act === 0) { i++; continue; }
                 let ties = 0; while (i + ties < ps.length && ps[i + ties].tp === ps[i].tp) ties++;
-                let sP = 0, sM = 0; for (let p = rank; p < rank + ties; p++) { if (p <= 20) { sP += ptsTable[p - 1]; sM += (payoutTable[p - 1] * pool); } }
-                const avgPts = Math.round(sP / ties), avgBaseM = sM / ties;
+                let sP = 0, sM = 0;
+                for (let pX = rank; pX < rank + ties; pX++) { if (pX <= 20) { sP += ptsTable[pX - 1]; sM += (payoutTable[pX - 1] * pool); } }
+                
+                const avgPts = Math.round((sP / ties) * multiplier);
+                const avgMoney = Math.round(sM / ties);
+
                 for (let j = 0; j < ties; j++) {
                     const p = ps[i + j];
-                    let bonus = 0;
-                    if(p.fir===bF && bF>0) bonus+=(10000/cF); if(p.gir===bG && bG>0) bonus+=(10000/cG);
-                    if(p.scram===bS && bS>0) bonus+=(10000/cS); if(p.ntp===bN && bN<999) bonus+=(10000/cN);
-                    const totalM = Math.round(avgBaseM + bonus), tScore = p.tp === 0 ? 'E' : (p.tp > 0 ? '+' + p.tp : p.tp);
                     const scoreColor = p.tp < 0 ? "#b71c1c" : (p.tp === 0 ? "#2e7d32" : "#333");
-                    html += `<tr><td>${ties > 1 ? 'T' + rank : rank}</td><td class="player-cell"><i class="${p.console} platform-icon"></i>${p.name}</td><td>${p.hcap}</td><td>${p.r1||'-'}</td><td>${p.r2||'-'}</td><td>${p.r3||'-'}</td><td>${p.r4||'-'}</td><td>${p.gross}</td><td class="net-cell">${p.net}</td><td style="font-weight:bold; color:${scoreColor}">${tScore}</td><td style="${p.fir===bF?'color:#d32f2f;font-weight:bold':''}">${p.fir.toFixed(2)}%</td><td style="${p.gir===bG?'color:#d32f2f;font-weight:bold':''}">${p.gir.toFixed(2)}%</td><td style="${p.scram===bS?'color:#d32f2f;font-weight:bold':''}">${p.scram.toFixed(2)}%</td><td style="${p.ntp===bN?'color:#d32f2f;font-weight:bold':''}">${p.ntp?p.ntp.toFixed(2)+'y':'-'}</td><td>${avgPts}</td><td style="color:var(--emerald);font-weight:bold">$${totalM.toLocaleString()}</td></tr>`;
+                    html += `<tr><td>${rank}</td><td class="player-cell">${p.name}</td><td>${p.hcap}</td>
+                        <td>${p.r1||'-'}</td><td>${p.r2||'-'}</td><td>${p.r3||'-'}</td><td>${p.r4||'-'}</td>
+                        <td>${p.net}</td><td style="color:${scoreColor}; font-weight:bold">${p.tp === 0 ? 'E' : (p.tp > 0 ? '+'+p.tp : p.tp)}</td>
+                        <td>${p.fir}%</td><td>${p.gir}%</td><td>${p.scram}%</td><td>${p.ntp}y</td>
+                        <td>${avgPts}</td><td style="color:var(--emerald); font-weight:bold">$${avgMoney.toLocaleString()}</td></tr>`;
                 }
                 i += ties; rank += ties;
             }
             document.getElementById('leaderboard-body').innerHTML = html;
-        }
-
-        // LIVE LISTENERS
-        onSnapshot(scoresCol, (snap) => { let ps = []; snap.forEach(d => ps.push({...d.data(), id: d.id})); getDoc(settingsDoc).then(sSnap => { const s = sSnap.data() || {par:72, pool:0}; renderBoard(ps, parseInt(s.par), parseInt(s.pool)); }); });
-        onSnapshot(query(seasonCol, orderBy("pts", "desc")), (snap) => { 
-            let html = "", r = 1, cutoff = Math.ceil(snap.size / 2); 
-            snap.forEach(d => { 
-                const p = d.data(); 
-                html += `<tr><td>${r}</td><td class="player-cell">${p.name}${r <= cutoff ? '<span class="q-badge">Q</span>' : ''}</td><td>${p.events}</td><td style="font-weight:bold; color:var(--emerald)">${p.pts}</td><td style="text-align:right">$${(p.earnings||0).toLocaleString()}</td></tr>`; 
-                if(r === cutoff && snap.size > 1) html += `<tr class="cut-line-row"><td colspan="5">--- PROJECTED PLAYOFF CUT LINE ---</td></tr>`; 
-                r++; 
-            }); 
-            document.getElementById('season-body').innerHTML = html; 
         });
 
-        // ADMIN
-        let cl = 0; document.getElementById('admin-trigger').onclick = () => { if(++cl === 5) { if(prompt("Pass:") === "emerald2024") document.getElementById('admin-panel').style.display='block'; cl=0; }};
-        document.getElementById('saveSettingsBtn').onclick = async () => { const time = document.getElementById('admin-close-time').value; await setDoc(settingsDoc, { venue: document.getElementById('admin-venue').value, par: document.getElementById('admin-par').value, date: document.getElementById('admin-date-picker').value, pool: document.getElementById('admin-pool').value, closingTimestamp: time ? new Date(time).getTime() : null, lastUpdate: serverTimestamp() }, { merge: true }); alert("Updated!"); };
-        document.getElementById('clearBoardBtn').onclick = async () => { if(!confirm("Clear ALL live scores?")) return; const snap = await getDocs(scoresCol); const batch = writeBatch(db); snap.forEach(d => batch.delete(d.ref)); await batch.commit(); await setDoc(settingsDoc, { lastUpdate: serverTimestamp() }, { merge: true }); alert("Cleared."); };
+        // SUBMIT SCORE
+        document.getElementById('submitScoreBtn').onclick = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitScoreBtn');
+            const name = document.getElementById('form-name').value.trim();
+            const pin = document.getElementById('form-pin').value;
+            if (!name || pin.length < 4) return alert("Missing Name or 4-Digit PIN");
 
-        // ARCHIVE
-        document.getElementById('archiveEventBtn').onclick = async () => {
-            const vName = document.getElementById('current-venue').innerText;
-            if(!confirm(`Archive ${vName}?`)) return;
-            const batch = writeBatch(db), sSnap = await getDoc(settingsDoc), s = sSnap.data();
-            const pool = parseInt(s.pool)||0, par = parseInt(s.par)||72;
-            const qSnap = await getDocs(scoresCol);
-            let psRaw = []; qSnap.forEach(d => psRaw.push({...d.data(), id: d.id}));
-            let ps = psRaw.map(p => {
-                const rs = [p.r1, p.r2, p.r3, p.r4].map(v => parseInt(v) || 0);
-                const act = rs.filter(r => r > 0).length, gross = rs.reduce((a, b) => a + b, 0);
-                const net = act > 0 ? gross - (p.hcap || 0) : 0, tp = act > 0 ? net - (par * act) : 999;
-                return { ...p, gross, net, tp, act };
-            }).sort((a, b) => a.tp - b.tp);
-            const active = ps.filter(p => p.act > 0);
-            const bF = Math.max(...active.map(p => p.fir || 0), -1), bG = Math.max(...active.map(p => p.gir || 0), -1), bS = Math.max(...active.map(p => p.scram || 0), -1), vN = active.filter(p => p.ntp > 0).map(p => p.ntp), bN = vN.length ? Math.min(...vN) : 999;
-            const cF = active.filter(p => p.fir === bF && bF > 0).length, cG = active.filter(p => p.gir === bG && bG > 0).length, cS = active.filter(p => p.scram === bS && bS > 0).length, cN = active.filter(p => p.ntp === bN && bN < 999).length;
-            
-            let i = 0, rank = 1, historyData = [];
-            while(i < ps.length) {
-                if(ps[i].act === 0) { i++; continue; }
-                let ties = 0; while(i+ties < ps.length && ps[i+ties].tp === ps[i].tp) ties++;
-                let sP=0, sM=0; for(let pX=rank; pX<rank+ties; pX++) { if(pX<=20) { sP+=ptsTable[pX-1]; sM+=(payoutTable[pX-1]*pool); }}
-                const avgPts = Math.round(sP/ties), avgBaseM = sM/ties;
-                for(let j=0; j<ties; j++) {
-                    const p = ps[i+j];
-                    let bonus = 0;
-                    if(p.fir===bF && bF>0) bonus+=(10000/cF); if(p.gir===bG && bG>0) bonus+=(10000/cG);
-                    if(p.scram===bS && bS>0) bonus+=(10000/cS); if(p.ntp===bN && bN<999) bonus+=(10000/cN);
-                    const totalE = Math.round(avgBaseM + bonus);
-                    batch.set(doc(db, "season_stats", p.id), { name: p.name, pts: increment(avgPts), earnings: increment(totalE), events: increment(1) }, { merge: true });
-                    batch.delete(doc(db, "live_tournament", p.id));
-                    historyData.push({ name: p.name, pts: avgPts, earned: totalE, toPar: p.tp });
-                }
-                i += ties; rank += ties;
-            }
-            batch.set(doc(collection(db, "history")), { venue: vName, date: s.date, timestamp: serverTimestamp(), results: historyData });
-            batch.update(settingsDoc, { venue: "Tournament Closed", pool: 0, closingTimestamp: null });
-            await batch.commit(); alert("Archived!");
-        };
-
-        // SUBMIT
-        document.getElementById('submitScoreBtn').onclick = async () => {
-            const name = document.getElementById('form-name').value.trim(), pin = document.getElementById('form-pin').value;
-            if(!name || pin.length < 4) return alert("Required: Name & 4-Digit PIN");
+            btn.disabled = true; btn.innerText = "Posting...";
             const id = name.toLowerCase().replace(/\s+/g, '-');
-            const dSnap = await getDoc(doc(db, "live_tournament", id));
-            if(dSnap.exists() && dSnap.data().pin !== pin) return alert("Incorrect PIN.");
-            await setDoc(doc(db, "live_tournament", id), { name, pin, console: document.getElementById('form-platform').value, hcap: parseInt(document.getElementById('form-hcap').value)||0, r1: parseInt(document.getElementById('form-r1').value)||0, r2: parseInt(document.getElementById('form-r2').value)||0, r3: parseInt(document.getElementById('form-r3').value)||0, r4: parseInt(document.getElementById('form-r4').value)||0, fir: parseFloat(document.getElementById('form-fir').value)||0, gir: parseFloat(document.getElementById('form-gir').value)||0, scram: parseFloat(document.getElementById('form-scram').value)||0, ntp: parseFloat(document.getElementById('form-ntp').value)||0 }, { merge: true });
-            await setDoc(settingsDoc, { lastUpdate: serverTimestamp() }, { merge: true });
-            alert("Posted!");
+            const ref = doc(db, "live_tournament", id);
+            
+            const existing = await getDoc(ref);
+            if (existing.exists() && existing.data().pin !== pin) { alert("Wrong PIN!"); btn.disabled = false; return; }
+
+            await setDoc(ref, {
+                name, pin,
+                console: document.getElementById('form-platform').value,
+                hcap: parseInt(document.getElementById('form-hcap').value) || 0,
+                r1: parseInt(document.getElementById('form-r1').value) || 0,
+                r2: parseInt(document.getElementById('form-r2').value) || 0,
+                r3: parseInt(document.getElementById('form-r3').value) || 0,
+                r4: parseInt(document.getElementById('form-r4').value) || 0,
+                fir: parseFloat(document.getElementById('form-fir').value) || 0,
+                gir: parseFloat(document.getElementById('form-gir').value) || 0,
+                scram: parseFloat(document.getElementById('form-scram').value) || 0,
+                ntp: parseFloat(document.getElementById('form-ntp').value) || 0
+            }, { merge: true });
+
+            alert("Scorecard Saved!");
+            document.getElementById('submission-content').style.display = "none";
+            btn.disabled = false; btn.innerText = "Post Official Round";
         };
 
+        // SEASON & HISTORY Listeners (Follows same 4-digit year logic)
+        onSnapshot(query(seasonCol, orderBy("pts", "desc")), (snap) => {
+            let html = "", r = 1;
+            snap.forEach(d => {
+                const p = d.data();
+                html += `<tr><td>${r++}</td><td class="player-cell">${p.name}</td><td>${p.events}</td><td>${p.pts}</td><td style="text-align:right">$${(p.earnings||0).toLocaleString()}</td></tr>`;
+            });
+            document.getElementById('season-body').innerHTML = html;
+        });
+
+        onSnapshot(query(historyCol, orderBy("timestamp", "desc"), limit(5)), (snap) => {
+            let html = "";
+            snap.forEach(d => {
+                const h = d.data();
+                const dP = h.date.split('-');
+                const dStr = `${dP[2]}/${dP[1]}/${dP[0]}`;
+                html += `<div class="history-accordion">
+                    <div class="history-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">
+                        <span>${h.venue} (${dStr}) ${h.isSignature ? '★' : ''}</span><i class="fa fa-chevron-down"></i>
+                    </div>
+                    <div class="history-content">
+                        ${h.results.slice(0,5).map(r => `<div class="history-item"><span>${r.name}</span><span>${r.pts} pts | $${r.earned.toLocaleString()}</span></div>`).join('')}
+                    </div>
+                </div>`;
+            });
+            document.getElementById('history-container').innerHTML = html;
+        });
+
+        // Admin Access
+        let count = 0; document.getElementById('admin-trigger').onclick = () => { count++; if(count === 5) { document.getElementById('admin-panel').style.display = 'block'; count = 0; }};
         window.onscroll = () => { document.getElementById('backToTop').style.display = window.scrollY > 400 ? 'flex' : 'none'; };
     </script>
 </body>
