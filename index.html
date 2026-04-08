@@ -11,16 +11,16 @@
         
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--light-bg); color: #333; scroll-behavior: smooth; }
         
+        /* Console Icon Colors */
+        .fa-playstation { color: var(--ps-blue); }
+        .fa-xbox { color: var(--xb-green); }
+        .fa-steam { color: var(--st-grey); }
+
         /* Header */
         .header-wrap { width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); background: white; position: sticky; top: 0; z-index: 999; }
         .logo-container { background-color: var(--emerald); text-align: center; padding: 20px 10px; border-bottom: 4px solid var(--gold); cursor: pointer; }
-        .logo-container img { width: 100%; max-width: 450px; height: auto; display: block; margin: 0 auto; }.logo-container img { 
-            width: 100%; 
-            max-width: 100%; /* Changed from 450px to allow full stretch */
-            height: auto; 
-            display: block; 
-            margin: 0 auto; 
-        }
+        .logo-container img { width: 100%; max-width: 100%; height: auto; display: block; margin: 0 auto; }
+        
         .venue-section { text-align: center; padding: 15px; }
         .venue-section h2 { margin: 0; text-transform: uppercase; font-size: 24px; letter-spacing: 1px; }
         .info-bar-below { background-color: var(--dark); color: #ffeb3b; padding: 10px; display: flex; justify-content: center; gap: 30px; font-size: 13px; font-weight: bold; }
@@ -48,6 +48,7 @@
         th { background: var(--emerald); color: white; padding: 12px; font-size: 11px; text-transform: uppercase; }
         td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px; }
         .player-cell { text-align: left !important; font-weight: bold; }
+        .player-cell i { margin-right: 8px; width: 18px; text-align: center; }
         
         /* History */
         .history-accordion { border: 1px solid #ddd; border-radius: 4px; margin-bottom: 8px; overflow: hidden; }
@@ -56,42 +57,11 @@
         .history-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f2f2f2; font-size: 13px; }
 
         #backToTop { position: fixed; bottom: 20px; right: 20px; background: var(--emerald); color: white; border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; border: 2px solid var(--gold); cursor: pointer; z-index: 1000; }
-		```css
-        .season-btn-container {
-			margin-top: 60px;
-			padding: 30px 15px;
-			text-align: center;
-			border-top: 1px solid #ddd;
-		}
 
-		.btn-archive {
-			display: inline-block;
-			width: auto;
-			min-width: 250px;
-			padding: 16px 32px;
-			background-color: #555; /* Solid Grey Background */
-			color: white !important;
-			text-decoration: none;
-			text-transform: uppercase;
-			font-weight: bold;
-			font-size: 14px;
-			letter-spacing: 1px;
-			border-radius: 4px;
-			border-bottom: 4px solid #333; /* Depth effect */
-			transition: all 0.3s ease;
-		}
-
-		.btn-archive:hover {
-			background-color: var(--emerald); /* Changes to Green */
-			border-bottom-color: #0d3d0f;
-			transform: translateY(-2px);
-			box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-		}
-
-		.btn-archive:active {
-			transform: translateY(2px);
-			border-bottom-width: 1px;
-		}
+        .season-btn-container { margin-top: 60px; padding: 30px 15px; text-align: center; border-top: 1px solid #ddd; }
+        .btn-archive { display: inline-block; width: auto; min-width: 250px; padding: 16px 32px; background-color: #555; color: white !important; text-decoration: none; text-transform: uppercase; font-weight: bold; font-size: 14px; letter-spacing: 1px; border-radius: 4px; border-bottom: 4px solid #333; transition: all 0.3s ease; }
+        .btn-archive:hover { background-color: var(--emerald); border-bottom-color: #0d3d0f; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .btn-archive:active { transform: translateY(2px); border-bottom-width: 1px; }
     </style>
 </head>
 <body>
@@ -171,28 +141,27 @@
             <tbody id="season-body"></tbody>
         </table></div>
 
-		<h3 style="text-align:center; color:var(--emerald); letter-spacing:1px; margin-top:40px;">TOURNAMENT HISTORY</h3>
-			<div id="history-container"></div>
-				<div style="margin-top: 50px; text-align: center; border-top: 1px solid #ddd; padding-top: 30px;">
-					<div class="season-btn-container">
-						<a href="https://lst-2k.github.io/new-emerald-tour/" class="btn-archive">
-							<i class="fa-solid fa-clock-rotate-left" style="margin-right: 10px;"></i> Season 1 Archives
-						</a>
-					</div>
-				</div> ```
+        <h3 style="text-align:center; color:var(--emerald); letter-spacing:1px; margin-top:40px;">TOURNAMENT HISTORY</h3>
+        <div id="history-container"></div>
+        
+        <div class="season-btn-container">
+            <a href="https://lst-2k.github.io/new-emerald-tour/" class="btn-archive">
+                <i class="fa-solid fa-clock-rotate-left" style="margin-right: 10px;"></i> Season 1 Archives
+            </a>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, doc, setDoc, getDoc, getDocs, onSnapshot, query, orderBy, limit, writeBatch, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // CONFIG
-		const firebaseConfig = {
+        const firebaseConfig = {
           apiKey: "AIzaSyDXQU4I1XvkNi-XE4f5q7dixo3BrVkfuC8",
-		  authDomain: "emeraldtour2-f556d.firebaseapp.com",
-		  projectId: "emeraldtour2-f556d",
-		  storageBucket: "emeraldtour2-f556d.firebasestorage.app",
-		  messagingSenderId: "148269100724",
-		  appId: "1:148269100724:web:32410ea4096b26fec5f1e1",
+          authDomain: "emeraldtour2-f556d.firebaseapp.com",
+          projectId: "emeraldtour2-f556d",
+          storageBucket: "emeraldtour2-f556d.firebasestorage.app",
+          messagingSenderId: "148269100724",
+          appId: "1:148269100724:web:32410ea4096b26fec5f1e1",
         };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -238,8 +207,6 @@
         onSnapshot(settingsDoc, (s) => {
             if (!s.exists()) return;
             const data = s.data();
-            
-            // Signature Style
             const venueEl = document.getElementById('current-venue');
             if(data.isSignature) {
                 venueEl.innerHTML = `<i class="fa fa-star" style="color:var(--gold)"></i> ${data.venue} <i class="fa fa-star" style="color:var(--gold)"></i>`;
@@ -248,17 +215,12 @@
                 venueEl.innerText = data.venue || "Emerald Tour";
                 venueEl.style.color = "var(--emerald)";
             }
-
             document.getElementById('course-par').innerText = data.par || "--";
             document.getElementById('total-prize-pool').innerText = `$${(parseInt(data.pool) || 0).toLocaleString()}`;
-            
-            // Fix: 4-Digit Year Display
             if (data.date) {
                 const parts = data.date.split('-'); 
                 document.getElementById('event-date').innerText = `${parts[2]}/${parts[1]}/${parts[0]}`;
             }
-
-            // Timer Logic
             if (data.closingTimestamp) {
                 if (window.tourTimer) clearInterval(window.tourTimer);
                 window.tourTimer = setInterval(() => {
@@ -297,14 +259,14 @@
                 let ties = 0; while (i + ties < ps.length && ps[i + ties].tp === ps[i].tp) ties++;
                 let sP = 0, sM = 0;
                 for (let pX = rank; pX < rank + ties; pX++) { if (pX <= 20) { sP += ptsTable[pX - 1]; sM += (payoutTable[pX - 1] * pool); } }
-                
                 const avgPts = Math.round((sP / ties) * multiplier);
                 const avgMoney = Math.round(sM / ties);
 
                 for (let j = 0; j < ties; j++) {
                     const p = ps[i + j];
                     const scoreColor = p.tp < 0 ? "#b71c1c" : (p.tp === 0 ? "#2e7d32" : "#333");
-                    html += `<tr><td>${rank}</td><td class="player-cell">${p.name}</td><td>${p.hcap}</td>
+                    const icon = p.console ? `<i class="${p.console}"></i>` : "";
+                    html += `<tr><td>${rank}</td><td class="player-cell">${icon}${p.name}</td><td>${p.hcap}</td>
                         <td>${p.r1||'-'}</td><td>${p.r2||'-'}</td><td>${p.r3||'-'}</td><td>${p.r4||'-'}</td>
                         <td>${p.net}</td><td style="color:${scoreColor}; font-weight:bold">${p.tp === 0 ? 'E' : (p.tp > 0 ? '+'+p.tp : p.tp)}</td>
                         <td>${p.fir}%</td><td>${p.gir}%</td><td>${p.scram}%</td><td>${p.ntp}y</td>
@@ -326,7 +288,6 @@
             btn.disabled = true; btn.innerText = "Posting...";
             const id = name.toLowerCase().replace(/\s+/g, '-');
             const ref = doc(db, "live_tournament", id);
-            
             const existing = await getDoc(ref);
             if (existing.exists() && existing.data().pin !== pin) { alert("Wrong PIN!"); btn.disabled = false; return; }
 
@@ -349,16 +310,18 @@
             btn.disabled = false; btn.innerText = "Post Official Round";
         };
 
-        // SEASON & HISTORY Listeners (Follows same 4-digit year logic)
+        // SEASON STANDINGS Listener
         onSnapshot(query(seasonCol, orderBy("pts", "desc")), (snap) => {
             let html = "", r = 1;
             snap.forEach(d => {
                 const p = d.data();
-                html += `<tr><td>${r++}</td><td class="player-cell">${p.name}</td><td>${p.events}</td><td>${p.pts}</td><td style="text-align:right">$${(p.earnings||0).toLocaleString()}</td></tr>`;
+                const icon = p.console ? `<i class="${p.console}"></i>` : "";
+                html += `<tr><td>${r++}</td><td class="player-cell">${icon}${p.name}</td><td>${p.events}</td><td>${p.pts}</td><td style="text-align:right">$${(p.earnings||0).toLocaleString()}</td></tr>`;
             });
             document.getElementById('season-body').innerHTML = html;
         });
 
+        // TOURNAMENT HISTORY Listener
         onSnapshot(query(historyCol, orderBy("timestamp", "desc"), limit(5)), (snap) => {
             let html = "";
             snap.forEach(d => {
@@ -377,7 +340,7 @@
             document.getElementById('history-container').innerHTML = html;
         });
 		
-		// --- THE MISSING ARCHIVE & PAYOUT FUNCTION ---
+		// ARCHIVE & PAYOUT
 		document.getElementById('archiveEventBtn').onclick = async () => {
 			const vName = document.getElementById('current-venue').innerText;
 			if(!confirm(`Archive ${vName} and Pay Out Season Points?`)) return;
@@ -386,8 +349,6 @@
 				const batch = writeBatch(db);
 				const sSnap = await getDoc(settingsDoc);
 				const s = sSnap.data() || {};
-				
-				// Multiplier from the Signature Checkbox
 				const ptsMultiplier = s.isSignature === true ? 2 : 1;
 				const pool = parseInt(s.pool) || 0;
 				const par = parseInt(s.par) || 72;
@@ -398,7 +359,6 @@
 				let psRaw = []; 
 				qSnap.forEach(d => psRaw.push({...d.data(), id: d.id}));
 
-				// Calculate Ranks & Points
 				let ps = psRaw.map(p => {
 					const rs = [p.r1, p.r2, p.r3, p.r4].filter(r => r > 0);
 					const gross = rs.reduce((a, b) => a + b, 0);
@@ -411,35 +371,28 @@
 				while(i < ps.length) {
 					if(ps[i].act === 0) { i++; continue; }
 					let ties = 0; while(i+ties < ps.length && ps[i+ties].tp === ps[i].tp) ties++;
-					
 					let sP=0, sM=0; 
 					for(let pX=rank; pX < rank+ties; pX++) { 
-						if(pX <= 20) { 
-							sP += ptsTable[pX-1]; 
-							sM += (payoutTable[pX-1] * pool); 
-						}
+						if(pX <= 20) { sP += ptsTable[pX-1]; sM += (payoutTable[pX-1] * pool); }
 					}
-
 					const avgPts = Math.round((sP / ties) * ptsMultiplier);
 					const avgMoney = Math.round(sM / ties);
 
 					for(let j=0; j < ties; j++) {
 						const p = ps[i+j];
 						const pRef = doc(db, "season_stats", p.id);
-						// Update Season Standings
 						batch.set(pRef, { 
 							name: p.name, 
+                            console: p.console || "", // Preserving console icon in season stats
 							pts: increment(avgPts), 
 							earnings: increment(avgMoney), 
 							events: increment(1) 
 						}, { merge: true });
-
 						historyData.push({ name: p.name, pts: avgPts, earned: avgMoney, toPar: p.tp });
 					}
 					i += ties; rank += ties;
 				}
 
-				// 1. Save results to History
 				batch.set(doc(collection(db, "history")), { 
 					venue: vName, 
 					date: s.date || "", 
@@ -448,7 +401,6 @@
 					results: historyData 
 				});
 
-				// 2. Reset the Venue/Pool for next week
 				batch.update(settingsDoc, { 
 					venue: "Tournament Closed", 
 					pool: 0, 
@@ -456,19 +408,15 @@
 					closingTimestamp: null 
 				});
 				
-				// 3. Wipe the Live Leaderboard
 				qSnap.forEach(d => batch.delete(d.ref));
-
 				await batch.commit(); 
 				alert(`Success! ${s.isSignature ? 'Double Points' : 'Standard Points'} Archive Complete.`);
-				
 			} catch (err) {
 				console.error("Archive Error:", err);
 				alert("Archive Failed. Check console for details.");
 			}
 		};
 
-		// Also add the Clear Board logic just in case:
 		document.getElementById('clearBoardBtn').onclick = async () => {
 			if(!confirm("Clear ALL live scores? This cannot be undone.")) return;
 			const qSnap = await getDocs(scoresCol);
@@ -478,7 +426,6 @@
 			alert("Live scores cleared.");
 		};
 
-        // Admin Access
         let count = 0; document.getElementById('admin-trigger').onclick = () => { count++; if(count === 5) { document.getElementById('admin-panel').style.display = 'block'; count = 0; }};
         window.onscroll = () => { document.getElementById('backToTop').style.display = window.scrollY > 400 ? 'flex' : 'none'; };
     </script>
