@@ -16,8 +16,8 @@
         .fa-xbox { color: var(--xb-green); }
         .fa-steam { color: var(--st-grey); }
 
-        /* Header */
-        .header-wrap { width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); background: white; position: sticky; top: 0; z-index: 999; }
+        /* Header - CHANGED TO ALLOW SCROLLING */
+        .header-wrap { width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); background: white; position: relative; z-index: 999; }
         .logo-container { background-color: var(--emerald); text-align: center; padding: 20px 10px; border-bottom: 4px solid var(--gold); cursor: pointer; }
         .logo-container img { width: 100%; max-width: 100%; height: auto; display: block; margin: 0 auto; }
         
@@ -28,12 +28,15 @@
 
         /* SCROLLING TICKER */
         .ticker-wrap { background: #222; color: #fff; overflow: hidden; white-space: nowrap; padding: 8px 0; border-bottom: 2px solid var(--emerald); }
-        .ticker-content { display: inline-block; padding-left: 100%; animation: ticker 20s linear infinite; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .ticker-content { display: inline-block; padding-left: 100%; animation: ticker 25s linear infinite; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
         .ticker-content span { margin-right: 50px; color: var(--gold); }
         @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
         .content-padding { padding: 15px; max-width: 1400px; margin: 0 auto; }
         
+        /* Highlighting Best Stats */
+        .best-stat { background-color: #2e7d32 !important; color: white !important; font-weight: bold; border-radius: 4px; }
+
         /* Admin Panel */
         .admin-section { background: #222; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 2px solid var(--gold); display: none; }
         .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
@@ -89,7 +92,6 @@
         <div class="ticker-wrap">
             <div class="ticker-content" id="ticker-text">
                 <span>Welcome to the 2026 Emerald Tour Season</span>
-                <span>Update the ticker in the Admin Panel</span>
             </div>
         </div>
     </div>
@@ -110,7 +112,7 @@
             </div>
             <div style="margin-top:15px;">
                 <label>Scrolling Ticker Text (Separate events with | )</label>
-                <input type="text" id="admin-ticker" placeholder="Next Week: Augusta | Major Championship Next Month">
+                <input type="text" id="admin-ticker">
             </div>
             <button id="saveSettingsBtn" class="btn" style="background:var(--gold); color:#222; margin-top:20px;">Update Dashboard</button>
             <div style="display:flex; gap:10px; margin-top:15px; border-top:1px solid #444; padding-top:15px;">
@@ -170,7 +172,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, onSnapshot, query, orderBy, limit, writeBatch, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, updateDoc, getDoc, getDocs, onSnapshot, query, orderBy, limit, writeBatch, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyDXQU4I1XvkNi-XE4f5q7dixo3BrVkfuC8",
@@ -191,34 +193,14 @@
         const payoutTable = [0.18, 0.108, 0.068, 0.048, 0.04, 0.036, 0.0335, 0.031, 0.029, 0.027, 0.025, 0.023, 0.021, 0.019, 0.018, 0.017, 0.016, 0.015, 0.014, 0.013];
         const ptsTable = [500, 300, 190, 135, 110, 100, 95, 90, 85, 80, 75, 70, 65, 60, 57, 54, 51, 48, 45, 42];
 
-        // UI: Toggle Form
-        document.getElementById('toggleFormBtn').onclick = () => {
-            const content = document.getElementById('submission-content');
-            const btn = document.getElementById('toggleFormBtn');
-            if (content.style.display === "none" || content.style.display === "") {
-                content.style.display = "block";
-                btn.innerHTML = `<i class="fa fa-times"></i> Close Scorecard Submission`;
-                btn.style.color = "#b71c1c"; btn.style.borderColor = "#b71c1c";
-            } else {
-                content.style.display = "none";
-                btn.innerHTML = `<i class="fa fa-edit"></i> Open Scorecard Submission`;
-                btn.style.color = "var(--emerald)"; btn.style.borderColor = "var(--emerald)";
-            }
-        };
-
         // ADMIN: Update Dashboard
         document.getElementById('saveSettingsBtn').onclick = async () => {
-            await setDoc(settingsDoc, {
-                venue: document.getElementById('admin-venue').value,
-                par: document.getElementById('admin-par').value,
-                date: document.getElementById('admin-date-picker').value,
-                pool: document.getElementById('admin-pool').value,
-                tickerText: document.getElementById('admin-ticker').value, // Save ticker text
-                isSignature: document.getElementById('admin-signature').checked,
-                closingTimestamp: new Date(document.getElementById('admin-close-time').value).getTime(),
-                lastUpdate: serverTimestamp()
-            }, { merge: true });
-            alert("Tournament Updated!");
+            const updateData = { lastUpdate: serverTimestamp(), isSignature: document.getElementById('admin-signature').checked };
+            const v = document.getElementById('admin-venue').value, p = document.getElementById('admin-par').value, d = document.getElementById('admin-date-picker').value, pl = document.getElementById('admin-pool').value, t = document.getElementById('admin-ticker').value, ct = document.getElementById('admin-close-time').value;
+            if(v) updateData.venue = v; if(p) updateData.par = p; if(d) updateData.date = d; if(pl) updateData.pool = pl; if(t) updateData.tickerText = t; if(ct) updateData.closingTimestamp = new Date(ct).getTime();
+            
+            try { await updateDoc(settingsDoc, updateData); alert("Updated!"); }
+            catch(e) { await setDoc(settingsDoc, updateData, {merge:true}); alert("Saved!"); }
         };
 
         // UI: Header & Timer Listener
@@ -226,35 +208,17 @@
             if (!s.exists()) return;
             const data = s.data();
             const venueEl = document.getElementById('current-venue');
-            if(data.isSignature) {
-                venueEl.innerHTML = `<i class="fa fa-star" style="color:var(--gold)"></i> ${data.venue} <i class="fa fa-star" style="color:var(--gold)"></i>`;
-                venueEl.style.color = "var(--gold)";
-            } else {
-                venueEl.innerText = data.venue || "Emerald Tour";
-                venueEl.style.color = "var(--emerald)";
-            }
-
-            // Ticker Update
-            if(data.tickerText) {
-                const items = data.tickerText.split('|');
-                document.getElementById('ticker-text').innerHTML = items.map(i => `<span>${i.trim()}</span>`).join('');
-            }
-
+            venueEl.innerHTML = data.isSignature ? `<i class="fa fa-star" style="color:var(--gold)"></i> ${data.venue} <i class="fa fa-star" style="color:var(--gold)"></i>` : (data.venue || "Emerald Tour");
+            venueEl.style.color = data.isSignature ? "var(--gold)" : "var(--emerald)";
+            if(data.tickerText) document.getElementById('ticker-text').innerHTML = data.tickerText.split('|').map(i => `<span>${i.trim()}</span>`).join('');
             document.getElementById('course-par').innerText = data.par || "--";
             document.getElementById('total-prize-pool').innerText = `$${(parseInt(data.pool) || 0).toLocaleString()}`;
-            if (data.date) {
-                const parts = data.date.split('-'); 
-                document.getElementById('event-date').innerText = `${parts[2]}/${parts[1]}/${parts[0]}`;
-            }
+            if (data.date) document.getElementById('event-date').innerText = data.date.split('-').reverse().join('/');
             if (data.closingTimestamp) {
                 if (window.tourTimer) clearInterval(window.tourTimer);
                 window.tourTimer = setInterval(() => {
                     const dist = data.closingTimestamp - new Date().getTime();
-                    if (dist < 0) { document.getElementById("countdown").innerText = "SUBMISSIONS CLOSED"; clearInterval(window.tourTimer); }
-                    else {
-                        const d = Math.floor(dist / 86400000), h = Math.floor((dist % 86400000) / 3600000), m = Math.floor((dist % 3600000) / 60000);
-                        document.getElementById("countdown").innerHTML = `<i class="fa fa-clock"></i> ${d}d ${h}h ${m}m Remaining`;
-                    }
+                    document.getElementById("countdown").innerText = dist < 0 ? "SUBMISSIONS CLOSED" : Math.floor(dist/86400000)+"d "+Math.floor((dist%86400000)/3600000)+"h "+Math.floor((dist%3600000)/60000)+"m Remaining";
                 }, 1000);
             }
         });
@@ -262,40 +226,42 @@
         // LIVE LEADERBOARD
         onSnapshot(scoresCol, async (snap) => {
             const sSnap = await getDoc(settingsDoc);
-            const par = parseInt(sSnap.data().par) || 72;
-            const pool = parseInt(sSnap.data().pool) || 0;
-            const multiplier = sSnap.data().isSignature ? 2 : 1;
+            const par = parseInt(sSnap.data().par) || 72, pool = parseInt(sSnap.data().pool) || 0, multiplier = sSnap.data().isSignature ? 2 : 1;
 
             let ps = [];
             snap.forEach(d => {
                 const p = d.data();
                 const rs = [p.r1, p.r2, p.r3, p.r4].filter(v => v > 0);
-                const gross = rs.reduce((a, b) => a + b, 0);
-                const net = rs.length > 0 ? gross - p.hcap : 0;
-                const tp = rs.length > 0 ? net - (par * rs.length) : 999;
-                ps.push({ ...p, net, tp, act: rs.length });
+                const net = rs.length > 0 ? (rs.reduce((a, b) => a + b, 0)) - p.hcap : 0;
+                ps.push({ ...p, net, tp: rs.length > 0 ? net - (par * rs.length) : 999, act: rs.length });
             });
+
+            // Find Best Stats
+            const bestFir = Math.max(...ps.map(p => p.fir || 0));
+            const bestGir = Math.max(...ps.map(p => p.gir || 0));
+            const bestScr = Math.max(...ps.map(p => p.scram || 0));
+            const validNtp = ps.filter(p => p.ntp > 0).map(p => p.ntp);
+            const bestNtp = validNtp.length > 0 ? Math.min(...validNtp) : null;
 
             ps.sort((a, b) => a.tp - b.tp);
             let html = "", i = 0, rank = 1;
-
             while (i < ps.length) {
                 if (ps[i].act === 0) { i++; continue; }
                 let ties = 0; while (i + ties < ps.length && ps[i + ties].tp === ps[i].tp) ties++;
                 let sP = 0, sM = 0;
                 for (let pX = rank; pX < rank + ties; pX++) { if (pX <= 20) { sP += ptsTable[pX - 1]; sM += (payoutTable[pX - 1] * pool); } }
-                const avgPts = Math.round((sP / ties) * multiplier);
-                const avgMoney = Math.round(sM / ties);
-
+                
                 for (let j = 0; j < ties; j++) {
                     const p = ps[i + j];
-                    const scoreColor = p.tp < 0 ? "#b71c1c" : (p.tp === 0 ? "#2e7d32" : "#333");
                     const icon = p.console ? `<i class="${p.console}"></i>` : "";
                     html += `<tr><td>${rank}</td><td class="player-cell">${icon}${p.name}</td><td>${p.hcap}</td>
                         <td>${p.r1||'-'}</td><td>${p.r2||'-'}</td><td>${p.r3||'-'}</td><td>${p.r4||'-'}</td>
-                        <td>${p.net}</td><td style="color:${scoreColor}; font-weight:bold">${p.tp === 0 ? 'E' : (p.tp > 0 ? '+'+p.tp : p.tp)}</td>
-                        <td>${p.fir}%</td><td>${p.gir}%</td><td>${p.scram}%</td><td>${p.ntp}y</td>
-                        <td>${avgPts}</td><td style="color:var(--emerald); font-weight:bold">$${avgMoney.toLocaleString()}</td></tr>`;
+                        <td>${p.net}</td><td style="color:${p.tp < 0 ? '#b71c1c' : (p.tp === 0 ? '#2e7d32' : '#333')}; font-weight:bold">${p.tp === 0 ? 'E' : (p.tp > 0 ? '+'+p.tp : p.tp)}</td>
+                        <td class="${p.fir === bestFir && bestFir > 0 ? 'best-stat' : ''}">${(p.fir || 0).toFixed(2)}%</td>
+                        <td class="${p.gir === bestGir && bestGir > 0 ? 'best-stat' : ''}">${(p.gir || 0).toFixed(2)}%</td>
+                        <td class="${p.scram === bestScr && bestScr > 0 ? 'best-stat' : ''}">${(p.scram || 0).toFixed(2)}%</td>
+                        <td class="${p.ntp === bestNtp ? 'best-stat' : ''}">${(p.ntp || 0).toFixed(2)}y</td>
+                        <td>${Math.round((sP / ties) * multiplier)}</td><td style="color:var(--emerald); font-weight:bold">$${Math.round(sM / ties).toLocaleString()}</td></tr>`;
                 }
                 i += ties; rank += ties;
             }
@@ -305,153 +271,38 @@
         // SUBMIT SCORE
         document.getElementById('submitScoreBtn').onclick = async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('submitScoreBtn');
-            const name = document.getElementById('form-name').value.trim();
-            const pin = document.getElementById('form-pin').value;
-            if (!name || pin.length < 4) return alert("Missing Name or 4-Digit PIN");
-
-            btn.disabled = true; btn.innerText = "Posting...";
-            const id = name.toLowerCase().replace(/\s+/g, '-');
-            const ref = doc(db, "live_tournament", id);
-            const existing = await getDoc(ref);
-            if (existing.exists() && existing.data().pin !== pin) { alert("Wrong PIN!"); btn.disabled = false; return; }
-
+            const n = document.getElementById('form-name').value.trim(), p = document.getElementById('form-pin').value;
+            if (!n || p.length < 4) return alert("Missing Info");
+            const ref = doc(db, "live_tournament", n.toLowerCase().replace(/\s+/g, '-')), ex = await getDoc(ref);
+            if (ex.exists() && ex.data().pin !== p) return alert("Wrong PIN");
             await setDoc(ref, {
-                name, pin,
-                console: document.getElementById('form-platform').value,
+                name: n, pin: p, console: document.getElementById('form-platform').value,
                 hcap: parseInt(document.getElementById('form-hcap').value) || 0,
-                r1: parseInt(document.getElementById('form-r1').value) || 0,
-                r2: parseInt(document.getElementById('form-r2').value) || 0,
-                r3: parseInt(document.getElementById('form-r3').value) || 0,
-                r4: parseInt(document.getElementById('form-r4').value) || 0,
-                fir: parseFloat(document.getElementById('form-fir').value) || 0,
-                gir: parseFloat(document.getElementById('form-gir').value) || 0,
-                scram: parseFloat(document.getElementById('form-scram').value) || 0,
-                ntp: parseFloat(document.getElementById('form-ntp').value) || 0
+                r1: parseInt(document.getElementById('form-r1').value) || 0, r2: parseInt(document.getElementById('form-r2').value) || 0,
+                r3: parseInt(document.getElementById('form-r3').value) || 0, r4: parseInt(document.getElementById('form-r4').value) || 0,
+                fir: parseFloat(document.getElementById('form-fir').value) || 0, gir: parseFloat(document.getElementById('form-gir').value) || 0,
+                scram: parseFloat(document.getElementById('form-scram').value) || 0, ntp: parseFloat(document.getElementById('form-ntp').value) || 0
             }, { merge: true });
-
-            alert("Scorecard Saved!");
-            document.getElementById('submission-content').style.display = "none";
-            btn.disabled = false; btn.innerText = "Post Official Round";
+            alert("Saved!");
         };
 
-        // SEASON STANDINGS Listener
+        // UI HELPERS
+        document.getElementById('toggleFormBtn').onclick = () => {
+            const c = document.getElementById('submission-content');
+            c.style.display = c.style.display === "block" ? "none" : "block";
+        };
+
         onSnapshot(query(seasonCol, orderBy("pts", "desc")), (snap) => {
             let html = "", r = 1;
             snap.forEach(d => {
                 const p = d.data();
-                const icon = p.console ? `<i class="${p.console}"></i>` : "";
-                html += `<tr><td>${r++}</td><td class="player-cell">${icon}${p.name}</td><td>${p.events}</td><td>${p.pts}</td><td style="text-align:right">$${(p.earnings||0).toLocaleString()}</td></tr>`;
+                html += `<tr><td>${r++}</td><td class="player-cell">${p.console ? `<i class="${p.console}"></i>` : ""}${p.name}</td><td>${p.events}</td><td>${p.pts}</td><td style="text-align:right">$${(p.earnings||0).toLocaleString()}</td></tr>`;
             });
             document.getElementById('season-body').innerHTML = html;
         });
 
-        // TOURNAMENT HISTORY Listener
-        onSnapshot(query(historyCol, orderBy("timestamp", "desc"), limit(5)), (snap) => {
-            let html = "";
-            snap.forEach(d => {
-                const h = d.data();
-                const dP = h.date.split('-');
-                const dStr = `${dP[2]}/${dP[1]}/${dP[0]}`;
-                html += `<div class="history-accordion">
-                    <div class="history-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">
-                        <span>${h.venue} (${dStr}) ${h.isSignature ? '★' : ''}</span><i class="fa fa-chevron-down"></i>
-                    </div>
-                    <div class="history-content">
-                        ${h.results.slice(0,5).map(r => `<div class="history-item"><span>${r.name}</span><span>${r.pts} pts | $${r.earned.toLocaleString()}</span></div>`).join('')}
-                    </div>
-                </div>`;
-            });
-            document.getElementById('history-container').innerHTML = html;
-        });
-		
-		// ARCHIVE & PAYOUT
-		document.getElementById('archiveEventBtn').onclick = async () => {
-			const vName = document.getElementById('current-venue').innerText;
-			if(!confirm(`Archive ${vName} and Pay Out Season Points?`)) return;
-
-			try {
-				const batch = writeBatch(db);
-				const sSnap = await getDoc(settingsDoc);
-				const s = sSnap.data() || {};
-				const ptsMultiplier = s.isSignature === true ? 2 : 1;
-				const pool = parseInt(s.pool) || 0;
-				const par = parseInt(s.par) || 72;
-
-				const qSnap = await getDocs(scoresCol);
-				if (qSnap.empty) return alert("No scores found to archive!");
-
-				let psRaw = []; 
-				qSnap.forEach(d => psRaw.push({...d.data(), id: d.id}));
-
-				let ps = psRaw.map(p => {
-					const rs = [p.r1, p.r2, p.r3, p.r4].filter(r => r > 0);
-					const gross = rs.reduce((a, b) => a + b, 0);
-					const net = rs.length > 0 ? gross - (parseInt(p.hcap) || 0) : 0;
-					const tp = rs.length > 0 ? net - (par * rs.length) : 999;
-					return { ...p, tp, act: rs.length };
-				}).sort((a, b) => a.tp - b.tp);
-
-				let i = 0, rank = 1, historyData = [];
-				while(i < ps.length) {
-					if(ps[i].act === 0) { i++; continue; }
-					let ties = 0; while(i+ties < ps.length && ps[i+ties].tp === ps[i].tp) ties++;
-					let sP=0, sM=0; 
-					for(let pX=rank; pX < rank+ties; pX++) { 
-						if(pX <= 20) { sP += ptsTable[pX-1]; sM += (payoutTable[pX-1] * pool); }
-					}
-					const avgPts = Math.round((sP / ties) * ptsMultiplier);
-					const avgMoney = Math.round(sM / ties);
-
-					for(let j=0; j < ties; j++) {
-						const p = ps[i+j];
-						const pRef = doc(db, "season_stats", p.id);
-						batch.set(pRef, { 
-							name: p.name, 
-                            console: p.console || "",
-							pts: increment(avgPts), 
-							earnings: increment(avgMoney), 
-							events: increment(1) 
-						}, { merge: true });
-						historyData.push({ name: p.name, pts: avgPts, earned: avgMoney, toPar: p.tp });
-					}
-					i += ties; rank += ties;
-				}
-
-				batch.set(doc(collection(db, "history")), { 
-					venue: vName, 
-					date: s.date || "", 
-					isSignature: s.isSignature || false,
-					timestamp: serverTimestamp(), 
-					results: historyData 
-				});
-
-				batch.update(settingsDoc, { 
-					venue: "Tournament Closed", 
-					pool: 0, 
-					isSignature: false, 
-					closingTimestamp: null 
-				});
-				
-				qSnap.forEach(d => batch.delete(d.ref));
-				await batch.commit(); 
-				alert(`Success! ${s.isSignature ? 'Double Points' : 'Standard Points'} Archive Complete.`);
-			} catch (err) {
-				console.error("Archive Error:", err);
-				alert("Archive Failed. Check console for details.");
-			}
-		};
-
-		document.getElementById('clearBoardBtn').onclick = async () => {
-			if(!confirm("Clear ALL live scores? This cannot be undone.")) return;
-			const qSnap = await getDocs(scoresCol);
-			const batch = writeBatch(db);
-			qSnap.forEach(d => batch.delete(d.ref));
-			await batch.commit();
-			alert("Live scores cleared.");
-		};
-
-        let count = 0; document.getElementById('admin-trigger').onclick = () => { count++; if(count === 5) { document.getElementById('admin-panel').style.display = 'block'; count = 0; }};
+        // ADMIN ACCESS
+        let count = 0; document.getElementById('admin-trigger').onclick = () => { if(++count === 5) { document.getElementById('admin-panel').style.display = 'block'; count = 0; }};
         window.onscroll = () => { document.getElementById('backToTop').style.display = window.scrollY > 400 ? 'flex' : 'none'; };
     </script>
 </body>
