@@ -87,6 +87,33 @@
         td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px; }
         .player-cell { text-align: left !important; font-weight: bold; }
         .player-cell i { margin-right: 8px; width: 18px; text-align: center; }
+		
+		/* Ensure Season Standings is mobile-width but stays tight */
+		#season-body-parent {
+			width: fit-content !important;
+			min-width: 100% !important; /* Forces it to span the container width */
+			margin: 20px auto;
+			display: flex;
+			justify-content: center; /* Centers the table within the container */
+		}
+
+		#season-body-parent table {
+			width: auto !important; /* Table only takes up needed space */
+			min-width: 320px !important; /* Minimum width for small mobile screens */
+			margin: 0 auto;
+		}
+
+		#season-body-parent th, 
+		#season-body-parent td {
+			white-space: nowrap; 
+			padding: 10px 12px !important; /* Tightens the gap between EV and Name */
+		}
+
+		/* Specific control for the Player column to prevent it from pushing others away */
+		#season-body-parent .player-cell {
+			width: auto !important;
+			padding-right: 20px !important; /* Adds just enough space before the EV column */
+		}
         
         /* History */
         .history-accordion { border: 1px solid #ddd; border-radius: 4px; margin-bottom: 8px; overflow: hidden; }
@@ -183,7 +210,7 @@
         </table></div>
 
         <h3 style="text-align:center; color:var(--emerald); letter-spacing:1px; margin-top:40px;">SEASON STANDINGS</h3>
-        <div class="table-container"><table>
+        <div class="table-container" id="season-body-parent"><table>
             <thead><tr><th>RANK</th><th class="player-cell">PLAYER</th><th>EV</th><th>POINTS</th><th style="text-align:right">EARNINGS</th></tr></thead>
             <tbody id="season-body"></tbody>
         </table></div>
