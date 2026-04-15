@@ -233,6 +233,7 @@
         </table></div>
 
         <h3 style="text-align:center; color:var(--emerald); letter-spacing:1px; margin-top:40px;">SEASON STANDINGS</h3>
+		<p style="text-align:center; font-size:11px; color:#666; margin:0 0 15px 0; font-weight:bold;">Q = Qualifies for End of Season Playoff</p>
         <div class="table-container" id="season-body-parent"><table>
             <thead><tr><th>RANK</th><th class="player-cell">PLAYER</th><th>EV</th><th>POINTS</th><th style="text-align:right">EARNINGS</th></tr></thead>
             <tbody id="season-body"></tbody>
@@ -302,14 +303,14 @@
         });
 		
 		// --- ADMIN: ARCHIVE & PAYOUT LOGIC ---
-        document.getElementById('archiveEventBtn').onclick = async () => {
+		document.getElementById('archiveEventBtn').onclick = async () => {
             const sSnap = await getDoc(settingsDoc);
             if (!sSnap.exists()) return alert("Settings not found!");
             
             const s = sSnap.data();
             const cleanVenueName = s.venue || "Unknown Venue";
 
-            if(!confirm(`Archive ${cleanVenueName} and Pay Out Season Points?`)) return;
+            if(!confirm(`Archive ${cleanVenueName} and Pay Out Season Points & $10k Bonuses?`)) return;
 
             try {
                 const batch = writeBatch(db);
@@ -323,6 +324,14 @@
                 let psRaw = []; 
                 qSnap.forEach(d => psRaw.push({...d.data(), id: d.id}));
 
+                // 1. Identify Best Stats for $10k Bonuses
+                const bestFir = Math.max(...psRaw.map(p => p.fir || 0));
+                const bestGir = Math.max(...psRaw.map(p => p.gir || 0));
+                const bestScr = Math.max(...psRaw.map(p => p.scram || 0));
+                const validNtp = psRaw.filter(p => p.ntp > 0).map(p => p.ntp);
+                const bestNtp = validNtp.length > 0 ? Math.min(...validNtp) : null;
+
+                // 2. Calculate Ranks & Standard Payouts
                 let ps = psRaw.map(p => {
                     const rs = [p.r1, p.r2, p.r3, p.r4].filter(r => r > 0);
                     const gross = rs.reduce((a, b) => a + b, 0);
@@ -349,21 +358,34 @@
 
                     for(let j=0; j < ties; j++) {
                         const p = ps[i+j];
+                        
+                        // Check for $10k Bonuses
+                        let totalWeekEarnings = avgMoney;
+                        if (p.fir === bestFir && bestFir > 0) totalWeekEarnings += 10000;
+                        if (p.gir === bestGir && bestGir > 0) totalWeekEarnings += 10000;
+                        if (p.scram === bestScr && bestScr > 0) totalWeekEarnings += 10000;
+                        if (p.ntp === bestNtp && bestNtp !== null) totalWeekEarnings += 10000;
+
                         const pRef = doc(db, "season_stats", p.id);
                         batch.set(pRef, { 
                             name: p.name, 
                             pts: increment(avgPts), 
-                            earnings: increment(avgMoney), 
+                            earnings: increment(totalWeekEarnings), 
                             events: increment(1),
                             console: p.console || ""
                         }, { merge: true });
 
-                        historyData.push({ name: p.name, pts: avgPts, earned: avgMoney, toPar: p.tp });
+                        historyData.push({ 
+                            name: p.name, 
+                            pts: avgPts, 
+                            earned: totalWeekEarnings, 
+                            toPar: p.tp 
+                        });
                     }
                     i += ties; rank += ties;
                 }
 
-                // Save to History
+                // 3. Save to History and Reset
                 batch.set(doc(collection(db, "history")), { 
                     venue: cleanVenueName, 
                     date: s.date || "", 
@@ -371,15 +393,14 @@
                     results: historyData 
                 });
 
-                // Reset Tournament
                 batch.update(settingsDoc, { venue: "Tournament Closed", pool: 0, isSignature: false, closingTimestamp: null });
                 qSnap.forEach(d => batch.delete(d.ref));
 
                 await batch.commit(); 
-                alert("Archive Successful!");
+                alert("Archive Successful! Bonuses Included.");
             } catch (err) {
                 console.error("Archive Error:", err);
-                alert("Archive Failed. Check console.");
+                alert("Archive Failed.");
             }
         };
 
@@ -467,29 +488,45 @@
         };
 
         onSnapshot(query(seasonCol, orderBy("pts", "desc")), (snap) => {
-		let players = [];
-		snap.forEach(d => players.push(d.data()));
+            let players = [];
+            snap.forEach(d => players.push(d.data()));
 
-		let html = "";
-		for (let i = 0; i < players.length; i++) {
-			const p = players[i];
-			
-			// Determine rank and tie status
-			let rank = i + 1;
-			let isTied = false;
-			if ((players[i-1] && players[i-1].pts === p.pts) || (players[i+1] && players[i+1].pts === p.pts)) {
-				isTied = true;
-			}
+            const totalPlayers = players.length;
+            // Calculate the 50% cutoff index
+            const qualificationCutoff = Math.ceil(totalPlayers / 2);
 
-			// Adjust rank display if tied (using a simplified "find actual rank" approach)
-			let actualRank = 1;
-			for(let j=0; j<i; j++) { if(players[j].pts > p.pts) actualRank++; }
-			const rankDisplay = isTied ? `T${actualRank}` : actualRank;
+            let html = "";
+            for (let i = 0; i < players.length; i++) {
+                const p = players[i];
+                
+                // Determine rank and tie status
+                let rank = i + 1;
+                let isTied = false;
+                if ((players[i-1] && players[i-1].pts === p.pts) || (players[i+1] && players[i+1].pts === p.pts)) {
+                    isTied = true;
+                }
 
-			html += `<tr><td>${rankDisplay}</td><td class="player-cell">${p.console ? `<i class="${p.console}"></i>` : ""}${p.name}</td><td>${p.events}</td><td>${p.pts}</td><td style="text-align:right">$${(p.earnings||0).toLocaleString()}</td></tr>`;
-		}
-		document.getElementById('season-body').innerHTML = html;
-	});
+                // Adjust rank display if tied
+                let actualRank = 1;
+                for(let j=0; j<i; j++) { if(players[j].pts > p.pts) actualRank++; }
+                const rankDisplay = isTied ? `T${actualRank}` : actualRank;
+
+                // Qualification Logic: Add 'Q' suffix if in the top 50%
+                // We use 'i < qualificationCutoff' to target the top half
+                const qSuffix = (i < qualificationCutoff && totalPlayers > 0) ? " <span style='color:var(--gold); font-size:10px;'>Q</span>" : "";
+
+                html += `<tr>
+                    <td>${rankDisplay}</td>
+                    <td class="player-cell">
+                        ${p.console ? `<i class="${p.console}"></i>` : ""}${p.name}${qSuffix}
+                    </td>
+                    <td>${p.events}</td>
+                    <td>${p.pts}</td>
+                    <td style="text-align:right">$${(p.earnings||0).toLocaleString()}</td>
+                </tr>`;
+            }
+            document.getElementById('season-body').innerHTML = html;
+        });
 	
 		// --- TOURNAMENT HISTORY LISTENER ---
         onSnapshot(query(historyCol, orderBy("timestamp", "desc")), (snap) => {
