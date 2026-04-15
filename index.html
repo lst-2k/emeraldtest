@@ -114,7 +114,30 @@
 			width: auto !important;
 			padding-right: 20px !important; /* Adds just enough space before the EV column */
 		}
-        
+		
+		/* Match History Table sizing to Season Standings */
+		#history-container .history-content {
+			width: fit-content !important;
+			min-width: 100% !important; /* Spans the full width of the phone */
+			display: flex;
+			justify-content: center;
+			padding: 15px 0;
+			background: #fff;
+		}
+
+		#history-container table {
+			width: auto !important;
+			min-width: 320px !important; /* Standard mobile width */
+			margin: 0 auto;
+			border: 1px solid #eee;
+		}
+
+		#history-container th, 
+		#history-container td {
+			white-space: nowrap; 
+			padding: 10px 12px !important;
+		}
+				
         /* History */
         .history-accordion { border: 1px solid #ddd; border-radius: 4px; margin-bottom: 8px; overflow: hidden; }
         .history-header { background: var(--emerald); color: white; padding: 12px 15px; cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; font-size: 13px; }
@@ -467,6 +490,50 @@
 		}
 		document.getElementById('season-body').innerHTML = html;
 	});
+	
+		// --- TOURNAMENT HISTORY LISTENER ---
+        onSnapshot(query(historyCol, orderBy("timestamp", "desc")), (snap) => {
+            const container = document.getElementById('history-container');
+            let html = "";
+
+            snap.forEach(doc => {
+                const event = doc.data();
+                const dateDisplay = event.date ? event.date.split('-').reverse().join('/') : "No Date";
+                const isSig = event.isSignature ? '<i class="fa fa-star" style="color:var(--gold)"></i> ' : '';
+
+                html += `
+                    <div class="history-accordion">
+                        <div class="history-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">
+                            <span>${isSig}${event.venue}</span>
+                            <span>${dateDisplay} <i class="fa fa-chevron-down" style="margin-left:10px"></i></span>
+                        </div>
+                        <div class="history-content">
+                            <table style="width:100%; min-width: unset; font-size: 13px;">
+                                <thead style="background:#f4f4f4; color:#333;">
+                                    <tr>
+                                        <th style="text-align:left; padding:5px;">Player</th>
+                                        <th>To Par</th>
+                                        <th>Pts</th>
+                                        <th style="text-align:right;">Earnings</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${event.results.map(r => `
+                                        <tr>
+                                            <td style="text-align:left; padding:5px; font-weight:bold;">${r.name}</td>
+                                            <td style="color:${r.toPar < 0 ? '#b71c1c' : (r.toPar === 0 ? '#2e7d32' : '#333')}">${r.toPar === 0 ? 'E' : (r.toPar > 0 ? '+'+r.toPar : r.toPar)}</td>
+                                            <td>${r.pts}</td>
+                                            <td style="text-align:right;">$${(r.earned || 0).toLocaleString()}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>`;
+            });
+
+            container.innerHTML = html || "<p style='text-align:center; color:#999;'>No archived events found.</p>";
+        });
 
         // ADMIN ACCESS
         let count = 0; document.getElementById('admin-trigger').onclick = () => { if(++count === 5) { document.getElementById('admin-panel').style.display = 'block'; count = 0; }};
