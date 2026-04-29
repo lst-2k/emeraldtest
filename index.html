@@ -546,31 +546,44 @@
             let html = "";
             snap.forEach(doc => {
                 const event = doc.data();
-                // We ensure the content div starts with display: none
+                const dateDisplay = event.date ? event.date.split('-').reverse().join('/') : "No Date";
+                const isSig = event.isSignature ? '<i class="fa fa-star" style="color:var(--gold)"></i> ' : '';
+                
+                // Sort results so 1st place is at the top
+                const sortedResults = [...event.results].sort((a, b) => (a.toPar || 0) - (b.toPar || 0));
+
                 html += `
                 <div class="history-accordion" style="margin-bottom:10px;">
                     <div class="history-header" 
                          onclick="this.classList.toggle('active'); 
                                   const content = this.nextElementSibling; 
                                   content.style.display = (content.style.display === 'block') ? 'none' : 'block';">
-                        <span>${event.venue}</span>
-                        <span>${event.date || ''} <i class="fa fa-chevron-down"></i></span>
+                        <span>${isSig}${event.venue}</span>
+                        <span>${dateDisplay} <i class="fa fa-chevron-down" style="margin-left:10px"></i></span>
                     </div>
                     <div class="history-content" style="display:none; padding:10px; border:1px solid #eee; border-top:none; border-radius:0 0 8px 8px; background:#fff;">
-                        <table style="width:100%; font-size:0.9em; border-collapse:collapse;">
-                            <thead style="background:#f9f9f9;">
+                        <table style="width:100%; font-size:13px; border-collapse:collapse;">
+                            <thead style="background:#f4f4f4; color:#333;">
                                 <tr>
-                                    <th style="text-align:left; padding:5px;">Player</th>
-                                    <th style="text-align:center;">NET</th>
-                                    <th style="text-align:right;">PTS</th>
+                                    <th style="text-align:left; padding:8px 5px; width:35px;">#</th>
+                                    <th style="text-align:left; padding:8px 5px;">Player</th>
+                                    <th style="text-align:center; width:50px;">NET</th>
+                                    <th style="text-align:center; width:50px;">PTS</th>
+                                    <th style="text-align:right; width:80px;">Earnings</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                ${event.results.sort((a,b) => a.toPar - b.toPar).map(r => `
+                                ${sortedResults.map((r, idx) => `
                                     <tr style="border-bottom:1px solid #eee;">
-                                        <td style="padding:8px 5px;">${r.console ? `<i class="${r.console}" style="font-size:0.8em; margin-right:5px;"></i>`:''}${r.name}</td>
-                                        <td style="text-align:center; font-weight:bold;">${r.toPar > 0 ? '+'+r.toPar : (r.toPar === 0 ? 'E' : r.toPar)}</td>
-                                        <td style="text-align:right;">${r.pts}</td>
+                                        <td style="padding:8px 5px; font-weight:bold; color:#666; text-align:left;">${idx + 1}</td>
+                                        <td style="text-align:left; padding:8px 5px; font-weight:bold;">
+                                            ${r.console ? `<i class="${r.console}" style="margin-right:8px; font-size:0.85em; width:15px; text-align:center;"></i>` : ""}${r.name}
+                                        </td>
+                                        <td style="text-align:center; color:${r.toPar < 0 ? '#b71c1c' : (r.toPar === 0 ? '#2e7d32' : '#333')}">
+                                            ${r.toPar === 0 ? 'E' : (r.toPar > 0 ? '+'+r.toPar : r.toPar)}
+                                        </td>
+                                        <td style="text-align:center;">${r.pts}</td>
+                                        <td style="text-align:right; font-weight:bold;">$${(r.earned || 0).toLocaleString()}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
